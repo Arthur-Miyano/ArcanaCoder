@@ -179,13 +179,38 @@ function nextQuestion() {
         <NoxDialog :message="noxHint" />
       </div>
 
-      <FeedbackToast
-        v-if="showFeedback"
-        :correct="lastResult?.correct ?? false"
-        :explanation="lastResult?.explanation ?? ''"
-        :correct-answer="lastResult?.correctAnswer"
-        @next="nextQuestion"
-      />
+      <div v-if="showFeedback" class="px-4 pb-3 border-t border-gray-700 pt-3">
+        <div class="bg-yellow-600/30 border border-yellow-500 rounded px-3 py-1 text-xs text-yellow-300 mb-2">
+          DEBUG: showFeedback = {{ showFeedback }}, lastResult = {{ lastResult ? 'OK' : 'NULL' }}
+        </div>
+        <div
+          class="rounded-lg border px-4 py-3"
+          :class="lastResult?.correct ? 'bg-green-900 border-green-500' : 'bg-red-900 border-red-500'"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="text-base font-bold"
+              :class="lastResult?.correct ? 'text-green-300' : 'text-red-300'"
+            >
+              {{ lastResult?.correct ? '正确!' : '答错了' }}
+            </span>
+          </div>
+          <div
+            v-if="lastResult?.correctAnswer && !lastResult?.correct"
+            class="mb-2 p-2 bg-gray-900 rounded font-mono text-xs text-green-200 whitespace-pre-wrap"
+          >
+            <span class="text-gray-400 text-xs block mb-1">正确答案：</span>
+            {{ lastResult?.correctAnswer }}
+          </div>
+          <p class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">{{ lastResult?.explanation }}</p>
+          <button
+            class="mt-3 px-4 py-1.5 rounded text-sm font-medium transition-colors bg-gray-600 hover:bg-gray-500 text-white"
+            @click="nextQuestion"
+          >
+            下一题
+          </button>
+        </div>
+      </div>
 
       <div v-else class="px-4 py-3 border-t border-gray-700">
         <button
