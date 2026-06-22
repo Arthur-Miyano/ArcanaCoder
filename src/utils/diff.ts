@@ -28,6 +28,10 @@ function normalizePunctuation(s: string): string {
   )
 }
 
+function collapseWhitespace(s: string): string {
+  return s.trim().replace(/\s+/g, ' ')
+}
+
 export function compareOutput(userOutput: string, expected: string): DiffResult {
   if (userOutput === expected) {
     return { matchType: 'exact', userOutput, expectedOutput: expected, points: [], detail: '' }
@@ -43,13 +47,13 @@ export function compareOutput(userOutput: string, expected: string): DiffResult 
     }
   }
 
-  if (userOutput.trim() === expected.trim()) {
+  if (collapseWhitespace(userOutput) === collapseWhitespace(expected)) {
     return {
       matchType: 'whitespace',
       userOutput,
       expectedOutput: expected,
       points: findAllDiffs(userOutput, expected),
-      detail: '空白字符不匹配',
+      detail: '空白字符不匹配（多空格/少空格/首尾空格）',
     }
   }
 

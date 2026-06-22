@@ -36,7 +36,9 @@ export function detectCommonErrors(
     })
   }
 
-  if (userOutput.trim() === expected.trim() && userOutput !== expected) {
+  const collapsedUser = userOutput.trim().replace(/\s+/g, ' ')
+  const collapsedExpected = expected.trim().replace(/\s+/g, ' ')
+  if (collapsedUser === collapsedExpected && userOutput !== expected) {
     errors.push({
       name: 'WHITESPACE_MISMATCH',
       message: `空白字符不匹配：你的输出 "${userOutput}" 与期望 "${expected}" 仅在空格/换行上有差异。`,
