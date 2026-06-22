@@ -26,8 +26,9 @@ const emit = defineEmits<{
 const store = useGameStore()
 const currentSection = computed(() => {
   const ch = chapters.find((c) => c.id === props.chapterId)
-  if (!ch) return null
-  const secId = store.state.currentSectionId
+  if (!ch || !ch.sections.length) return null
+  const secId = store.currentSectionId
+  if (!secId) return null
   return ch.sections.find((s) => s.id === secId) ?? null
 })
 const questions = ref<Question[]>([])

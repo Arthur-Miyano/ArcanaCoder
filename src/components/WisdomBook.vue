@@ -37,18 +37,19 @@ watch(currentPoint, () => {
 
 function prev() {
   if (isFlipping.value || isFirst.value) return
-  isFlipping.value = true
-  setTimeout(() => {
-    currentIndex.value--
-    isFlipping.value = false
-  }, 600)
+  goToPage(currentIndex.value - 1)
 }
 
 function next() {
   if (isFlipping.value || isLast.value) return
+  goToPage(currentIndex.value + 1)
+}
+
+function goToPage(index: number) {
+  if (isFlipping.value || index === currentIndex.value) return
   isFlipping.value = true
   setTimeout(() => {
-    currentIndex.value++
+    currentIndex.value = index
     isFlipping.value = false
   }, 600)
 }
@@ -100,7 +101,7 @@ async function runInteractive() {
                 class="toc-item"
                 :class="{ active: i === currentIndex }"
                 :disabled="isFlipping"
-                @click="currentIndex = i"
+                @click="goToPage(i)"
               >
                 {{ p.title }}
               </button>
