@@ -33,7 +33,6 @@ function onPyodideReady() {
 
 function onSelectChapter(chapterId: string) {
   activeChapterId.value = chapterId
-  store.selectChapter(chapterId)
   if (store.isWisdomViewed(chapterId)) {
     viewState.value = 'quiz'
   } else {

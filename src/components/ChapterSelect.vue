@@ -25,10 +25,12 @@ function isSectionUnlocked(sectionId: string, unlockAfter?: string): boolean {
 }
 
 function startSection(chapterId: string, sectionId: string) {
-  if (!isSectionUnlocked(sectionId, undefined)) return
+  const ch = chapters.find((c) => c.id === chapterId)
+  const sec = ch?.sections.find((s) => s.id === sectionId)
+  if (!sec || !store.isSectionUnlocked(sectionId, sec.unlockAfter)) return
   store.selectChapter(chapterId)
-  store.selectSection(sectionId)
   emit('selectChapter', chapterId)
+  store.selectSection(sectionId)
 }
 </script>
 

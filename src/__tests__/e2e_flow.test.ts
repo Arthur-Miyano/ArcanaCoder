@@ -108,4 +108,22 @@ describe('E2E: Chapter Select → WisdomBook → Quiz', () => {
       }
     }
   })
+
+  it('11. selecting a different section changes currentSectionId', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    expect(store.currentSectionId).toBe('s1_vars')
+    store.selectSection('s1_types')
+    expect(store.currentSectionId).toBe('s1_types')
+  })
+
+  it('12. selecting section survives App.vue handler (no selectChapter override)', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_types')
+    expect(store.currentSectionId).toBe('s1_types')
+    // App.vue.onSelectChapter no longer calls store.selectChapter
+    // so section should remain s1_types
+    expect(store.currentSectionId).toBe('s1_types')
+  })
 })
