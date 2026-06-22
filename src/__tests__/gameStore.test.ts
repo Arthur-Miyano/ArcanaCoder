@@ -105,4 +105,63 @@ describe('gameStore', () => {
     const sp = store.getSectionProgress('s1_vars')
     expect(sp.consecutiveWrong).toBe(0)
   })
+
+  it('completeSection marks section as completed', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_vars')
+    store.completeSection('s1_vars')
+    expect(store.getSectionProgress('s1_vars').completed).toBe(true)
+  })
+
+  it('getQuestionResult returns result after submit', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_vars')
+    store.submitAnswer('s1_01', true)
+    const r = store.getQuestionResult('s1_01')
+    expect(r).not.toBeNull()
+    expect(r!.correct).toBe(true)
+  })
+
+  it('getQuestionResult returns null for unanswered question', () => {
+    const store = useGameStore()
+    const r = store.getQuestionResult('nonexistent')
+    expect(r).toBeNull()
+  })
+
+  it('getChapterProgress returns correct section counts', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_vars')
+    const p = store.getChapterProgress('ch1_variables')
+    expect(p.total).toBe(4) // 4 sections
+    expect(p.done).toBe(0)
+  })
+
+  it('resetProgress restores initial state', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.submitAnswer('s1_01', true)
+    store.resetProgress()
+    expect(store.level).toBe(1)
+    expect(store.exp).toBe(0)
+    expect(store.state.currentChapterId).toBeNull()
+  })
+
+  it('saveGameState receives serializable data', async () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_vars')
+    store.submitAnswer('s1_01', true)
+    const { saveGameState } = await import('../services/storage')
+    const mockFn = saveGameState as ReturnType<typeof vi.fn>
+    const calls = mockFn.mock?.calls
+    if (calls && calls.length > 0) {
+      const state = calls[0][0]
+      expect(() => JSON.parse(JSON.stringify(state))).not.toThrow()
+    } else {
+      throw new Error('saveGameState was not called')
+    }
+  })
 })

@@ -4,86 +4,89 @@
 搭建 ArcanaCoder 像素风 RPG 学习游戏的 Phase 1：能打开网页、能做题、能运行 Python 代码、有即时反馈、刷新后进度不丢失。
 
 ## Current Phase
-Step 1: 项目脚手架
+Phase 1 — 核心循环（全部完成）
 
-## Phases
+## Completed
 
-### Step 1: 项目脚手架
-- [x] 需求讨论 + 方案 1.1 文档
-- [ ] 创建 package.json / vite.config / tsconfig / tailwind / postcss
-- [ ] 创建 src/main.ts / App.vue / index.html / main.css
-- [ ] npm install 所有依赖
-- [ ] 验证：npm run dev 正常启动
-- **Status:** in_progress
+### 基础设施
+- [x] Vue 3 + Vite + TypeScript 脚手架
+- [x] Tailwind CSS 配置 + 自定义主题色
+- [x] Pyodide 浏览器内 Python 运行时（CDN 加载 + 进度条 + 超时控制）
+- [x] Pinia 游戏状态管理（等级/经验/进度）
+- [x] IndexedDB 持久化（idb 封装）
+- [x] GitHub Actions 自动部署
 
-### Step 2: 类型定义 + 测试题数据
-- [ ] src/types/index.ts — 所有 TS 类型
-- [ ] src/data/questions.ts — 5 道题完整数据（含自由编程的 testCases）
-- **Status:** pending
+### 5 种题型
+- [x] choice — 单选题
+- [x] code_fill — 代码填空
+- [x] code_fix — 代码纠错
+- [x] output_predict — 输出预测
+- [x] free_coding — 自由编程（含 testCases 验证）
 
-### Step 3: Pinia 状态管理 + IndexedDB 存储
-- [ ] src/stores/gameStore.ts
-- [ ] src/services/storage.ts
-- [ ] 验证：浏览器中状态可持久化
-- **Status:** pending
+### 题目数据
+- [x] 阶段 1（变量与类型）28 题，分 4 节线性解锁
+- [x] 备用题库 24 题（12 个核心知识点各 2 道）
+- [x] 每道题配 narrativeTitle / narrativeDesc / hint / hintRoleplay / hintDirect
 
-### Step 4: Pyodide 服务 + LoadingOverlay
-- [ ] src/services/pyodide.ts（单例封装，含加载进度回调）
-- [ ] src/components/LoadingOverlay.vue
-- [ ] 验证：控制台能运行 print("Hello")
-- **Status:** pending
+### 节系统
+- [x] 章节→节 拆分（4 节线性解锁）
+- [x] 节完成页（含准确率 + 重试入口）
+- [x] 节进度保存 + nextSection 解锁 + chapter 解锁
 
-### Step 5: App.vue 状态路由
-- [ ] 实现 viewState 切换（loading / chapterSelect / quiz / chapterComplete）
-- **Status:** pending
+### 智慧之书
+- [x] 3D 翻页双栏书本布局
+- [x] 专业定义 + 语法规则 + 设计哲学 + 常见错误 + 即时验证
+- [x] 移动端自适应回退
 
-### Step 6: 答题面板组件族
-- [x] src/components/QuizPanel.vue
-- [x] src/components/ChoiceQuestion.vue
-- [x] src/components/CodeQuestion.vue
-- [x] src/components/OutputPredict.vue
-- [x] 验证：编译通过
-- **Status:** complete
+### 错误反馈
+- [x] Python 错误中文翻译（errorParser）
+- [x] 代码 diff 比对（数值比较 / format vs logic 分类 / 标点归一化）
+- [x] commonErrors 模式匹配（大小写 / 空格 / str+int / 变量拼写）
+- [x] codeValidator 变量名提示
 
-### Step 7: 反馈 + 对话 + 顶栏组件
-- [x] src/components/FeedbackToast.vue
-- [x] src/components/NoxDialog.vue
-- [x] src/components/GameHeader.vue
-- **Status:** complete
+### 诺克斯提示
+- [x] 三级提示（hint / hintRoleplay / hintDirect）
+- [x] 疲劳版提示（连续 3 错）
+- [x] 折叠长文本
 
-### Step 8: 关卡选择 + 关卡完成页
-- [x] src/components/ChapterSelect.vue
-- [x] src/components/ChapterComplete.vue
-- **Status:** complete
+### 疲劳控制
+- [x] 单节 7 题后弹出休息提示（5s 可跳过）
+- [x] 连续 3 错诺克斯干预
 
-### Step 9: 集成测试
-- [x] TypeScript 编译无错误
-- [x] Vite 构建成功（568KB JS, 13KB CSS）
-- [x] Dev server 正常启动
-- [ ] 浏览器内完整路径验证（需要手动测试）
-- **Status:** complete
+### 测试
+- [x] vitest 配置 + 覆盖率阈值
+- [x] diff 测试（13 用例）
+- [x] errorParser 测试（7 用例）
+- [x] commonErrors 测试（7 用例）
+- [x] gameStore 测试（16 用例）
+- [x] E2E 流程测试（11 用例）
+- [x] 共计 54 测试全部通过
+- [x] CI 集成 test 步骤
 
-### Step 10: GitHub Pages 部署
-- [x] .gitignore
-- [x] GitHub Actions workflow (.github/workflows/deploy.yml)
-- [ ] GitHub 仓库配置 + 首次部署触发（需要手动操作）
-- **Status:** pending
+### GDD 合规
+- [x] 22+ 处 UI 文案替换（正确→魔力共鸣、提交→注入魔力、下一题→下一道试炼等）
+- [x] 备用题库 24 道全部补齐 narrative 字段
+- [x] 难度分布（1-3 星）
+- [x] commonErrors 配置
 
 ## Decisions Made
 | Decision | Rationale |
 |----------|-----------|
-| 不用 vue-router，viewState 切换 | Phase 1 页面少，减少复杂度 |
-| Pyodide CDN 加载 | 避免 WASM 打包进 JS bundle |
-| CodeMirror 6 按需渲染 | 仅 code 题型才 import，减小首屏体积 |
-| 自由编程判题用 testCases 精确对比 | 比关键词匹配更严格、更可靠 |
-| idb 异步落盘 | 路线图指定，为 Phase 2 FSRS 数据量做准备 |
-| Tailwind v3 + PostCSS | 生态最稳，插件支持好 |
-| 经验公式：每题固定经验，答错 1/3 保底 | 鼓励尝试，答错不归零 |
+| 不用 vue-router，viewState 切换 | Phase 1 页面少 |
+| 反馈面板左右分栏，仅 diff 场景并排 | 代码对比需要 |
+| 深色模式不做切换 | Phase 4 工作 |
+| 正文保持 16px，行高 1.8 | 可读性补偿 |
+| 三级诺克斯提示 | 覆盖常见场景 |
+| 题目从 HackerRank/LeetCode AI 生成，不手写 | 内容效率 |
+| Capstone 和侧链推迟到 Phase 3 | 依赖 AI 基础设施 |
+| 不使用 30-Days-Of-Python 作为数据源 | 格式不匹配 |
+| 阶段 1-4 做满 28 题，阶段 5-10 各 16-22 题 | 内容优先级 |
 
 ## Errors Encountered
-| Error | Attempt | Resolution |
-|-------|---------|------------|
+（见 `findings.md` 完整记录）
 
-## Notes
-- 方案 1.1 已存为 `F:\Agent\ArcanaCoder\方案1.1_Phase1_详细实现计划.md`
-- 自由编程的 testCases 在 Question 类型中新增字段
+## Phase 1 完成度
+核心循环功能全部完成，54 测试通过。剩余问题：
+- narrativeExplanation 尚未补齐（28 题缺失）
+- hintRoleplay 约 15 题语气不够"朋友"
+- 阶段 2-4 题目待生成

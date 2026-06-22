@@ -89,15 +89,21 @@ describe('E2E: Chapter Select → WisdomBook → Quiz', () => {
     expect(result.expGained).toBeGreaterThan(0)
   })
 
-  it('9. gameStore.save does not crash (IndexedDB serialization)', async () => {
+  it('9. saveGameState receives serializable data', async () => {
     const store = useGameStore()
     store.selectChapter('ch1_variables')
     store.selectSection('s1_vars')
     store.submitAnswer('s1_01', true)
     store.submitAnswer('s1_02', false)
-    // saveGameState is mocked, but this tests the mock setup
     const { saveGameState } = await import('../services/storage')
-    expect(saveGameState).toHaveBeenCalled()
+    const mockFn = saveGameState as ReturnType<typeof vi.fn>
+    const calls = mockFn.mock?.calls
+    if (calls && calls.length > 0) {
+      const state = calls[0][0]
+      expect(() => JSON.parse(JSON.stringify(state))).not.toThrow()
+    } else {
+      throw new Error('saveGameState was not called')
+    }
   })
 
   it('10. chapters all have sections', () => {
@@ -114,16 +120,6 @@ describe('E2E: Chapter Select → WisdomBook → Quiz', () => {
     store.selectChapter('ch1_variables')
     expect(store.currentSectionId).toBe('s1_vars')
     store.selectSection('s1_types')
-    expect(store.currentSectionId).toBe('s1_types')
-  })
-
-  it('12. selecting section survives App.vue handler (no selectChapter override)', () => {
-    const store = useGameStore()
-    store.selectChapter('ch1_variables')
-    store.selectSection('s1_types')
-    expect(store.currentSectionId).toBe('s1_types')
-    // App.vue.onSelectChapter no longer calls store.selectChapter
-    // so section should remain s1_types
     expect(store.currentSectionId).toBe('s1_types')
   })
 })
