@@ -39,6 +39,8 @@ const showRestPrompt = ref(false)
 const restTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 const backupLimit = ref(0)
 const usedBackupIds = ref<Set<string>>(new Set())
+const showSectionComplete = ref(false)
+const sectionResults = ref<{ correct: number; total: number; wrongIds: string[] } | null>(null)
 
 watch(currentSection, (sec) => {
   if (!sec) return
@@ -245,12 +247,17 @@ function nextQuestion() {
     return
   }
   if (isLastQuestion.value) {
-    const accuracy = store.getChapterAccuracy(props.chapterId)
-    if (accuracy.wrongIds.length === 0) {
-      emit('chapterComplete')
-    } else {
-      showResults.value = true
+    const correct = questions.value.filter(
+      (q) => store.getQuestionResult(props.chapterId, q.id)?.correct,
+    ).length
+    const wrongIds = questions.value
+      .filter((q) => !store.getQuestionResult(props.chapterId, q.id)?.correct)
+      .map((q) => q.id)
+    sectionResults.value = { correct, total: questions.value.length, wrongIds }
+    if (wrongIds.length === 0 && currentSection.value) {
+      store.completeSection(currentSection.value.id)
     }
+    showSectionComplete.value = true
   } else {
     currentIndex.value++
   }
@@ -363,6 +370,37 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
               返回关卡
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 节完成 -->
+    <div v-else-if="showSectionComplete && sectionResults" class="flex-1 flex flex-col">
+      <div class="flex-1 overflow-y-auto px-4 py-6">
+        <div class="max-w-md mx-auto text-center space-y-4">
+          <div class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227]" />
+          <h2 class="text-lg font-bold text-magic-gold">节完成</h2>
+          <p class="text-sm text-gray-400">
+            {{ sectionResults.correct }}/{{ sectionResults.total }} 魔力共鸣
+          </p>
+          <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-500 bg-green-500"
+              :style="{ width: `${(sectionResults.correct / sectionResults.total) * 100}%` }"
+            />
+          </div>
+          <div v-if="sectionResults.wrongIds.length > 0" class="bg-magic-card border border-gray-600 rounded-lg px-4 py-3 text-left">
+            <p class="text-xs text-red-400 mb-1">需要重新施展的试炼：{{ sectionResults.wrongIds.length }} 道</p>
+          </div>
+          <div v-else class="bg-magic-card border border-green-600/30 rounded-lg px-4 py-3">
+            <p class="text-xs text-green-400">全部魔力共鸣，继续前进吧，贤者。</p>
+          </div>
+          <button
+            class="px-6 py-2.5 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+            @click="emit('back')"
+          >
+            返回
+          </button>
         </div>
       </div>
     </div>
