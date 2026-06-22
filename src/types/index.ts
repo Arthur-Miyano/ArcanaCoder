@@ -12,15 +12,23 @@ export interface TestCase {
   expected: string
 }
 
+export interface CommonErrorConfig {
+  pattern: string
+  message: string
+  noxHint: string
+}
+
 export interface Question {
   id: string
   type: QuestionType
   chapterId: string
   title: string
   description: string
-  difficulty: 1 | 2 | 3
+  difficulty: 1 | 2 | 3 | 4 | 5
   knowledgeTags: string[]
 
+  stage?: string
+  technicalDesc?: string
   narrativeTitle?: string
   narrativeDesc?: string
   narrativeExplanation?: string
@@ -32,7 +40,10 @@ export interface Question {
   correctCode?: string
 
   expectedOutput?: string
+  validationMode?: 'exact' | 'contains' | 'regex' | 'testcase'
   testCases?: TestCase[]
+
+  commonErrors?: CommonErrorConfig[]
 
   explanation: string
   hint?: string

@@ -305,7 +305,7 @@ export const questions: Question[] = [
     difficulty: 3,
     knowledgeTags: ['函数', 'f-string', '函数调用'],
     initialCode: '# 定义问候术\n\ndef greet(name):\n    pass\n\n# 施展法术\n',
-    correctCode: 'def greet(name):\n    return f"你好，{name}！欢迎来到语法圣殿。"\n\nprint(greet("贤者"))',
+    correctCode: 'def greet(name):\n    return f"你好，{name}！欢迎来到语法圣殿。"',
     testCases: [
       { input: 'greet("冒险者")', expected: '你好，冒险者！欢迎来到语法圣殿。' },
       { input: 'greet("诺克斯")', expected: '你好，诺克斯！欢迎来到语法圣殿。' },

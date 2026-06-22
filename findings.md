@@ -19,7 +19,8 @@
 
 | 错误 | 根因 | 修复 | 验证方式 |
 |------|------|------|---------|
-| free_coding 判题永远判错 | testCases.input 写裸参数 `'3'`，验证代码 `print(3)` 输出 `3`，期望 `28.27` | testCases.input 改为完整函数调用 `circle_area(3)` | 改后 `python -c` 跑一遍确认 |
+| free_coding 判题永远判错（第 16 题） | testCases.input 写裸参数 `'3'`，验证代码 `print(3)` 输出 `3`，期望 `28.27` | testCases.input 改为完整函数调用 `circle_area(3)` | 改后 `python -c` 跑一遍确认 |
+| Boss 题 correctCode 含 print 导致测试重复输出 | correctCode 自带 `print(greet("贤者"))`，测试拼接 `print(greet("冒险者"))` 后输出两行 | correctCode 去掉 print 行，只保留函数定义 | 2 个测试用例全部 PASS |
 | 反馈弹窗不显示 | FeedbackToast 双重 v-if 竞争条件 | 删除 FeedbackToast，改用内联 HTML + FeedbackPanel 组件 | Chrome DevTools 检查元素渲染 |
 | 关卡错误判通关 | 通关条件为"所有题已答"而非"所有题正确" | gameStore 改为 `allCorrect` 检查 | 故意全部答错 → 不提示通关 |
 | diff 误判 78.5 vs 78.50 | 字符串比较 "785" ≠ "7850" → logic | 改为提取数字后 float 比较 + 标点归一化 | 9 个 diff 用例全部 PASS |
