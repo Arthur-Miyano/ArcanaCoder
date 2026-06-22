@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { chapters, questions as allQuestions } from '@/data/questions'
+import { chapters, getQuestionsBySection } from '@/data/questions'
 import { backupQuestions } from '@/data/backup_questions'
 import { runPython } from '@/services/pyodide'
 import type { Question, TestCase } from '@/types'
@@ -44,10 +44,7 @@ const sectionResults = ref<{ correct: number; total: number; wrongIds: string[] 
 
 watch(currentSection, (sec) => {
   if (!sec) return
-  const qs = sec.questionIds
-    .map((id) => allQuestions.find((q) => q.id === id))
-    .filter((q): q is Question => q !== undefined)
-  questions.value = qs
+  questions.value = getQuestionsBySection(sec.id)
   currentIndex.value = 0
   backupLimit.value = 0
   usedBackupIds.value = new Set()
@@ -226,6 +223,15 @@ function checkFatigue() {
     }, 5000)
   }
 }
+
+function finishSection(correct: number, total: number, wrongIds: string[]) {
+  sectionResults.value = { correct, total, wrongIds }
+  if (wrongIds.length === 0 && currentSection.value) {
+    store.completeSection(currentSection.value.id)
+  }
+  showSectionComplete.value = true
+}
+
 function nextQuestion() {
   showFeedback.value = false
   if (isRetryMode.value && currentQuestion.value) {
@@ -245,8 +251,7 @@ function nextQuestion() {
         store.completeSection(currentSection.value.id)
         const chAcc = store.getChapterAccuracy(props.chapterId)
         if (chAcc.wrongIds.length === 0) { emit('chapterComplete'); return }
-        sectionResults.value = { correct: questions.value.length, total: questions.value.length, wrongIds: [] }
-        showSectionComplete.value = true
+        finishSection(questions.value.length, questions.value.length, [])
       } else {
         showResults.value = true
       }
@@ -255,17 +260,14 @@ function nextQuestion() {
     return
   }
   if (isLastQuestion.value) {
-    const correct = questions.value.filter(
+    const allCorrect = questions.value.every(
       (q) => store.getQuestionResult(q.id)?.correct,
-    ).length
+    )
+    const correct = questions.value.filter((q) => store.getQuestionResult(q.id)?.correct).length
     const wrongIds = questions.value
       .filter((q) => !store.getQuestionResult(q.id)?.correct)
       .map((q) => q.id)
-    sectionResults.value = { correct, total: questions.value.length, wrongIds }
-    if (wrongIds.length === 0 && currentSection.value) {
-      store.completeSection(currentSection.value.id)
-    }
-    showSectionComplete.value = true
+    finishSection(correct, questions.value.length, wrongIds)
   } else {
     currentIndex.value++
   }

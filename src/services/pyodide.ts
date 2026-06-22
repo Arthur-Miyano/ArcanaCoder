@@ -104,7 +104,3 @@ export async function runPython(
     if (timeoutId) clearTimeout(timeoutId)
   }
 }
-
-export function clearStdout(): void {
-  stdoutBuffer = []
-}

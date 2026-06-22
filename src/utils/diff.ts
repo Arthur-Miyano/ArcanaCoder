@@ -28,7 +28,8 @@ function normalizePunctuation(s: string): string {
   )
 }
 
-function collapseWhitespace(s: string): string {
+
+export function collapseWhitespace(s: string): string {
   return s.trim().replace(/\s+/g, ' ')
 }
 
@@ -89,18 +90,6 @@ export function compareOutput(userOutput: string, expected: string): DiffResult 
     points: findAllDiffs(userOutput, expected),
     detail: '数值结果不一致，请检查计算逻辑',
   }
-}
-
-export function formatDiffReport(diff: DiffResult): string {
-  if (diff.matchType === 'exact') return ''
-
-  const lines: string[] = [diff.detail, `你的输出：${diff.userOutput}`, `期望输出：${diff.expectedOutput}`]
-
-  for (const p of diff.points) {
-    lines.push(`  第${p.index + 1}个字符："${p.userChar || '(空)'}" → 应为"${p.expectedChar || '(空)'}"`)
-  }
-
-  return lines.join('\n')
 }
 
 function findAllDiffs(a: string, b: string): DiffPoint[] {

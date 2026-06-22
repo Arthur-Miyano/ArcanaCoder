@@ -1,3 +1,5 @@
+import { collapseWhitespace } from './diff'
+
 export interface DetectedError {
   name: string
   message: string
@@ -36,8 +38,8 @@ export function detectCommonErrors(
     })
   }
 
-  const collapsedUser = userOutput.trim().replace(/\s+/g, ' ')
-  const collapsedExpected = expected.trim().replace(/\s+/g, ' ')
+  const collapsedUser = collapseWhitespace(userOutput)
+  const collapsedExpected = collapseWhitespace(expected)
   if (collapsedUser === collapsedExpected && userOutput !== expected) {
     errors.push({
       name: 'WHITESPACE_MISMATCH',

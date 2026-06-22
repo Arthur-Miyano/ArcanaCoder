@@ -135,6 +135,18 @@ export function getQuestionsByChapter(chapterId: string): Question[] {
   )
 }
 
+export function getQuestionsBySection(sectionId: string): Question[] {
+  for (const ch of chapters) {
+    const sec = ch.sections.find((s) => s.id === sectionId)
+    if (sec) {
+      return sec.questionIds
+        .map((id) => questions.find((q) => q.id === id))
+        .filter((q): q is Question => q !== undefined)
+    }
+  }
+  return []
+}
+
 export function getQuestionById(id: string): Question | undefined {
   return questions.find((q) => q.id === id)
 }

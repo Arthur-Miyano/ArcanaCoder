@@ -32,8 +32,3 @@ export async function loadGameState(): Promise<GameState | null> {
   const record = await db.get(STORE_NAME, STATE_KEY)
   return record?.state ?? null
 }
-
-export async function clearGameState(): Promise<void> {
-  const db = await getDb()
-  await db.delete(STORE_NAME, STATE_KEY)
-}
