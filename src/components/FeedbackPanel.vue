@@ -10,6 +10,7 @@ import {
   getNoxExplanation,
 } from '@/utils/errorParser'
 import type { DiffResult } from '@/utils/diff'
+import type { CodeHint } from '@/utils/codeValidator'
 
 const props = defineProps<{
   correct: boolean
@@ -17,6 +18,7 @@ const props = defineProps<{
   correctAnswer: string | undefined
   errorDetail: string | undefined
   diff: DiffResult | undefined
+  codeHints: CodeHint[] | undefined
   question: Question
   userCode: string | undefined
 }>()
@@ -108,20 +110,25 @@ const noxMessage = computed(() => {
 
           <div
             v-if="diff && diff.matchType !== 'exact'"
-            class="mt-2 px-3 py-2 bg-yellow-900/30 border border-yellow-600/50 rounded"
+            class="mt-2 px-3 py-2 rounded text-sm"
+            :class="diff.matchType === 'format' ? 'bg-yellow-900/30 border border-yellow-600/50' : 'bg-red-900/50 border border-red-500/50'"
           >
-            <p class="text-xs text-yellow-300 font-medium mb-1">
-              <template v-if="diff.matchType === 'case'">大小写不匹配</template>
-              <template v-else-if="diff.matchType === 'whitespace'">空白字符不匹配</template>
-              <template v-else>输出不匹配</template>
+            <p class="font-medium mb-1" :class="diff.matchType === 'format' ? 'text-yellow-300' : 'text-red-300'">
+              {{ diff.detail }}
             </p>
             <div class="space-y-0.5 text-xs font-mono">
               <div class="text-red-300">你的输出：{{ diff.userOutput }}</div>
               <div class="text-green-300">期望输出：{{ diff.expectedOutput }}</div>
-              <div v-if="diff.diffIndex !== null" class="text-gray-400">
-                差异位置：第 {{ diff.diffIndex + 1 }} 个字符（你的"{{ diff.diffChar }}"→ 期望"{{ diff.expectedChar }}"）
+              <div v-for="p in diff.points" :key="p.index" class="text-gray-400">
+                第{{ p.index + 1 }}个字符："{{ p.userChar || '(空)' }}" → 应为"{{ p.expectedChar || '(空)' }}"
               </div>
             </div>
+          </div>
+
+          <div v-if="codeHints && codeHints.length > 0" class="mt-2 space-y-1">
+            <p v-for="(h, i) in codeHints" :key="i" class="text-xs text-yellow-400">
+              {{ h.message }}
+            </p>
           </div>
         </div>
 

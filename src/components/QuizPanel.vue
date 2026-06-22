@@ -5,6 +5,7 @@ import { getQuestionsByChapter } from '@/data/questions'
 import { runPython } from '@/services/pyodide'
 import type { Question, TestCase } from '@/types'
 import { compareOutput, type DiffResult } from '@/utils/diff'
+import { validateCode as validateCodeStyle, type CodeHint } from '@/utils/codeValidator'
 import ChoiceQuestion from './ChoiceQuestion.vue'
 import CodeQuestion from './CodeQuestion.vue'
 import OutputPredict from './OutputPredict.vue'
@@ -37,9 +38,13 @@ const lastResult = ref<{
   correctAnswer?: string
   errorDetail?: string
   diff?: DiffResult
+  codeHints?: CodeHint[]
 } | null>(null)
 const submitting = ref(false)
 const showResults = ref(false)
+const retryIds = ref<string[]>([])
+const isRetryMode = ref(false)
+const codeHints = ref<CodeHint[]>([])
 
 const isLastQuestion = computed(
   () => currentIndex.value >= questions.value.length - 1,
@@ -138,12 +143,16 @@ async function submit() {
   }
 
   store.submitAnswer(q.id, correct)
+  const hints: CodeHint[] = !correct && typeof userAnswer.value === 'string'
+    ? validateCodeStyle(userAnswer.value, { knowledgeTags: q.knowledgeTags, correctCode: q.correctCode })
+    : []
   lastResult.value = {
     correct,
     explanation: q.explanation,
     correctAnswer: correct ? undefined : getCorrectAnswer(q),
     errorDetail,
     diff,
+    codeHints: hints,
   }
   if (!correct) {
     noxHint.value = getHintForQuestion(q)
@@ -154,6 +163,24 @@ async function submit() {
 
 function nextQuestion() {
   showFeedback.value = false
+  if (isRetryMode.value) {
+    if (retryIds.value.length > 0) {
+      const nextId = retryIds.value[0]
+      const idx = questions.value.findIndex((q) => q.id === nextId)
+      if (idx >= 0) {
+        currentIndex.value = idx
+        return
+      }
+    }
+    isRetryMode.value = false
+    const accuracy = store.getChapterAccuracy(props.chapterId)
+    if (accuracy.wrongIds.length === 0) {
+      emit('chapterComplete')
+    } else {
+      showResults.value = true
+    }
+    return
+  }
   if (isLastQuestion.value) {
     const accuracy = store.getChapterAccuracy(props.chapterId)
     if (accuracy.wrongIds.length === 0) {
@@ -166,22 +193,32 @@ function nextQuestion() {
   }
 }
 
-function retryWrong() {
+function retryAll() {
   showResults.value = false
   const accuracy = store.getChapterAccuracy(props.chapterId)
-  if (accuracy.wrongIds.length > 0) {
-    const firstWrong = questions.value.findIndex(
-      (q) => q.id === accuracy.wrongIds[0],
-    )
-    if (firstWrong >= 0) {
-      currentIndex.value = firstWrong
-      return
-    }
+  retryIds.value = [...accuracy.wrongIds]
+  isRetryMode.value = true
+  if (retryIds.value.length > 0) {
+    const idx = questions.value.findIndex((q) => q.id === retryIds.value[0])
+    if (idx >= 0) currentIndex.value = idx
   }
-  currentIndex.value = 0
+}
+
+function retrySingle(questionId: string) {
+  showResults.value = false
+  retryIds.value = [questionId]
+  isRetryMode.value = true
+  const idx = questions.value.findIndex((q) => q.id === questionId)
+  if (idx >= 0) currentIndex.value = idx
 }
 
 function goBack() {
+  if (isRetryMode.value && retryIds.value.length > 0) {
+    const msg = `还有 ${retryIds.value.length} 道错题未重试，确定退出吗？`
+    if (!confirm(msg)) return
+    isRetryMode.value = false
+    retryIds.value = []
+  }
   showResults.value = false
   emit('back')
 }
@@ -223,10 +260,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
               v-for="qId in accuracyInfo.wrongIds"
               :key="qId"
               class="w-full text-left px-3 py-2 rounded border border-red-800/50 bg-red-900/20 text-sm text-red-200"
-              @click="
-                showResults = false;
-                currentIndex = questions.findIndex((q) => q.id === qId);
-              "
+              @click="retrySingle(qId)"
             >
               ✗ 第{{ questions.findIndex((q) => q.id === qId) + 1 }}题
             </button>
@@ -255,7 +289,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
             <button
               v-if="accuracyInfo.wrongIds.length > 0"
               class="flex-1 py-2.5 rounded font-medium bg-yellow-700 hover:bg-yellow-600 text-white transition-colors"
-              @click="retryWrong"
+              @click="retryAll"
             >
               重试错题
             </button>
@@ -273,7 +307,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
     <!-- 答题面板 -->
     <div v-else-if="currentQuestion" class="flex-1 flex flex-col">
       <div class="flex items-center justify-between px-4 py-2 border-b border-gray-700">
-        <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="emit('back')">
+        <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="goBack">
           ← 返回
         </button>
         <span class="text-xs text-gray-500">
@@ -327,6 +361,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
         :correct-answer="lastResult.correctAnswer"
         :error-detail="lastResult.errorDetail"
         :diff="lastResult.diff"
+        :code-hints="lastResult.codeHints"
         :question="currentQuestion"
         :user-code="typeof userAnswer === 'string' ? userAnswer : undefined"
         @next="nextQuestion"
