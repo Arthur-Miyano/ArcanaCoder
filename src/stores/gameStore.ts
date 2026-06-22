@@ -149,7 +149,7 @@ export const useGameStore = defineStore('game', () => {
         (s) => state.value.sectionProgress[s.id]?.completed,
       )
       if (allDone) {
-        const idx = chapters.indexOf(parent)
+        const idx = chapters.findIndex((ch) => ch.id === parent.id)
         const nextCh = chapters[idx + 1]
         if (nextCh && !state.value.unlockedChapters.includes(nextCh.id)) {
           state.value.unlockedChapters.push(nextCh.id)
@@ -186,7 +186,6 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function getQuestionResult(
-    chapterId: string,
     questionId: string,
   ): { correct: boolean; score: number; attempts: number } | null {
     for (const sp of Object.values(state.value.sectionProgress)) {

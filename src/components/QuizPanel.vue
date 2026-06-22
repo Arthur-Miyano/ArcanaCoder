@@ -73,7 +73,6 @@ const submitting = ref(false)
 const showResults = ref(false)
 const retryIds = ref<string[]>([])
 const isRetryMode = ref(false)
-const codeHints = ref<CodeHint[]>([])
 
 const isLastQuestion = computed(
   () => currentIndex.value >= questions.value.length - 1,
@@ -86,7 +85,7 @@ function isChoiceType(q: Question): boolean {
 }
 
 function getHintForQuestion(q: Question): string {
-  const result = store.getQuestionResult(props.chapterId, q.id)
+  const result = store.getQuestionResult(q.id)
   const attempts = result?.attempts ?? 0
   if (attempts >= 2 && q.hintDirect) return q.hintDirect
   if (attempts >= 1 && q.hintRoleplay) return q.hintRoleplay
@@ -240,7 +239,7 @@ function nextQuestion() {
       }
       isRetryMode.value = false
       const qWrong = questions.value.filter(
-        (q) => !store.getQuestionResult(props.chapterId, q.id)?.correct,
+        (q) => !store.getQuestionResult(q.id)?.correct,
       )
       if (qWrong.length === 0 && currentSection.value) {
         store.completeSection(currentSection.value.id)
@@ -257,10 +256,10 @@ function nextQuestion() {
   }
   if (isLastQuestion.value) {
     const correct = questions.value.filter(
-      (q) => store.getQuestionResult(props.chapterId, q.id)?.correct,
+      (q) => store.getQuestionResult(q.id)?.correct,
     ).length
     const wrongIds = questions.value
-      .filter((q) => !store.getQuestionResult(props.chapterId, q.id)?.correct)
+      .filter((q) => !store.getQuestionResult(q.id)?.correct)
       .map((q) => q.id)
     sectionResults.value = { correct, total: questions.value.length, wrongIds }
     if (wrongIds.length === 0 && currentSection.value) {
