@@ -87,3 +87,11 @@ export interface SectionProgress {
   }>
   consecutiveWrong: number
 }
+
+export interface KnowledgeState {
+  knowledgeTag: string
+  totalAttempts: number
+  correctAttempts: number
+  consecutiveCorrect: number
+  lastSeen: number
+}

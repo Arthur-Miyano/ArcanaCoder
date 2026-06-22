@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { QuestionType, SectionProgress } from '@/types'
+import type { QuestionType, SectionProgress, KnowledgeState } from '@/types'
 import { saveGameState, loadGameState } from '@/services/storage'
 import { questions, chapters } from '@/data/questions'
 
@@ -21,6 +21,7 @@ export interface GameState {
   currentChapterId: string | null
   currentSectionId: string | null
   sectionProgress: Record<string, SectionProgress>
+  knowledgeStates: Record<string, KnowledgeState>
   lastPlayedAt: number | null
   totalQuestionsAnswered: number
   totalCorrect: number
@@ -40,6 +41,7 @@ function createInitialState(): GameState {
     currentChapterId: null,
     currentSectionId: null,
     sectionProgress: {},
+    knowledgeStates: {},
     lastPlayedAt: null,
     totalQuestionsAnswered: 0,
     totalCorrect: 0,
@@ -128,6 +130,25 @@ export const useGameStore = defineStore('game', () => {
     if (correct) state.value.totalCorrect += 1
     state.value.lastPlayedAt = Date.now()
 
+    // Update knowledge states from question tags
+    if (question.knowledgeTags) {
+      for (const tag of question.knowledgeTags) {
+        const ks = state.value.knowledgeStates[tag] || {
+          knowledgeTag: tag, totalAttempts: 0, correctAttempts: 0,
+          consecutiveCorrect: 0, lastSeen: 0,
+        }
+        ks.totalAttempts++
+        if (correct) {
+          ks.correctAttempts++
+          ks.consecutiveCorrect++
+        } else {
+          ks.consecutiveCorrect = 0
+        }
+        ks.lastSeen = Date.now()
+        state.value.knowledgeStates[tag] = ks
+      }
+    }
+
     let leveledUp = false
     while (state.value.exp >= state.value.expToNext) {
       state.value.exp -= state.value.expToNext
@@ -195,6 +216,19 @@ export const useGameStore = defineStore('game', () => {
     return null
   }
 
+  function getMastery(tag: string): number {
+    const ks = state.value.knowledgeStates[tag]
+    if (!ks || ks.totalAttempts === 0) return 0
+    if (ks.consecutiveCorrect >= 3) return 1.0
+    const baseRate = ks.correctAttempts / ks.totalAttempts
+    const volumeBonus = Math.min(ks.totalAttempts / 5, 1)
+    return baseRate * (0.5 + 0.5 * volumeBonus)
+  }
+
+  function getKnowledgeState(tag: string): KnowledgeState | null {
+    return state.value.knowledgeStates[tag] ?? null
+  }
+
   function getChapterAccuracy(chapterId: string): {
     total: number; correct: number; wrongIds: string[]; knowledgeTags: string[]
   } {
@@ -255,6 +289,8 @@ export const useGameStore = defineStore('game', () => {
     getChapterProgress,
     getQuestionResult,
     getChapterAccuracy,
+    getMastery,
+    getKnowledgeState,
     load,
     save,
     resetProgress,

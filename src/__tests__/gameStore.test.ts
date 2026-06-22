@@ -164,4 +164,27 @@ describe('gameStore', () => {
       throw new Error('saveGameState was not called')
     }
   })
+
+  it('getMastery returns 0 for unseen knowledge tag', () => {
+    const store = useGameStore()
+    expect(store.getMastery('nonexistent')).toBe(0)
+  })
+
+  it('getMastery increases after correct answer', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_vars')
+    store.submitAnswer('s1_01', true)
+    expect(store.getMastery('print')).toBeGreaterThan(0)
+  })
+
+  it('consecutive correct 3 times gives full mastery', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    store.selectSection('s1_vars')
+    store.submitAnswer('s1_01', true)
+    store.submitAnswer('s1_01', true)
+    store.submitAnswer('s1_01', true)
+    expect(store.getMastery('print')).toBe(1.0)
+  })
 })
