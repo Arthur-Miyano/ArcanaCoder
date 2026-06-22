@@ -71,7 +71,7 @@ const isLastQuestion = computed(
   () => currentIndex.value >= questions.value.length - 1,
 )
 
-const noxHint = ref('看看这一关你能答对几道？')
+const noxHint = ref('让我们开始这一层的试炼吧，贤者。')
 
 const fatigueQuestionCount = ref(0)
 const fatigueConsecutiveWrong = ref(0)
@@ -187,7 +187,7 @@ async function submit() {
     noxHint.value = getHintForQuestion(q)
     fatigueConsecutiveWrong.value++
     if (fatigueConsecutiveWrong.value >= 3) {
-      noxHint.value = '贤者，你的魔力有些紊乱了。建议回到智慧之书复习一下再继续。'
+      noxHint.value = '别急别急，这个法则确实有点绕。我们先深呼吸一下...要不要回智慧之书翻翻看？'
     }
     if (backupLimit.value < 3 && q.knowledgeTags.length > 0) {
       const bk = backupQuestions.find(
@@ -299,16 +299,16 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
         <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="goBack">
           ← 返回
         </button>
-        <span class="text-xs text-gray-500">答题结果</span>
+        <span class="text-xs text-gray-500">试炼结果</span>
       </div>
 
       <div class="flex-1 overflow-y-auto px-4 py-6">
         <div class="max-w-md mx-auto space-y-4">
           <div class="text-center">
             <div class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227] mb-3" />
-            <h2 class="text-lg font-bold text-magic-gold">答题完成</h2>
+            <h2 class="text-lg font-bold text-magic-gold">试炼完成</h2>
             <p class="text-sm text-gray-400 mt-1">
-              {{ accuracyInfo.correct }}/{{ accuracyInfo.total }} 正确
+              {{ accuracyInfo.correct }}/{{ accuracyInfo.total }} 魔力共鸣
             </p>
             <div class="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
               <div
@@ -320,7 +320,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
           </div>
 
           <div v-if="accuracyInfo.wrongIds.length > 0" class="space-y-2">
-            <p class="text-xs text-gray-400">需要重试的题目：</p>
+            <p class="text-xs text-gray-400">需要重新施展的试炼：</p>
             <button
               v-for="qId in accuracyInfo.wrongIds"
               :key="qId"
@@ -443,13 +443,13 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
           :disabled="userAnswer === null || userAnswer === '' || submitting"
           @click="submit"
         >
-          {{ submitting ? '判断中...' : '提交答案' }}
+          {{ submitting ? '魔力解析中...' : '注入魔力' }}
         </button>
       </div>
     </div>
 
     <div v-else class="flex-1 flex items-center justify-center text-gray-400 text-sm">
-      没有题目数据
+      试炼尚未就绪
     </div>
 
     <!-- 休息提示 -->
@@ -471,13 +471,13 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
           >
             <div class="w-6 h-6 mx-auto rounded-full bg-[#4B0082] border border-[#c9a227]" />
             <p class="text-gray-200 leading-relaxed">
-              你已经连续施法 {{ fatigueQuestionCount }} 次了，贤者。休息一下效果更好。
+              你已经连续吟唱 {{ fatigueQuestionCount }} 次了，贤者。休息一下，让魔力回流。
             </p>
             <button
               class="px-4 py-1.5 rounded text-sm font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
               @click="dismissRest"
             >
-              继续答题
+              继续试炼
             </button>
           </div>
         </div>

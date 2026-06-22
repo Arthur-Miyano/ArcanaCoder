@@ -50,10 +50,10 @@ const noxMessage = computed(() => {
 
 <template>
   <div class="px-4 pb-3 border-t border-gray-700 pt-3">
-    <!-- 正确 -->
+    <!-- 魔力共鸣 -->
     <div v-if="correct" class="rounded-lg border px-4 py-3 bg-green-900 border-green-500">
       <div class="flex items-center gap-2 mb-2">
-        <span class="text-base font-bold text-green-300">正确!</span>
+        <span class="text-base font-bold text-green-300">魔力共鸣!</span>
       </div>
 
       <div
@@ -81,16 +81,16 @@ const noxMessage = computed(() => {
         class="mt-3 px-4 py-1.5 rounded text-sm font-medium bg-gray-600 hover:bg-gray-500 text-white transition-colors"
         @click="emit('next')"
       >
-        下一题
+        下一道试炼
       </button>
     </div>
 
-    <!-- 错误：左右分栏 -->
+    <!-- 咒语波动不稳 -->
     <div v-else class="space-y-3">
       <div class="flex flex-col md:flex-row gap-3">
-        <!-- 左侧：用户代码 -->
+        <!-- 左侧：用户的源语 -->
         <div class="flex-1 min-w-0">
-          <p class="text-xs text-gray-400 mb-1">你的代码</p>
+          <p class="text-xs text-gray-400 mb-1">你的源语</p>
           <div class="border border-gray-600 rounded-lg overflow-hidden">
             <Codemirror
               :model-value="userCode ?? ''"
@@ -132,10 +132,10 @@ const noxMessage = computed(() => {
           </div>
         </div>
 
-        <!-- 右侧：正确示范 + 解析 -->
+        <!-- 右侧：法阵参考 + 解析 -->
         <div class="flex-1 min-w-0 space-y-3">
           <div v-if="question.correctCode">
-            <p class="text-xs text-gray-400 mb-1">正确示范</p>
+            <p class="text-xs text-gray-400 mb-1">法阵参考</p>
             <div class="border border-green-600/50 rounded-lg overflow-hidden">
               <Codemirror
                 :model-value="question.correctCode"
@@ -147,7 +147,7 @@ const noxMessage = computed(() => {
           </div>
 
           <div v-if="errorLines.length > 0">
-            <p class="text-xs text-gray-400 mb-1">错误点解析</p>
+            <p class="text-xs text-gray-400 mb-1">波动溯源</p>
             <div class="space-y-1">
               <div
                 v-for="line in errorLines"
@@ -210,7 +210,7 @@ const noxMessage = computed(() => {
         class="w-full py-2.5 rounded font-medium transition-colors bg-[#4B0082] hover:bg-[#5a0099] text-white"
         @click="emit('next')"
       >
-        下一题
+        下一道试炼
       </button>
     </div>
   </div>

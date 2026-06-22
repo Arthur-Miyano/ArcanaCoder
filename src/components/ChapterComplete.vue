@@ -48,7 +48,7 @@ onMounted(() => {
 
           <div class="bg-magic-card border border-gray-600 rounded-lg px-4 py-4 text-left space-y-2">
             <div>
-              <span class="text-xs text-gray-400">答题结果</span>
+              <span class="text-xs text-gray-400">试炼结果</span>
               <div class="mt-1 flex items-center gap-2">
                 <div class="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
                   <div
@@ -64,7 +64,7 @@ onMounted(() => {
             </div>
 
             <div v-if="accuracy.wrongIds.length > 0" class="pt-1">
-              <p class="text-xs text-red-400 mb-1">做错的题目：{{ accuracy.wrongIds.length }} 道</p>
+              <p class="text-xs text-red-400 mb-1">波动不稳的试炼：{{ accuracy.wrongIds.length }} 道</p>
               <div v-if="accuracy.knowledgeTags.length > 0" class="flex flex-wrap gap-1">
                 <span
                   v-for="tag in accuracy.knowledgeTags"
@@ -77,7 +77,7 @@ onMounted(() => {
             </div>
 
             <div v-else>
-              <p class="text-xs text-green-400">全部正确，知识点已掌握！</p>
+              <p class="text-xs text-green-400">全部魔力共鸣，法则已刻入灵魂！</p>
             </div>
           </div>
 

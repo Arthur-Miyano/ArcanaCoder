@@ -17,7 +17,7 @@ defineProps<{
     <div class="flex-1 min-w-0">
       <div class="flex items-baseline gap-2">
         <span class="text-magic-gold font-bold text-xs">贤者</span>
-        <span class="text-gray-300 text-xs">Lv.{{ level }}</span>
+        <span class="text-gray-300 text-xs">位阶 {{ level }}</span>
       </div>
       <div class="flex items-center gap-2 mt-0.5">
         <div class="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
