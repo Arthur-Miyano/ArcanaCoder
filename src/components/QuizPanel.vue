@@ -239,9 +239,18 @@ function nextQuestion() {
         if (idx >= 0) { currentIndex.value = idx; return }
       }
       isRetryMode.value = false
-      const accuracy = store.getChapterAccuracy(props.chapterId)
-      if (accuracy.wrongIds.length === 0) { emit('chapterComplete') }
-      else { showResults.value = true }
+      const qWrong = questions.value.filter(
+        (q) => !store.getQuestionResult(props.chapterId, q.id)?.correct,
+      )
+      if (qWrong.length === 0 && currentSection.value) {
+        store.completeSection(currentSection.value.id)
+        const chAcc = store.getChapterAccuracy(props.chapterId)
+        if (chAcc.wrongIds.length === 0) { emit('chapterComplete'); return }
+        sectionResults.value = { correct: questions.value.length, total: questions.value.length, wrongIds: [] }
+        showSectionComplete.value = true
+      } else {
+        showResults.value = true
+      }
       return
     }
     return
@@ -279,6 +288,15 @@ function retrySingle(questionId: string) {
   retryIds.value = [questionId]
   isRetryMode.value = true
   const idx = questions.value.findIndex((q) => q.id === questionId)
+  if (idx >= 0) currentIndex.value = idx
+}
+
+function retrySectionWrong() {
+  if (!sectionResults.value || sectionResults.value.wrongIds.length === 0) return
+  showSectionComplete.value = false
+  retryIds.value = [...sectionResults.value.wrongIds]
+  isRetryMode.value = true
+  const idx = questions.value.findIndex((q) => q.id === retryIds.value[0])
   if (idx >= 0) currentIndex.value = idx
 }
 
@@ -391,6 +409,12 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
           </div>
           <div v-if="sectionResults.wrongIds.length > 0" class="bg-magic-card border border-gray-600 rounded-lg px-4 py-3 text-left">
             <p class="text-xs text-red-400 mb-1">需要重新施展的试炼：{{ sectionResults.wrongIds.length }} 道</p>
+            <button
+              class="mt-2 px-4 py-1.5 rounded text-sm font-medium bg-yellow-700 hover:bg-yellow-600 text-white transition-colors"
+              @click="retrySectionWrong"
+            >
+              重试错题
+            </button>
           </div>
           <div v-else class="bg-magic-card border border-green-600/30 rounded-lg px-4 py-3">
             <p class="text-xs text-green-400">全部魔力共鸣，继续前进吧，贤者。</p>
