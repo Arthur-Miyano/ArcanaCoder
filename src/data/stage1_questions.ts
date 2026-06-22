@@ -53,7 +53,7 @@ export const stage1Questions: Question[] = [
       { pattern: 'print("message")', message: '变量名加了引号，变成了字符串字面量', noxHint: 'print(message) 不加引号才会输出变量的值。加了引号就会输出 "message" 这几个字。' },
     ],
     hint: '变量名在 = 左边，值在右边。字符串要加引号。',
-    hintRoleplay: '诺克斯用翅膀指了指："变量名在左边，值在右边。print() 的时候不用加引号——直接写变量名就行。"',
+    hintRoleplay: '嘿，这个很基础但也很容易忘。等号左边写容器名，右边写值。print 的时候直接写容器名就行，别加引号——加引号就变成普通文字了。',
     hintDirect: 'message = "Hello, World!"\nprint(message)',
   },
   {
@@ -104,7 +104,7 @@ export const stage1Questions: Question[] = [
       { pattern: '包含连字符', message: '变量名不能包含连字符 -', noxHint: '连字符 - 在 Python 中是减号运算符，不能出现在变量名中。用下划线代替。' },
     ],
     hint: '变量名只能用字母、数字和下划线，数字不能开头。',
-    hintRoleplay: '"变量名只能用字母、数字、下划线——而且数字不能放在最前面。关键字（如 class）也不能用。"',
+    hintRoleplay: '哈哈，容器命名这事儿我当年也总搞混。不能用数字开头，不能用连字符，关键字也不能用。记住 snake_case 就好：单词之间用下划线。',
     hintDirect: 'my_name 是唯一合法的变量名。',
   },
   {
@@ -129,7 +129,7 @@ export const stage1Questions: Question[] = [
       { pattern: 'a + b 没有空格', message: '直接拼接 a+b 输出 "HelloWorld!"，缺少空格', noxHint: '字符串拼接不会自动加空格。如果需要在中间加空格，要手动加上 " "。' },
     ],
     hint: '用 + 拼接字符串，注意中间的空格也需要用字符串表示。',
-    hintRoleplay: '"字符串拼接就是简单的用 + 连起来。但要注意——+ 不会自动加空格，空格也是一个字符。"',
+    hintRoleplay: '真言拼接用加号，但要注意——加号不会自动加空格。想在中间留空就得手动加上一个空格真言 " "。',
     hintDirect: 'print(a + " " + b)',
   },
   {
@@ -203,7 +203,7 @@ export const stage1Questions: Question[] = [
       { pattern: '忘记加 f 前缀', message: '不加 f 时 {} 不会被替换', noxHint: '没有 f 前缀的字符串中，{} 是普通字符，不会替换为变量值。' },
     ],
     hint: 'f-string 需要在引号前加 f，变量放在 {} 中。',
-    hintRoleplay: '"f-string 就像编织咒文——f 前缀告诉 Python"这个字符串要嵌入变量"，花括号 {} 就是嵌入位置。"',
+    hintRoleplay: '嘿，f-string 是 Python 里最方便的编织术。在引号前加个 f，然后用花括号把变量名包起来就行。我当年第一次用的时候也被惊艳到了。',
     hintDirect: 'print(f"你好，{name}")',
   },
   {
@@ -228,7 +228,7 @@ export const stage1Questions: Question[] = [
       { pattern: 'print("你好，{name}！")', message: '忘记加 f 前缀', noxHint: '字符串前面加 f，花括号里的 name 才会被替换成变量的值。' },
     ],
     hint: '在引号前加 f，变量放在 {} 中。',
-    hintRoleplay: '"先写 f，再写引号，花括号包住变量名。三步完成咒文编织。"',
+    hintRoleplay: '先写 f 再写引号，然后用 {} 包住变量名——记住这三步，f-string 就掌握了。',
     hintDirect: 'print(f"你好，{name}！")',
   },
   // ========== 试炼二：运算符与表达式（10 题）==========
@@ -304,7 +304,7 @@ export const stage1Questions: Question[] = [
       { pattern: 'print(length * width) 没存变量', message: '功能正确但不存变量，后续无法复用', noxHint: '直接 print(length * width) 也能算出结果，但更好的做法是先把结果存到变量里。' },
     ],
     hint: '用 area = length * width 计算并存储结果。',
-    hintRoleplay: '"乘法用 * 符号。长方形面积就是长乘以宽，把结果存到 area 变量里再打印。"',
+    hintRoleplay: '长方形面积就是长乘以宽，把结果存到 area 这个容器里再打印。这样后面想用面积的话直接拿 area 就行。',
     hintDirect: 'area = length * width\nprint(area)',
   },
   {
@@ -328,7 +328,7 @@ export const stage1Questions: Question[] = [
       { pattern: '认为 7//3=2.333', message: '// 是地板除，结果是整数（截断小数）', noxHint: '// 是地板除，它只取整数部分，不要小数。7 ÷ 3 = 2 余 1，所以 7 // 3 = 2。' },
     ],
     hint: '// 是整数除法，只取整数部分。',
-    hintRoleplay: '"// 是地板除——它只保留整数部分，把小数丢掉。7 除以 3 等于 2 余 1，// 只取 2。"',
+    hintRoleplay: '地板除 // 只取整数部分，不四舍五入。7 // 3 等于 2 而不是 3，因为它把余数丢掉了。',
     hintDirect: '7 // 3 = 2（整数除法，舍弃小数）',
   },
   {
@@ -353,7 +353,7 @@ export const stage1Questions: Question[] = [
       { pattern: '17 / 5', message: '/ 是除法不是取模', noxHint: '% 才是取余数。17 % 5 = 2，因为 17 除以 5 余 2。' },
     ],
     hint: '% 求余数，不是求商。',
-    hintRoleplay: '"百分号 % 在 Python 中是取余运算符——它告诉你除法之后剩下多少。17 ÷ 5 = 3 余 2，所以 17 % 5 = 2。"',
+    hintRoleplay: '百分号 % 是取余运算符。17 % 5 = 2，因为 17 除以 5 剩下 2。我当年学的时候用这个来判奇偶，特别方便。',
     hintDirect: 'remainder = 17 % 5\nprint(remainder)',
   },
   {
@@ -403,7 +403,7 @@ export const stage1Questions: Question[] = [
       { pattern: '认为是 x = +5', message: '+= 不是 =+', noxHint: 'x += 5 的意思是"把 x 增加 5"。它是个两步操作——读取 x 的值、加 5、写回 x。' },
     ],
     hint: 'x += 5 等价于 x = x + 5。',
-    hintRoleplay: '"x += 5 是一种快捷写法——先把 x 取出来加 5，再存回去。不用写两遍 x 了。"',
+    hintRoleplay: 'x += 5 是 x = x + 5 的简写——不用写两遍 x 了。其他的 -= *= /= 也是一样的套路。',
     hintDirect: 'x += 5 等价于 x = x + 5。',
   },
   {
@@ -504,7 +504,7 @@ export const stage1Questions: Question[] = [
       { pattern: '原样输出 \\n', message: '\\n 会被解析为换行而不是两个字面字符', noxHint: '反斜杠 \\ 在 Python 字符串中是转义符号——\\n 被解析为"新行"，不是字面量。' },
     ],
     hint: '\\n 表示换行。',
-    hintRoleplay: '"反斜杠是 Python 中的"逃逸字符"——\\n 的意思是"从这里换行"，不是打印出反斜杠和 n。"',
+    hintRoleplay: '嘿，\n 是一个整体，它不是反斜杠加 n 两个字，而是一个独立的换行指令。我当年也以为它是两个字，被坑过一次。',
     hintDirect: 'Hello 在第一行，World 在第二行。',
   },
   {
@@ -578,7 +578,7 @@ export const stage1Questions: Question[] = [
       { pattern: '忘记存储 input 的结果', message: 'input() 的返回值必须用变量接收', noxHint: 'input() 就像从外界接收信息的通道——它返回的值需要用一个变量接住才能使用。' },
     ],
     hint: '用变量接收 input() 的返回值。',
-    hintRoleplay: '"input() 会把用户的输入作为字符串返回。你需要用一个变量来接住它——就像用篮子接住掉下来的果实。"',
+    hintRoleplay: 'input() 像一条通道——它会从外面传回来一段真言（字符串），你需要用容器接住它才能用。',
     hintDirect: 'name = input()\nprint(f"你好，{name}！")',
   },
   {
@@ -629,7 +629,7 @@ export const stage1Questions: Question[] = [
       { pattern: 'a = input() 后直接 a+b', message: '字符串不能直接做加法', noxHint: 'input() 返回的是字符串。必须先 int() 转换，然后才能做数学运算。' },
     ],
     hint: '用 int(input()) 把输入转为整数。',
-    hintRoleplay: '"用 int() 把 input() 的结果包起来——int(input()) ——这样输入的数字就变成了真正的整数，可以做运算了。"',
+    hintRoleplay: 'int(input()) 是常见套路——先接收入口信息，再转化成数字。记得 int() 只能转看起来像整数的字符串哦。',
     hintDirect: 'a = int(input())\nb = int(input())\nprint(a + b)',
   },
   {
@@ -653,7 +653,7 @@ export const stage1Questions: Question[] = [
       { pattern: '使用 //', message: '// 是 C/Java 的注释，不是 Python 的', noxHint: 'Python 使用 # 作为注释符号，不是 //。虽然都是编程语言，各自的语法不同。"' },
     ],
     hint: 'Python 用 # 开头写注释。',
-    hintRoleplay: '"在 Python 中，井号 # 后面的内容不会被当作代码执行——就像在羊皮卷上写的批注。"',
+    hintRoleplay: '# 后面的内容是写给人类看的注释，Python 不会执行它。写注释是个好习惯，你以后的自己会感谢现在的你的。',
     hintDirect: 'Python 的单行注释用 #。',
   },
   {
