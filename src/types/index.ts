@@ -64,27 +64,26 @@ export interface WisdomPoint {
   tip: string
 }
 
+export interface ChapterSection {
+  id: string
+  name: string
+  questionIds: string[]
+  unlockAfter?: string
+}
+
 export interface Chapter {
   id: string
   name: string
   description: string
-  questionIds: string[]
+  sections: ChapterSection[]
 }
 
-export interface AnswerRecord {
-  questionId: string
-  correct: boolean
-  answer: string
-  score: number
-  timestamp: number
-  attemptCount: number
-}
-
-export interface ChapterProgress {
+export interface SectionProgress {
   completed: boolean
   questionResults: Record<string, {
     correct: boolean
     score: number
     attempts: number
   }>
+  consecutiveWrong: number
 }

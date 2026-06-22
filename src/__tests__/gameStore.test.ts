@@ -20,12 +20,13 @@ describe('gameStore', () => {
     expect(store.expToNext).toBe(100)
   })
 
-  it('selectChapter initializes progress', () => {
+  it('selectChapter initializes section progress', () => {
     const store = useGameStore()
     store.selectChapter('ch1_variables')
-    const progress = store.getChapterProgress('ch1_variables')
-    expect(progress.completed).toBe(false)
-    expect(progress.questionResults).toEqual({})
+    store.selectSection('s1_vars')
+    const sp = store.getSectionProgress('s1_vars')
+    expect(sp.completed).toBe(false)
+    expect(sp.questionResults).toEqual({})
   })
 
   it('submitAnswer gains correct amount of exp for choice question', () => {
@@ -59,34 +60,34 @@ describe('gameStore', () => {
     expect(store.expToNext).toBe(200)
   })
 
-  it('chapter not completed when only some questions correct', () => {
+  it('submitAnswer updates section progress', () => {
     const store = useGameStore()
     store.selectChapter('ch1_variables')
-    // Answer some questions correctly but not all
+    store.selectSection('s1_vars')
     store.submitAnswer('s1_01', true)
     store.submitAnswer('s1_02', false)
-    const progress = store.getChapterProgress('ch1_variables')
-    expect(progress.completed).toBe(false)
+    const sp = store.getSectionProgress('s1_vars')
+    expect(sp.questionResults['s1_01']?.correct).toBe(true)
+    expect(sp.questionResults['s1_02']?.correct).toBe(false)
   })
 
-  it('gameStore tracks accuracy', () => {
+  it('section tracks consecutive wrong', () => {
     const store = useGameStore()
     store.selectChapter('ch1_variables')
-    store.submitAnswer('s1_01', true)
+    store.selectSection('s1_vars')
+    store.submitAnswer('s1_01', false)
     store.submitAnswer('s1_02', false)
-    const accuracy = store.getChapterAccuracy('ch1_variables')
-    expect(accuracy.total).toBe(28) // stage 1 has 28 questions
-    expect(accuracy.correct).toBe(1)
-    expect(accuracy.wrongIds.length).toBeGreaterThan(0)
+    const sp = store.getSectionProgress('s1_vars')
+    expect(sp.consecutiveWrong).toBe(2)
   })
 
-  it('submitAnswer updates question result', () => {
+  it('section completion clears consecutive wrong', () => {
     const store = useGameStore()
     store.selectChapter('ch1_variables')
-    store.submitAnswer('s1_01', true)
-    const result = store.getQuestionResult('ch1_variables', 's1_01')
-    expect(result).not.toBeNull()
-    expect(result!.correct).toBe(true)
-    expect(result!.attempts).toBe(1)
+    store.selectSection('s1_vars')
+    store.submitAnswer('s1_01', false)
+    store.submitAnswer('s1_02', true)
+    const sp = store.getSectionProgress('s1_vars')
+    expect(sp.consecutiveWrong).toBe(0)
   })
 })

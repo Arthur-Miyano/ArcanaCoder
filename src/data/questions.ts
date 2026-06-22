@@ -1,26 +1,51 @@
 import type { Chapter, Question } from '@/types'
 import { stage1Questions } from './stage1_questions'
-import { backupQuestions } from './backup_questions'
+import { backupQuestions as bk } from './backup_questions'
+
+export const backupQuestions = bk
 
 export const chapters: Chapter[] = [
   {
     id: 'ch1_variables',
     name: '第 1 关：变量与类型',
     description: 'Python 的基础——变量赋值与数据类型',
-    questionIds: [
-      's1_01', 's1_02', 's1_03', 's1_04', 's1_05',
-      's1_06', 's1_07', 's1_08', 's1_09',
-      's1_10', 's1_11', 's1_12', 's1_13', 's1_14', 's1_15',
-      's1_16', 's1_17', 's1_18', 's1_19',
-      's1_20', 's1_21', 's1_22', 's1_23', 's1_24', 's1_25',
-      's1_26', 's1_27', 's1_28',
+    sections: [
+      {
+        id: 's1_vars',
+        name: '变量赋值',
+        questionIds: ['s1_01', 's1_02', 's1_03', 's1_04', 's1_05'],
+      },
+      {
+        id: 's1_types',
+        name: '类型系统',
+        questionIds: ['s1_06', 's1_07', 's1_08', 's1_09'],
+        unlockAfter: 's1_vars',
+      },
+      {
+        id: 's1_ops',
+        name: '运算符与格式化',
+        questionIds: ['s1_10', 's1_11', 's1_12', 's1_13', 's1_14', 's1_15', 's1_16', 's1_17', 's1_18', 's1_19'],
+        unlockAfter: 's1_types',
+      },
+      {
+        id: 's1_strings',
+        name: '字符串与输出',
+        questionIds: ['s1_20', 's1_21', 's1_22', 's1_23', 's1_24', 's1_25', 's1_26', 's1_27', 's1_28'],
+        unlockAfter: 's1_ops',
+      },
     ],
   },
   {
     id: 'ch2_lists',
     name: '第 2 关：列表与循环',
     description: '列表操作与 for 循环遍历',
-    questionIds: ['q6_choice', 'q7_fill', 'q8_fix', 'q9_predict', 'q10_free'],
+    sections: [
+      {
+        id: 's2_lists',
+        name: '列表基础',
+        questionIds: ['q6_choice', 'q7_fill', 'q8_fix', 'q9_predict', 'q10_free'],
+      },
+    ],
   },
 ]
 
@@ -101,11 +126,13 @@ export const questions: Question[] = [
 ]
 
 export function getQuestionsByChapter(chapterId: string): Question[] {
-  const chapter = chapters.find((c) => c.id === chapterId)
-  if (!chapter) return []
-  return chapter.questionIds
-    .map((id) => questions.find((q) => q.id === id))
-    .filter((q): q is Question => q !== undefined)
+  const ch = chapters.find((c) => c.id === chapterId)
+  if (!ch) return []
+  return ch.sections.flatMap((sec) =>
+    sec.questionIds
+      .map((id) => questions.find((q) => q.id === id))
+      .filter(<T>(q: T): q is T & Question => q !== undefined),
+  )
 }
 
 export function getQuestionById(id: string): Question | undefined {

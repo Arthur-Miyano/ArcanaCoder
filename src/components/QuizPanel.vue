@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { getQuestionsByChapter } from '@/data/questions'
+import { chapters, questions as allQuestions } from '@/data/questions'
 import { backupQuestions } from '@/data/backup_questions'
 import { runPython } from '@/services/pyodide'
 import type { Question, TestCase } from '@/types'
@@ -24,8 +24,26 @@ const emit = defineEmits<{
 }>()
 
 const store = useGameStore()
-const initialQuestions = computed(() => getQuestionsByChapter(props.chapterId))
-const questions = ref([...initialQuestions.value])
+const currentSection = computed(() => {
+  const ch = chapters.find((c) => c.id === props.chapterId)
+  if (!ch) return null
+  const secId = store.state.currentSectionId
+  return ch.sections.find((s) => s.id === secId) ?? null
+})
+const questions = ref<Question[]>([])
+
+watch(currentSection, (sec) => {
+  if (!sec) return
+  const qs = sec.questionIds
+    .map((id) => allQuestions.find((q) => q.id === id))
+    .filter((q): q is Question => q !== undefined)
+  questions.value = qs
+  currentIndex.value = 0
+  backupLimit.value = 0
+  usedBackupIds.value = new Set()
+  fatigueQuestionCount.value = 0
+  fatigueConsecutiveWrong.value = 0
+}, { immediate: true })
 
 const currentIndex = ref(0)
 const currentQuestion = computed<Question | undefined>(
