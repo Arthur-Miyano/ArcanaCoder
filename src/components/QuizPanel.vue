@@ -163,21 +163,20 @@ async function submit() {
 
 function nextQuestion() {
   showFeedback.value = false
-  if (isRetryMode.value) {
-    if (retryIds.value.length > 0) {
-      const nextId = retryIds.value[0]
-      const idx = questions.value.findIndex((q) => q.id === nextId)
-      if (idx >= 0) {
-        currentIndex.value = idx
-        return
+  if (isRetryMode.value && currentQuestion.value) {
+    const qId = currentQuestion.value.id
+    if (lastResult.value?.correct) {
+      retryIds.value = retryIds.value.filter((id) => id !== qId)
+      if (retryIds.value.length > 0) {
+        const nextId = retryIds.value[0]
+        const idx = questions.value.findIndex((q) => q.id === nextId)
+        if (idx >= 0) { currentIndex.value = idx; return }
       }
-    }
-    isRetryMode.value = false
-    const accuracy = store.getChapterAccuracy(props.chapterId)
-    if (accuracy.wrongIds.length === 0) {
-      emit('chapterComplete')
-    } else {
-      showResults.value = true
+      isRetryMode.value = false
+      const accuracy = store.getChapterAccuracy(props.chapterId)
+      if (accuracy.wrongIds.length === 0) { emit('chapterComplete') }
+      else { showResults.value = true }
+      return
     }
     return
   }
