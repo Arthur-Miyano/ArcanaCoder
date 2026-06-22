@@ -80,8 +80,8 @@ export const questions: Question[] = [
     initialCode: 'import math\n\n# 在这里定义 circle_area 函数\n\ndef circle_area(radius):\n    pass\n',
     correctCode: 'import math\n\ndef circle_area(radius):\n    return math.pi * radius ** 2\n',
     testCases: [
-      { input: '3', expected: '28.274333882308138' },
-      { input: '5', expected: '78.53981633974483' },
+      { input: 'circle_area(3)', expected: '28.274333882308138' },
+      { input: 'circle_area(5)', expected: '78.53981633974483' },
     ],
     explanation: '正确答案：\n```python\nimport math\n\ndef circle_area(radius):\n    return math.pi * radius ** 2\n```\n\n圆的面积公式为 π × r²。import math 导入数学模块后可以用 math.pi 获取精确的圆周率。',
     hint: '用 radius ** 2 计算半径的平方，或者用 radius * radius。',
@@ -150,8 +150,8 @@ export const questions: Question[] = [
     initialCode: '# 定义 find_max 函数\n\ndef find_max(lst):\n    pass\n',
     correctCode: 'def find_max(lst):\n    max_val = lst[0]\n    for n in lst:\n        if n > max_val:\n            max_val = n\n    return max_val\n',
     testCases: [
-      { input: '[3, 7, 2, 9, 1]', expected: '9' },
-      { input: '[-5, -2, -8]', expected: '-2' },
+      { input: 'find_max([3, 7, 2, 9, 1])', expected: '9' },
+      { input: 'find_max([-5, -2, -8])', expected: '-2' },
     ],
     explanation: '正确答案：\n```python\ndef find_max(lst):\n    max_val = lst[0]\n    for n in lst:\n        if n > max_val:\n            max_val = n\n    return max_val\n```\n\n遍历列表，记录遇到的最大值。',
     hint: '用 lst[0] 初始化最大值，然后遍历比较。',
