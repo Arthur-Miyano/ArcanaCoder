@@ -7,11 +7,11 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update:modelValue': [value: number]
+  'update:model-value': [value: number]
 }>()
 
 function select(index: number) {
-  emit('update:modelValue', index)
+  emit('update:model-value', index)
 }
 </script>
 

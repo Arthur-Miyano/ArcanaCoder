@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
+  'update:model-value': [value: string]
 }>()
 
 const extensions = computed(() => [python(), oneDark])
@@ -35,7 +35,7 @@ const lineCount = computed(() => {
         :extensions="extensions"
         :disabled="readonly"
         :style="{ minHeight: `${Math.min(lineCount, 16) * 1.4 + 1}em` }"
-        @update:model-value="emit('update:modelValue', $event)"
+        @update:model-value="emit('update:model-value', $event)"
       />
     </div>
   </div>

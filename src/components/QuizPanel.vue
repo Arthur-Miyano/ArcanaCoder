@@ -161,22 +161,19 @@ function nextQuestion() {
         <ChoiceQuestion
           v-if="currentQuestion.type === 'choice'"
           :question="currentQuestion"
-          :model-value="userAnswer"
-          @update:model-value="userAnswer = $event"
+          v-model="userAnswer"
         />
 
         <CodeQuestion
           v-else-if="currentQuestion.type === 'code_fill' || currentQuestion.type === 'code_fix' || currentQuestion.type === 'free_coding'"
           :question="currentQuestion"
-          :model-value="userAnswer"
-          @update:model-value="userAnswer = $event"
+          v-model="userAnswer"
         />
 
         <OutputPredict
           v-else-if="currentQuestion.type === 'output_predict'"
           :question="currentQuestion"
-          :model-value="userAnswer"
-          @update:model-value="userAnswer = $event"
+          v-model="userAnswer"
         />
 
         <NoxDialog :message="noxHint" />
