@@ -33,6 +33,12 @@ const currentSection = computed(() => {
 })
 const questions = ref<Question[]>([])
 const currentIndex = ref(0)
+const fatigueQuestionCount = ref(0)
+const fatigueConsecutiveWrong = ref(0)
+const showRestPrompt = ref(false)
+const restTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+const backupLimit = ref(0)
+const usedBackupIds = ref<Set<string>>(new Set())
 
 watch(currentSection, (sec) => {
   if (!sec) return
@@ -72,14 +78,6 @@ const isLastQuestion = computed(
 )
 
 const noxHint = ref('让我们开始这一层的试炼吧，贤者。')
-
-const fatigueQuestionCount = ref(0)
-const fatigueConsecutiveWrong = ref(0)
-const showRestPrompt = ref(false)
-const restTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-
-const backupLimit = ref(0)
-const usedBackupIds = ref<Set<string>>(new Set())
 
 function isChoiceType(q: Question): boolean {
   return q.type === 'choice' || q.type === 'output_predict'
