@@ -71,7 +71,21 @@ export const useGameStore = defineStore('game', () => {
 
   function selectChapter(chapterId: string) {
     state.value.currentChapterId = chapterId
-    state.value.currentSectionId = null
+    const ch = chapters.find((c) => c.id === chapterId)
+    if (ch && ch.sections.length > 0) {
+      const firstUnlocked = ch.sections.find(
+        (s) => isSectionUnlocked(s.id, s.unlockAfter),
+      )
+      state.value.currentSectionId = firstUnlocked?.id ?? ch.sections[0].id
+    } else {
+      state.value.currentSectionId = null
+    }
+  }
+
+  function isSectionUnlocked2(sectionId: string, unlockAfter?: string): boolean {
+    if (!unlockAfter) return true
+    const prev = state.value.sectionProgress[unlockAfter]
+    return prev?.completed ?? false
   }
 
   function selectSection(sectionId: string) {
@@ -144,11 +158,14 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function getSectionProgress(sectionId: string): SectionProgress {
-    return state.value.sectionProgress[sectionId] ?? {
-      completed: false,
-      questionResults: {},
-      consecutiveWrong: 0,
+    if (!state.value.sectionProgress[sectionId]) {
+      state.value.sectionProgress[sectionId] = {
+        completed: false,
+        questionResults: {},
+        consecutiveWrong: 0,
+      }
     }
+    return state.value.sectionProgress[sectionId]!
   }
 
   function getChapterProgress(chapterId: string): { completed: boolean; total: number; done: number } {
