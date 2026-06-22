@@ -305,7 +305,7 @@ export const backupQuestions: Question[] = [
     narrativeExplanation: '引号是关键——有引号包裹的就是咒文（字符串），即使里面写的是数字。type() 可以明确区分。',
     description: '预测输出。', difficulty: 1,
     knowledgeTags: ['数据类型', 'type'], initialCode: 'print(type("42"))',
-    options: ["<class 'int'>", "<class 'str'>", '42', '42'],
+    options: ["<class 'int'>", "<class 'str'>", '42', "'42'"],
     correctOption: 1, expectedOutput: "<class 'str'>",
     explanation: '"42" 用引号包裹，是字符串类型。',
     commonErrors: [
