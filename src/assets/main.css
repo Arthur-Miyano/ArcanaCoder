@@ -13,3 +13,8 @@ html, body, #app {
   min-height: 100vh;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
+
+body {
+  font-size: 16px;
+  line-height: 1.6;
+}

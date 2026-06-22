@@ -17,11 +17,11 @@ function select(index: number) {
 
 <template>
   <div class="space-y-2">
-    <p class="text-sm text-gray-300 mb-3">{{ question.description }}</p>
+    <p class="text-gray-300 mb-3">{{ question.description }}</p>
     <button
       v-for="(opt, i) in question.options"
       :key="i"
-      class="w-full text-left px-4 py-2.5 rounded border transition-colors text-sm"
+      class="w-full text-left px-4 py-2.5 rounded border transition-colors"
       :class="
         modelValue === i
           ? 'border-[#4B0082] bg-[#4B0082]/20 text-white'

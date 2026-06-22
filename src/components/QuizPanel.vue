@@ -278,14 +278,14 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
         </button>
       </div>
 
-      <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-2xl mx-auto w-full">
         <h2 class="text-base font-bold text-white">
           {{ currentQuestion.narrativeTitle || currentQuestion.title }}
         </h2>
 
         <p
           v-if="currentQuestion.narrativeDesc"
-          class="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap"
+          class="text-gray-300 leading-relaxed whitespace-pre-wrap"
         >
           {{ currentQuestion.narrativeDesc }}
         </p>

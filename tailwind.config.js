@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         magic: {
-          bg: '#1a1a2e',
+          bg: '#1e1e32',
           card: '#16213e',
           accent: '#4B0082',
           gold: '#c9a227',

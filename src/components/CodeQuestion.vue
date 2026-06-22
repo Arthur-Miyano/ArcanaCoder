@@ -25,7 +25,7 @@ const lineCount = computed(() => {
 
 <template>
   <div>
-    <p class="text-sm text-gray-300 mb-3 whitespace-pre-wrap">{{ question.description }}</p>
+    <p class="text-gray-300 mb-3 whitespace-pre-wrap">{{ question.description }}</p>
     <div
       class="border border-gray-600 rounded-lg overflow-hidden"
       :class="readonly ? 'opacity-80' : ''"
