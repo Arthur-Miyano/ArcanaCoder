@@ -141,8 +141,20 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function completeSection(sectionId: string) {
-    if (state.value.sectionProgress[sectionId]) {
-      state.value.sectionProgress[sectionId].completed = true
+    if (!state.value.sectionProgress[sectionId]) return
+    state.value.sectionProgress[sectionId].completed = true
+    const parent = chapters.find((ch) => ch.sections.some((s) => s.id === sectionId))
+    if (parent) {
+      const allDone = parent.sections.every(
+        (s) => state.value.sectionProgress[s.id]?.completed,
+      )
+      if (allDone) {
+        const idx = chapters.indexOf(parent)
+        const nextCh = chapters[idx + 1]
+        if (nextCh && !state.value.unlockedChapters.includes(nextCh.id)) {
+          state.value.unlockedChapters.push(nextCh.id)
+        }
+      }
     }
     save()
   }
