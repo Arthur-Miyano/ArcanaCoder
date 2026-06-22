@@ -1,5 +1,6 @@
 import type { Chapter, Question } from '@/types'
 import { stage1Questions } from './stage1_questions'
+import { backupQuestions } from './backup_questions'
 
 export const chapters: Chapter[] = [
   {
@@ -25,6 +26,7 @@ export const chapters: Chapter[] = [
 
 export const questions: Question[] = [
   ...stage1Questions,
+  ...backupQuestions,
   // 第 2 关旧题保留
   {
     id: 'q6_choice',

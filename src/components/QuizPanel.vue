@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { getQuestionsByChapter } from '@/data/questions'
+import { backupQuestions } from '@/data/backup_questions'
 import { runPython } from '@/services/pyodide'
 import type { Question, TestCase } from '@/types'
 import { compareOutput, type DiffResult } from '@/utils/diff'
@@ -23,7 +24,8 @@ const emit = defineEmits<{
 }>()
 
 const store = useGameStore()
-const questions = computed(() => getQuestionsByChapter(props.chapterId))
+const initialQuestions = computed(() => getQuestionsByChapter(props.chapterId))
+const questions = ref([...initialQuestions.value])
 
 const currentIndex = ref(0)
 const currentQuestion = computed<Question | undefined>(
@@ -51,6 +53,14 @@ const isLastQuestion = computed(
 )
 
 const noxHint = ref('看看这一关你能答对几道？')
+
+const fatigueQuestionCount = ref(0)
+const fatigueConsecutiveWrong = ref(0)
+const showRestPrompt = ref(false)
+const restTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+
+const backupLimit = ref(0)
+const usedBackupIds = ref<Set<string>>(new Set())
 
 function isChoiceType(q: Question): boolean {
   return q.type === 'choice' || q.type === 'output_predict'
@@ -156,11 +166,48 @@ async function submit() {
   }
   if (!correct) {
     noxHint.value = getHintForQuestion(q)
+    fatigueConsecutiveWrong.value++
+    if (fatigueConsecutiveWrong.value >= 3) {
+      noxHint.value = '贤者，你的魔力有些紊乱了。建议回到智慧之书复习一下再继续。'
+    }
+    if (backupLimit.value < 3 && q.knowledgeTags.length > 0) {
+      const bk = backupQuestions.find(
+        (b) => b.id !== q.id &&
+          b.knowledgeTags.some((t) => q.knowledgeTags.includes(t)) &&
+          !usedBackupIds.value.has(b.id) &&
+          !questions.value.some((x) => x.id === b.id),
+      )
+      if (bk) {
+        usedBackupIds.value.add(bk.id)
+        backupLimit.value++
+        const insertAt = currentIndex.value + 1
+        questions.value.splice(insertAt, 0, bk)
+      }
+    }
+  } else {
+    fatigueConsecutiveWrong.value = 0
   }
+
+  fatigueQuestionCount.value++
+  checkFatigue()
+
   showFeedback.value = true
   submitting.value = false
 }
 
+function dismissRest() {
+  showRestPrompt.value = false
+  if (restTimer.value) clearTimeout(restTimer.value)
+}
+
+function checkFatigue() {
+  if (fatigueQuestionCount.value >= 7 && !showRestPrompt.value) {
+    showRestPrompt.value = true
+    restTimer.value = setTimeout(() => {
+      showRestPrompt.value = false
+    }, 5000)
+  }
+}
 function nextQuestion() {
   showFeedback.value = false
   if (isRetryMode.value && currentQuestion.value) {
@@ -385,5 +432,37 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
     <div v-else class="flex-1 flex items-center justify-center text-gray-400 text-sm">
       没有题目数据
     </div>
+
+    <!-- 休息提示 -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition-all duration-300"
+        enter-from-class="opacity-0"
+        leave-active-class="transition-all duration-200"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="showRestPrompt"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+          @click="dismissRest"
+        >
+          <div
+            class="bg-magic-card border border-gray-600 rounded-lg px-6 py-5 max-w-sm text-center space-y-3"
+            @click.stop
+          >
+            <div class="w-6 h-6 mx-auto rounded-full bg-[#4B0082] border border-[#c9a227]" />
+            <p class="text-gray-200 leading-relaxed">
+              你已经连续施法 {{ fatigueQuestionCount }} 次了，贤者。休息一下效果更好。
+            </p>
+            <button
+              class="px-4 py-1.5 rounded text-sm font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+              @click="dismissRest"
+            >
+              继续答题
+            </button>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
