@@ -20,6 +20,21 @@ describe('gameStore', () => {
     expect(store.expToNext).toBe(100)
   })
 
+  it('selectChapter sets currentSectionId to first unlocked section', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    expect(store.state.currentSectionId).toBe('s1_vars')
+    expect(store.state.currentSectionId).not.toBeNull()
+  })
+
+  it('second section is locked until first is completed', () => {
+    const store = useGameStore()
+    store.selectChapter('ch1_variables')
+    expect(store.isSectionUnlocked('s1_types', 's1_vars')).toBe(false)
+    store.completeSection('s1_vars')
+    expect(store.isSectionUnlocked('s1_types', 's1_vars')).toBe(true)
+  })
+
   it('selectChapter initializes section progress', () => {
     const store = useGameStore()
     store.selectChapter('ch1_variables')

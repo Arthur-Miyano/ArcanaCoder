@@ -76,27 +76,17 @@ export const useGameStore = defineStore('game', () => {
       const firstUnlocked = ch.sections.find(
         (s) => isSectionUnlocked(s.id, s.unlockAfter),
       )
-      state.value.currentSectionId = firstUnlocked?.id ?? ch.sections[0].id
+      const secId = firstUnlocked?.id ?? ch.sections[0].id
+      state.value.currentSectionId = secId
+      getSectionProgress(secId)
     } else {
       state.value.currentSectionId = null
     }
   }
 
-  function isSectionUnlocked2(sectionId: string, unlockAfter?: string): boolean {
-    if (!unlockAfter) return true
-    const prev = state.value.sectionProgress[unlockAfter]
-    return prev?.completed ?? false
-  }
-
   function selectSection(sectionId: string) {
     state.value.currentSectionId = sectionId
-    if (!state.value.sectionProgress[sectionId]) {
-      state.value.sectionProgress[sectionId] = {
-        completed: false,
-        questionResults: {},
-        consecutiveWrong: 0,
-      }
-    }
+    getSectionProgress(sectionId)
   }
 
   function isSectionUnlocked(sectionId: string, unlockAfter?: string): boolean {
