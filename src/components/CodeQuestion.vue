@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, nextTick } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 import { python } from '@codemirror/lang-python'
 import { oneDark } from '@codemirror/theme-one-dark'
@@ -16,6 +16,11 @@ const emit = defineEmits<{
 }>()
 
 const extensions = computed(() => [python(), oneDark])
+
+const lineCount = computed(() => {
+  if (!props.modelValue) return 3
+  return Math.max(3, props.modelValue.split('\n').length)
+})
 </script>
 
 <template>
@@ -29,7 +34,7 @@ const extensions = computed(() => [python(), oneDark])
         :model-value="modelValue"
         :extensions="extensions"
         :disabled="readonly"
-        :style="{ height: '200px' }"
+        :style="{ minHeight: `${Math.min(lineCount, 16) * 1.4 + 1}em` }"
         @update:model-value="emit('update:modelValue', $event)"
       />
     </div>

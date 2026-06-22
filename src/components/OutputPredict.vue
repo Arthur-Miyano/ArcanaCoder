@@ -19,13 +19,12 @@ const actualOutput = ref<string | null>(null)
 const verifying = ref(false)
 const verified = ref(false)
 
-const code = computed(() => props.question.description.replace(/```[\s\S]*?\n?```/g, '').trim())
-
 const extensions = computed(() => [python(), oneDark])
 
 async function verify() {
   verifying.value = true
-  const { output, error } = await runPython(props.question.initialCode ?? '')
+  const code = props.question.initialCode ?? ''
+  const { output, error } = await runPython(code)
   actualOutput.value = error || output || '(无输出)'
   verifying.value = false
   verified.value = true
@@ -38,14 +37,14 @@ function select(index: number) {
 
 <template>
   <div>
-    <p class="text-sm text-gray-300 mb-3 whitespace-pre-wrap">{{ question.description }}</p>
+    <p class="text-sm text-gray-300 mb-3">{{ question.description }}</p>
 
     <div class="border border-gray-600 rounded-lg overflow-hidden mb-4">
       <Codemirror
         :model-value="question.initialCode ?? ''"
         :extensions="extensions"
         :disabled="true"
-        :style="{ height: '120px' }"
+        :style="{ height: 'auto', minHeight: '80px' }"
       />
     </div>
 

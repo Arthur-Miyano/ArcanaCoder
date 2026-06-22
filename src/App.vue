@@ -4,6 +4,7 @@ import { useGameStore } from '@/stores/gameStore'
 import type { ViewState } from '@/types'
 import LoadingOverlay from './components/LoadingOverlay.vue'
 import ChapterSelect from './components/ChapterSelect.vue'
+import KnowledgeBook from './components/KnowledgeBook.vue'
 import QuizPanel from './components/QuizPanel.vue'
 import ChapterComplete from './components/ChapterComplete.vue'
 
@@ -22,6 +23,10 @@ function onPyodideReady() {
 
 function onSelectChapter(chapterId: string) {
   activeChapterId.value = chapterId
+  viewState.value = 'knowledgeBook'
+}
+
+function onStartQuiz() {
   viewState.value = 'quiz'
 }
 
@@ -34,7 +39,11 @@ function onBackToChapters() {
   viewState.value = 'chapterSelect'
 }
 
-function onBack() {
+function onBackFromKnowledge() {
+  viewState.value = 'chapterSelect'
+}
+
+function onBackFromQuiz() {
   viewState.value = 'chapterSelect'
 }
 </script>
@@ -51,10 +60,17 @@ function onBack() {
       @select-chapter="onSelectChapter"
     />
 
+    <KnowledgeBook
+      v-else-if="viewState === 'knowledgeBook' && activeChapterId"
+      :chapter-id="activeChapterId"
+      @start="onStartQuiz"
+      @back="onBackFromKnowledge"
+    />
+
     <QuizPanel
       v-else-if="viewState === 'quiz' && activeChapterId"
       :chapter-id="activeChapterId"
-      @back="onBack"
+      @back="onBackFromQuiz"
       @chapter-complete="onChapterComplete"
     />
 

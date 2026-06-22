@@ -6,6 +6,7 @@ const emit = defineEmits<{ ready: [] }>()
 
 const progress = ref(0)
 const stageText = ref('准备召唤贤者...')
+const error = ref<string | null>(null)
 
 const stages = [
   { at: 0, text: '准备召唤贤者...' },
@@ -27,7 +28,11 @@ function getStageText(pct: number): string {
   return text
 }
 
-onMounted(async () => {
+async function load() {
+  error.value = null
+  progress.value = 0
+  stageText.value = '准备召唤贤者...'
+
   if (isReady()) {
     progress.value = 100
     stageText.value = '贤者已就位！'
@@ -35,17 +40,23 @@ onMounted(async () => {
     return
   }
 
-  await initPyodide((pct) => {
-    progress.value = pct
-    stageText.value = getStageText(pct)
-  })
+  try {
+    await initPyodide((pct) => {
+      progress.value = pct
+      stageText.value = getStageText(pct)
+    })
+    stageText.value = '贤者已就位！'
+    setTimeout(() => {
+      if (!isReady()) return
+      emit('ready')
+    }, 400)
+  } catch (err: any) {
+    error.value = `加载失败：${err.message ?? '未知错误'}`
+    progress.value = 0
+  }
+}
 
-  stageText.value = '贤者已就位！'
-  setTimeout(() => {
-    if (!isReady()) return
-    emit('ready')
-  }, 400)
-})
+onMounted(load)
 </script>
 
 <template>
@@ -54,14 +65,26 @@ onMounted(async () => {
       class="w-16 h-16 rounded-full bg-[#4B0082] border-2 border-[#c9a227] mb-6"
     />
 
-    <p class="text-xl text-magic-gold mb-4">{{ stageText }}</p>
-    <p class="text-sm text-gray-400 mb-6">{{ progress }}%</p>
+    <template v-if="!error">
+      <p class="text-xl text-magic-gold mb-4">{{ stageText }}</p>
+      <p class="text-sm text-gray-400 mb-6">{{ progress }}%</p>
+      <div class="w-64 h-3 bg-gray-700 rounded-full overflow-hidden">
+        <div
+          class="h-full bg-gradient-to-r from-[#4B0082] to-[#c9a227] transition-all duration-300 rounded-full"
+          :style="{ width: `${progress}%` }"
+        />
+      </div>
+    </template>
 
-    <div class="w-64 h-3 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        class="h-full bg-gradient-to-r from-[#4B0082] to-[#c9a227] transition-all duration-300 rounded-full"
-        :style="{ width: `${progress}%` }"
-      />
-    </div>
+    <template v-else>
+      <p class="text-red-400 text-lg mb-2">⚠️ {{ error }}</p>
+      <p class="text-sm text-gray-400 mb-6">请检查网络连接后重试</p>
+      <button
+        class="px-6 py-2 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+        @click="load"
+      >
+        重新加载
+      </button>
+    </template>
   </div>
 </template>

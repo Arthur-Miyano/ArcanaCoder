@@ -7,7 +7,6 @@ import type { Question, TestCase } from '@/types'
 import ChoiceQuestion from './ChoiceQuestion.vue'
 import CodeQuestion from './CodeQuestion.vue'
 import OutputPredict from './OutputPredict.vue'
-import FeedbackToast from './FeedbackToast.vue'
 import NoxDialog from './NoxDialog.vue'
 
 const props = defineProps<{
@@ -29,7 +28,12 @@ const currentQuestion = computed<Question | undefined>(
 
 const userAnswer = ref<any>(null)
 const showFeedback = ref(false)
-const lastResult = ref<{ correct: boolean; explanation: string } | null>(null)
+const lastResult = ref<{
+  correct: boolean
+  explanation: string
+  correctAnswer?: string
+  errorDetail?: string
+} | null>(null)
 const submitting = ref(false)
 
 const isLastQuestion = computed(
@@ -50,21 +54,13 @@ watch(currentQuestion, (q) => {
   noxHint.value = q.hint ?? '加油，你可以的！'
 })
 
-function initAnswer() {
-  const q = currentQuestion.value
-  if (!q) return
-  userAnswer.value = isChoiceType(q) ? null : q.initialCode ?? ''
-}
-
-initAnswer()
-
 async function validateCode(
   q: Question,
   code: string,
-): Promise<{ correct: boolean }> {
+): Promise<{ correct: boolean; errorDetail?: string }> {
   if (q.type === 'code_fill' || q.type === 'code_fix') {
     const { output, error } = await runPython(code)
-    if (error) return { correct: false }
+    if (error) return { correct: false, errorDetail: error }
     if (q.expectedOutput !== undefined) {
       return { correct: output.trim() === q.expectedOutput }
     }
@@ -83,14 +79,26 @@ async function validateCode(
 async function validateFreeCoding(
   code: string,
   testCases: TestCase[],
-): Promise<{ correct: boolean }> {
+): Promise<{ correct: boolean; errorDetail?: string }> {
   for (const test of testCases) {
     const fullCode = `${code}\nprint(${test.input})`
     const { output, error } = await runPython(fullCode)
-    if (error) return { correct: false }
-    if (output.trim() !== test.expected) return { correct: false }
+    if (error) return { correct: false, errorDetail: `测试用例输入 ${test.input} 执行失败：${error}` }
+    if (output.trim() !== test.expected) {
+      return {
+        correct: false,
+        errorDetail: `输入 radius=${test.input}：期望 ${test.expected}，实际 ${output.trim()}`,
+      }
+    }
   }
   return { correct: true }
+}
+
+function getCorrectAnswer(q: Question): string | undefined {
+  if (q.type === 'choice' || q.type === 'output_predict') {
+    return q.options?.[q.correctOption!]
+  }
+  return q.correctCode ?? q.expectedOutput
 }
 
 async function submit() {
@@ -99,6 +107,7 @@ async function submit() {
 
   submitting.value = true
   let correct = false
+  let errorDetail: string | undefined
 
   if (q.type === 'choice' || q.type === 'output_predict') {
     correct = userAnswer.value === q.correctOption
@@ -106,10 +115,17 @@ async function submit() {
     const code = userAnswer.value ?? ''
     const result = await validateCode(q, code)
     correct = result.correct
+    errorDetail = result.errorDetail
   }
 
   store.submitAnswer(q.id, correct)
-  lastResult.value = { correct, explanation: q.explanation }
+  lastResult.value = {
+    correct,
+    explanation: errorDetail
+      ? `${q.explanation}\n\n执行结果：${errorDetail}`
+      : q.explanation,
+    correctAnswer: correct ? undefined : getCorrectAnswer(q),
+  }
   showFeedback.value = true
   submitting.value = false
 }
@@ -166,7 +182,16 @@ function nextQuestion() {
         <NoxDialog :message="noxHint" />
       </div>
 
-      <div class="px-4 py-3 border-t border-gray-700">
+      <FeedbackToast
+        v-if="showFeedback"
+        :visible="showFeedback"
+        :correct="lastResult?.correct ?? false"
+        :explanation="lastResult?.explanation ?? ''"
+        :correct-answer="lastResult?.correctAnswer"
+        @next="nextQuestion"
+      />
+
+      <div v-else class="px-4 py-3 border-t border-gray-700">
         <button
           class="w-full py-2.5 rounded font-medium transition-colors"
           :class="[
@@ -185,12 +210,5 @@ function nextQuestion() {
     <div v-else class="flex-1 flex items-center justify-center text-gray-400 text-sm">
       没有题目数据
     </div>
-
-    <FeedbackToast
-      :visible="showFeedback"
-      :correct="lastResult?.correct ?? false"
-      :explanation="lastResult?.explanation ?? ''"
-      @next="nextQuestion"
-    />
   </div>
 </template>

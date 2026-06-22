@@ -6,6 +6,13 @@ export const chapters: Chapter[] = [
     name: '第 1 关：变量与类型',
     description: 'Python 的基础——变量赋值与数据类型',
     questionIds: ['q1_choice', 'q2_fill', 'q3_fix', 'q4_predict', 'q5_free'],
+    knowledge: [
+      '变量就像魔法容器，可以存放各种数据。用 = 给变量赋值。',
+      '字符串（str）是用引号包裹的文字，比如 "Hello" 或 "世界"。',
+      'f-string 可以在字符串中插入变量值：f"你好，{name}" 会输出 你好，世界。',
+      'import 语句导入模块（代码库）。比如 import math 之后就可以使用 math.pi。',
+      '函数用 def 定义，return 返回值。缩进 4 个空格表示代码块。',
+    ],
   },
 ]
 
@@ -53,9 +60,10 @@ export const questions: Question[] = [
     type: 'output_predict',
     chapterId: 'ch1_variables',
     title: '字符串乘法',
-    description: '阅读以下代码，预测输出结果：\n\n```python\nx = "10"\ny = 5\nprint(x * y)\n```',
+    description: '阅读以下代码，预测输出结果：',
     difficulty: 2,
     knowledgeTags: ['字符串操作', '类型', '乘法'],
+    initialCode: 'x = "10"\ny = 5\nprint(x * y)',
     options: ['50', '15', '1010101010', 'TypeError'],
     correctOption: 2,
     expectedOutput: '1010101010',
@@ -76,7 +84,7 @@ export const questions: Question[] = [
       { input: '3', expected: '28.274333882308138' },
       { input: '5', expected: '78.53981633974483' },
     ],
-    explanation: '圆的面积公式为 π × r²。使用 math.pi 获取 π 的精确值。',
+    explanation: '正确答案：\n```python\nimport math\n\ndef circle_area(radius):\n    return math.pi * radius ** 2\n```\n\n圆的面积公式为 π × r²。import math 导入数学模块后可以用 math.pi 获取精确的圆周率。',
     hint: '用 radius ** 2 计算半径的平方，或者用 radius * radius。',
   },
 ]
