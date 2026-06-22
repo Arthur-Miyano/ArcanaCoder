@@ -38,6 +38,43 @@ export const chapterWisdom: Record<string, WisdomPoint[]> = {
       tip: 'def 定义函数，return 返回结果，缩进 4 个空格',
     },
   ],
+  ch2_lists: [
+    {
+      title: '列表创建',
+      metaphor: '列表就像魔法背包，可以按顺序放很多东西。用方括号 [] 创建。',
+      code: 'fruits = ["apple", "banana", "cherry"]\nprint(fruits)',
+      expectedOutput: "['apple', 'banana', 'cherry']",
+      tip: '列表元素用逗号分隔，索引从 0 开始',
+    },
+    {
+      title: '列表索引',
+      metaphor: '索引就像给背包里的物品编号，从 0 开始。负数索引从末尾倒数。',
+      code: 'nums = [10, 20, 30, 40]\nprint(nums[0], nums[-1])',
+      expectedOutput: '10 40',
+      tip: '用 [0] 取第一个，[-1] 取最后一个',
+    },
+    {
+      title: '追加元素',
+      metaphor: 'append 就像在背包最外层再塞一个东西。',
+      code: 'colors = ["red", "blue"]\ncolors.append("green")\nprint(colors)',
+      expectedOutput: "['red', 'blue', 'green']",
+      tip: 'append() 在末尾添加，列表长度加 1',
+    },
+    {
+      title: 'for 循环遍历',
+      metaphor: 'for 循环就像一件一件地查看背包里的每件物品。',
+      code: 'nums = [1, 2, 3]\nfor n in nums:\n    print(n)',
+      expectedOutput: '1\n2\n3',
+      tip: 'for 变量 in 列表: 依次取出每个元素',
+    },
+    {
+      title: '列表与函数',
+      metaphor: '把列表传给函数，就像把背包交给工匠检查。',
+      code: 'def sum_list(lst):\n    total = 0\n    for n in lst:\n        total += n\n    return total\n\nprint(sum_list([1, 2, 3]))',
+      expectedOutput: '6',
+      tip: 'return 返回值，然后可以用 print 打印结果',
+    },
+  ],
 }
 
 export function getWisdomPoints(chapterId: string): WisdomPoint[] {

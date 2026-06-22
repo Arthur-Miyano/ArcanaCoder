@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { getQuestionsByChapter } from '@/data/questions'
 import GameHeader from './GameHeader.vue'
+
+const props = defineProps<{
+  chapterId: string
+}>()
 
 const emit = defineEmits<{ backToChapters: [] }>()
 
 const store = useGameStore()
-
-defineProps<{
-  chapterId: string
-}>()
-
 const visible = ref(false)
+
+const questions = computed(() => getQuestionsByChapter(props.chapterId))
+const accuracy = computed(() => store.getChapterAccuracy(props.chapterId))
+
+const passed = computed(() => accuracy.value.wrongIds.length === 0)
 
 onMounted(() => {
   setTimeout(() => { visible.value = true }, 100)
@@ -32,16 +37,49 @@ onMounted(() => {
         enter-active-class="transition-all duration-500"
         enter-from-class="opacity-0 scale-75"
       >
-        <div v-if="visible" class="space-y-4">
+        <div v-if="visible" class="space-y-4 w-full max-w-sm">
           <div
             class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227]"
           />
 
-          <h1 class="text-xl font-bold text-magic-gold">关卡通过！</h1>
+          <h1 class="text-xl font-bold" :class="passed ? 'text-magic-gold' : 'text-gray-300'">
+            {{ passed ? '关卡通过！' : '关卡完成' }}
+          </h1>
 
-          <p class="text-sm text-gray-300 leading-relaxed">
-            贤者正在研读你留下的魔法印记…
-          </p>
+          <div class="bg-magic-card border border-gray-600 rounded-lg px-4 py-4 text-left space-y-2">
+            <div>
+              <span class="text-xs text-gray-400">答题结果</span>
+              <div class="mt-1 flex items-center gap-2">
+                <div class="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    class="h-full rounded-full transition-all duration-500"
+                    :class="passed ? 'bg-green-500' : 'bg-yellow-500'"
+                    :style="{ width: `${(accuracy.correct / accuracy.total) * 100}%` }"
+                  />
+                </div>
+                <span class="text-sm text-gray-300 shrink-0">
+                  {{ accuracy.correct }}/{{ accuracy.total }}
+                </span>
+              </div>
+            </div>
+
+            <div v-if="accuracy.wrongIds.length > 0" class="pt-1">
+              <p class="text-xs text-red-400 mb-1">做错的题目：{{ accuracy.wrongIds.length }} 道</p>
+              <div v-if="accuracy.knowledgeTags.length > 0" class="flex flex-wrap gap-1">
+                <span
+                  v-for="tag in accuracy.knowledgeTags"
+                  :key="tag"
+                  class="px-2 py-0.5 rounded bg-red-900/20 border border-red-800/30 text-xs text-red-300"
+                >
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+
+            <div v-else>
+              <p class="text-xs text-green-400">全部正确，知识点已掌握！</p>
+            </div>
+          </div>
 
           <div class="pt-4">
             <button

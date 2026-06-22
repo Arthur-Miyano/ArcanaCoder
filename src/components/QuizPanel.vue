@@ -16,6 +16,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'back': []
+  'reviewKnowledge': []
   'chapterComplete': []
 }>()
 
@@ -36,6 +37,7 @@ const lastResult = ref<{
   errorDetail?: string
 } | null>(null)
 const submitting = ref(false)
+const showResults = ref(false)
 
 const isLastQuestion = computed(
   () => currentIndex.value >= questions.value.length - 1,
@@ -84,11 +86,11 @@ async function validateFreeCoding(
   for (const test of testCases) {
     const fullCode = `${code}\nprint(${test.input})`
     const { output, error } = await runPython(fullCode)
-    if (error) return { correct: false, errorDetail: `测试用例输入 ${test.input} 执行失败：${error}` }
+    if (error) return { correct: false, errorDetail: `测试输入 ${test.input} 失败：${error}` }
     if (output.trim() !== test.expected) {
       return {
         correct: false,
-        errorDetail: `输入 radius=${test.input}：期望 ${test.expected}，实际 ${output.trim()}`,
+        errorDetail: `输入 ${test.input}：期望 ${test.expected}，实际 ${output.trim()}`,
       }
     }
   }
@@ -133,26 +135,136 @@ async function submit() {
 function nextQuestion() {
   showFeedback.value = false
   if (isLastQuestion.value) {
-    emit('chapterComplete')
+    const accuracy = store.getChapterAccuracy(props.chapterId)
+    if (accuracy.wrongIds.length === 0) {
+      emit('chapterComplete')
+    } else {
+      showResults.value = true
+    }
   } else {
     currentIndex.value++
   }
 }
+
+function retryWrong() {
+  showResults.value = false
+  const accuracy = store.getChapterAccuracy(props.chapterId)
+  if (accuracy.wrongIds.length > 0) {
+    const firstWrong = questions.value.findIndex(
+      (q) => q.id === accuracy.wrongIds[0],
+    )
+    if (firstWrong >= 0) {
+      currentIndex.value = firstWrong
+      return
+    }
+  }
+  currentIndex.value = 0
+}
+
+function goBack() {
+  showResults.value = false
+  emit('back')
+}
+
+const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
 </script>
 
 <template>
   <div class="flex flex-col flex-1">
-    <div v-if="currentQuestion" class="flex-1 flex flex-col">
+    <!-- 结果总览 -->
+    <div v-if="showResults" class="flex-1 flex flex-col">
       <div class="flex items-center justify-between px-4 py-2 border-b border-gray-700">
-        <button
-          class="text-xs text-gray-400 hover:text-white transition-colors"
-          @click="emit('back')"
-        >
+        <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="goBack">
+          ← 返回
+        </button>
+        <span class="text-xs text-gray-500">答题结果</span>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-4 py-6">
+        <div class="max-w-md mx-auto space-y-4">
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227] mb-3" />
+            <h2 class="text-lg font-bold text-magic-gold">答题完成</h2>
+            <p class="text-sm text-gray-400 mt-1">
+              {{ accuracyInfo.correct }}/{{ accuracyInfo.total }} 正确
+            </p>
+            <div class="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-500"
+                :class="accuracyInfo.wrongIds.length === 0 ? 'bg-green-500' : 'bg-yellow-500'"
+                :style="{ width: `${(accuracyInfo.correct / accuracyInfo.total) * 100}%` }"
+              />
+            </div>
+          </div>
+
+          <div v-if="accuracyInfo.wrongIds.length > 0" class="space-y-2">
+            <p class="text-xs text-gray-400">需要重试的题目：</p>
+            <button
+              v-for="qId in accuracyInfo.wrongIds"
+              :key="qId"
+              class="w-full text-left px-3 py-2 rounded border border-red-800/50 bg-red-900/20 text-sm text-red-200"
+              @click="
+                showResults = false;
+                currentIndex = questions.findIndex((q) => q.id === qId);
+              "
+            >
+              ✗ 第{{ questions.findIndex((q) => q.id === qId) + 1 }}题
+            </button>
+
+            <div v-if="accuracyInfo.knowledgeTags.length > 0" class="mt-4">
+              <p class="text-xs text-gray-400 mb-1">建议复习的知识点：</p>
+              <div class="flex flex-wrap gap-1.5">
+                <span
+                  v-for="tag in accuracyInfo.knowledgeTags"
+                  :key="tag"
+                  class="px-2 py-0.5 rounded bg-magic-card border border-gray-600 text-xs text-gray-300"
+                >
+                  {{ tag }}
+                </span>
+              </div>
+              <button
+                class="mt-3 text-xs text-magic-gold hover:text-yellow-300 transition-colors"
+                @click="emit('reviewKnowledge')"
+              >
+                ← 打开智慧之书复习
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-4 flex gap-3">
+            <button
+              v-if="accuracyInfo.wrongIds.length > 0"
+              class="flex-1 py-2.5 rounded font-medium bg-yellow-700 hover:bg-yellow-600 text-white transition-colors"
+              @click="retryWrong"
+            >
+              重试错题
+            </button>
+            <button
+              class="flex-1 py-2.5 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+              @click="goBack"
+            >
+              返回关卡
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 答题面板 -->
+    <div v-else-if="currentQuestion" class="flex-1 flex flex-col">
+      <div class="flex items-center justify-between px-4 py-2 border-b border-gray-700">
+        <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="emit('back')">
           ← 返回
         </button>
         <span class="text-xs text-gray-500">
           第 {{ currentIndex + 1 }}/{{ questions.length }} 题
         </span>
+        <button
+          class="text-xs text-magic-gold hover:text-yellow-300 transition-colors"
+          @click="emit('reviewKnowledge')"
+        >
+          知识
+        </button>
       </div>
 
       <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4">

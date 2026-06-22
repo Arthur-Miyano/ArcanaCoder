@@ -33,11 +33,21 @@ function onPyodideReady() {
 
 function onSelectChapter(chapterId: string) {
   activeChapterId.value = chapterId
-  viewState.value = 'wisdom'
+  store.selectChapter(chapterId)
+  if (store.isWisdomViewed(chapterId)) {
+    viewState.value = 'quiz'
+  } else {
+    viewState.value = 'wisdom'
+  }
 }
 
-function onStartQuiz() {
+function onWisdomStart() {
+  if (activeChapterId.value) store.markWisdomViewed(activeChapterId.value)
   viewState.value = 'quiz'
+}
+
+function onReviewKnowledge() {
+  viewState.value = 'wisdom'
 }
 
 function onChapterComplete() {
@@ -50,7 +60,7 @@ function onBackToChapters() {
 }
 
 function onBackFromWisdom() {
-  viewState.value = 'chapterSelect'
+  viewState.value = activeChapterId.value ? 'quiz' : 'chapterSelect'
 }
 
 function onBackFromQuiz() {
@@ -74,9 +84,9 @@ function onBackFromQuiz() {
       v-else-if="viewState === 'wisdom' && activeChapterId && currentChapter"
       :chapter-id="activeChapterId"
       :chapter-name="currentChapter.name"
-      :chapter-number="1"
+      :chapter-number="chapters.findIndex((c) => c.id === activeChapterId) + 1"
       :points="chapterPoints"
-      @start="onStartQuiz"
+      @start="onWisdomStart"
       @back="onBackFromWisdom"
     />
 
@@ -84,6 +94,7 @@ function onBackFromQuiz() {
       v-else-if="viewState === 'quiz' && activeChapterId"
       :chapter-id="activeChapterId"
       @back="onBackFromQuiz"
+      @review-knowledge="onReviewKnowledge"
       @chapter-complete="onChapterComplete"
     />
 

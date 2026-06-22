@@ -17,6 +17,7 @@ export interface GameState {
   exp: number
   expToNext: number
   unlockedChapters: string[]
+  wisdomViewed: string[]
   currentChapterId: string | null
   chapterProgress: Record<string, ChapterProgress>
   lastPlayedAt: number | null
@@ -34,6 +35,7 @@ function createInitialState(): GameState {
     exp: 0,
     expToNext: calcExpToNext(1),
     unlockedChapters: ['ch1_variables'],
+    wisdomViewed: [],
     currentChapterId: null,
     chapterProgress: {},
     lastPlayedAt: null,
@@ -51,11 +53,22 @@ export const useGameStore = defineStore('game', () => {
   const expPercent = computed(() =>
     Math.min(100, Math.floor((state.value.exp / state.value.expToNext) * 100)),
   )
-
+  const wisdomViewed = computed(() => state.value.wisdomViewed)
   const currentChapterId = computed(() => state.value.currentChapterId)
   const chapterProgress = computed(() => state.value.chapterProgress)
   const totalQuestionsAnswered = computed(() => state.value.totalQuestionsAnswered)
   const totalCorrect = computed(() => state.value.totalCorrect)
+
+  function isWisdomViewed(chapterId: string): boolean {
+    return state.value.wisdomViewed.includes(chapterId)
+  }
+
+  function markWisdomViewed(chapterId: string) {
+    if (!state.value.wisdomViewed.includes(chapterId)) {
+      state.value.wisdomViewed.push(chapterId)
+    }
+    save()
+  }
 
   function selectChapter(chapterId: string) {
     state.value.currentChapterId = chapterId
@@ -83,7 +96,7 @@ export const useGameStore = defineStore('game', () => {
     }
     const prev = cp.questionResults[questionId]
     cp.questionResults[questionId] = {
-      correct: prev ? prev.correct && correct : correct,
+      correct: prev ? prev.correct || correct : correct,
       score: Math.max(prev?.score ?? 0, correct ? 100 : Math.floor(100 / 3)),
       attempts: (prev?.attempts ?? 0) + 1,
     }
@@ -106,11 +119,15 @@ export const useGameStore = defineStore('game', () => {
       (q) => q.chapterId === question.chapterId,
     )
     const results = cp.questionResults
-    const allDone = chapterQuestions.every(
-      (q) => results[q.id] && results[q.id].attempts > 0,
+    const allCorrect = chapterQuestions.every(
+      (q) => results[q.id] && results[q.id].correct,
     )
-    if (allDone) {
+    if (allCorrect) {
       cp.completed = true
+      if (question.chapterId === 'ch1_variables' &&
+          !state.value.unlockedChapters.includes('ch2_lists')) {
+        state.value.unlockedChapters.push('ch2_lists')
+      }
     }
 
     save()
@@ -125,6 +142,36 @@ export const useGameStore = defineStore('game', () => {
         questionResults: {},
       }
     )
+  }
+
+  function getChapterAccuracy(chapterId: string): {
+    total: number
+    correct: number
+    wrongIds: string[]
+    knowledgeTags: string[]
+  } {
+    const cp = state.value.chapterProgress[chapterId]
+    if (!cp) return { total: 0, correct: 0, wrongIds: [], knowledgeTags: [] }
+
+    const chapterQuestions = questions.filter((q) => q.chapterId === chapterId)
+    const total = chapterQuestions.length
+    const wrongIds: string[] = []
+    const tags = new Set<string>()
+
+    for (const q of chapterQuestions) {
+      const result = cp.questionResults[q.id]
+      if (!result || !result.correct) {
+        wrongIds.push(q.id)
+        q.knowledgeTags.forEach((t) => tags.add(t))
+      }
+    }
+
+    return {
+      total,
+      correct: total - wrongIds.length,
+      wrongIds,
+      knowledgeTags: Array.from(tags),
+    }
   }
 
   function getQuestionResult(
@@ -158,13 +205,17 @@ export const useGameStore = defineStore('game', () => {
     exp,
     expToNext,
     expPercent,
+    wisdomViewed,
     currentChapterId,
     chapterProgress,
     totalQuestionsAnswered,
     totalCorrect,
+    isWisdomViewed,
+    markWisdomViewed,
     selectChapter,
     submitAnswer,
     getChapterProgress,
+    getChapterAccuracy,
     getQuestionResult,
     load,
     save,
