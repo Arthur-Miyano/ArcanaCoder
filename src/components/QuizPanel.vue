@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { chapters, getQuestionsBySection } from '@/data/questions'
-import { backupQuestions } from '@/data/backup_questions'
+import { chapters, backupQuestions, getQuestionsBySection } from '@/data/questions'
 import { runPython } from '@/services/pyodide'
 import type { Question, TestCase } from '@/types'
 import { compareOutput, type DiffResult } from '@/utils/diff'
@@ -329,7 +328,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
       <div class="flex-1 overflow-y-auto px-4 py-6">
         <div class="max-w-md mx-auto space-y-4">
           <div class="text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227] mb-3" />
+            <div class="w-12 h-12 mx-auto rounded-full bg-magic-accent border-2 border-magic-gold mb-3" />
             <h2 class="text-lg font-bold text-magic-gold">试炼完成</h2>
             <p class="text-sm text-gray-400 mt-1">
               {{ accuracyInfo.correct }}/{{ accuracyInfo.total }} 魔力共鸣
@@ -383,7 +382,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
               重试错题
             </button>
             <button
-              class="flex-1 py-2.5 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+              class="flex-1 py-2.5 rounded font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
               @click="goBack"
             >
               返回关卡
@@ -397,7 +396,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
     <div v-else-if="showSectionComplete && sectionResults" class="flex-1 flex flex-col">
       <div class="flex-1 overflow-y-auto px-4 py-6">
         <div class="max-w-md mx-auto text-center space-y-4">
-          <div class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227]" />
+          <div class="w-12 h-12 mx-auto rounded-full bg-magic-accent border-2 border-magic-gold" />
           <h2 class="text-lg font-bold text-magic-gold">节完成</h2>
           <p class="text-sm text-gray-400">
             {{ sectionResults.correct }}/{{ sectionResults.total }} 魔力共鸣
@@ -421,7 +420,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
             <p class="text-xs text-green-400">全部魔力共鸣，继续前进吧，贤者。</p>
           </div>
           <button
-            class="px-6 py-2.5 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+            class="px-6 py-2.5 rounded font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
             @click="emit('back')"
           >
             返回
@@ -499,7 +498,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
           :class="[
             userAnswer === null || userAnswer === '' || submitting
               ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              : 'bg-[#4B0082] hover:bg-[#5a0099] text-white',
+              : 'bg-magic-accent hover:bg-magic-accent-light text-white',
           ]"
           :disabled="userAnswer === null || userAnswer === '' || submitting"
           @click="submit"
@@ -530,12 +529,12 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
             class="bg-magic-card border border-gray-600 rounded-lg px-6 py-5 max-w-sm text-center space-y-3"
             @click.stop
           >
-            <div class="w-6 h-6 mx-auto rounded-full bg-[#4B0082] border border-[#c9a227]" />
+            <div class="w-6 h-6 mx-auto rounded-full bg-magic-accent border border-magic-gold" />
             <p class="text-gray-200 leading-relaxed">
               你已经连续吟唱 {{ fatigueQuestionCount }} 次了，贤者。休息一下，让魔力回流。
             </p>
             <button
-              class="px-4 py-1.5 rounded text-sm font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+              class="px-4 py-1.5 rounded text-sm font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
               @click="dismissRest"
             >
               继续试炼

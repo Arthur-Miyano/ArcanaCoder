@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
-import { python } from '@codemirror/lang-python'
-import { oneDark } from '@codemirror/theme-one-dark'
+import { pythonExtensions } from '@/composables/useCodeMirror'
 import { runPython } from '@/services/pyodide'
 import type { WisdomPoint } from '@/types'
 
@@ -26,8 +25,6 @@ const demoRunning = ref(false)
 const interactiveOutput = ref<string | null>(null)
 const interactiveRunning = ref(false)
 const interactiveCode = ref('')
-
-const extensions = [python(), oneDark]
 
 watch(currentPoint, () => {
   interactiveCode.value = props.points[currentIndex.value]?.interactiveCode ?? props.points[currentIndex.value]?.code ?? ''
@@ -136,7 +133,7 @@ async function runInteractive() {
             <section>
               <h4 class="section-title">法阵演示</h4>
               <div class="code-wrap" :class="{ 'code-hidden': isFlipping }">
-                <Codemirror :model-value="currentPoint.code" :extensions="extensions" :disabled="true" :style="{ minHeight: '3em' }" />
+                <Codemirror :model-value="currentPoint.code" :extensions="pythonExtensions" :disabled="true" :style="{ minHeight: '3em' }" />
               </div>
               <button class="run-btn" :disabled="demoRunning || isFlipping" @click="runDemo">
                 {{ demoRunning ? '运行中...' : '[ 运行看看 ]' }}
@@ -169,7 +166,7 @@ async function runInteractive() {
           <div class="page-inner interactive-section">
             <h4 class="section-title">即时验证</h4>
             <div class="code-wrap" :class="{ 'code-hidden': isFlipping }">
-              <Codemirror :model-value="interactiveCode" :extensions="extensions" :style="{ minHeight: '3em' }"
+              <Codemirror :model-value="interactiveCode" :extensions="pythonExtensions" :style="{ minHeight: '3em' }"
                 @update:model-value="interactiveCode = $event" />
             </div>
             <button class="run-btn run-verify" :disabled="interactiveRunning || isFlipping" @click="runInteractive">
@@ -188,7 +185,7 @@ async function runInteractive() {
 
     <!-- 底部：开始试炼 -->
     <div class="px-4 py-3 border-t border-gray-700 shrink-0 flex justify-center gap-4">
-      <button v-if="isLast" class="px-6 py-2 rounded text-sm font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors" @click="emit('start')">
+      <button v-if="isLast" class="px-6 py-2 rounded text-sm font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors" @click="emit('start')">
         开始试炼
       </button>
     </div>

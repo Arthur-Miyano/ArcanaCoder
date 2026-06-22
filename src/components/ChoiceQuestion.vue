@@ -24,7 +24,7 @@ function select(index: number) {
       class="w-full text-left px-4 py-2.5 rounded border transition-colors"
       :class="
         modelValue === i
-          ? 'border-[#4B0082] bg-[#4B0082]/20 text-white'
+          ? 'border-magic-accent bg-magic-accent/20 text-white'
           : 'border-gray-600 text-gray-300 hover:border-gray-500'
       "
       @click="select(i)"

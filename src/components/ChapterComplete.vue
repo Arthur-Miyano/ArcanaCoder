@@ -39,7 +39,7 @@ onMounted(() => {
       >
         <div v-if="visible" class="space-y-4 w-full max-w-sm">
           <div
-            class="w-12 h-12 mx-auto rounded-full bg-[#4B0082] border-2 border-[#c9a227]"
+            class="w-12 h-12 mx-auto rounded-full bg-magic-accent border-2 border-magic-gold"
           />
 
           <h1 class="text-xl font-bold" :class="passed ? 'text-magic-gold' : 'text-gray-300'">
@@ -83,7 +83,7 @@ onMounted(() => {
 
           <div class="pt-4">
             <button
-              class="px-6 py-2.5 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+              class="px-6 py-2.5 rounded font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
               @click="emit('backToChapters')"
             >
               返回关卡选择

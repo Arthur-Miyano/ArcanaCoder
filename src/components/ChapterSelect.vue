@@ -126,7 +126,7 @@ function startSection(chapterId: string, sectionId: string) {
                     ? 'bg-gray-700'
                     : store.getSectionProgress(sec.id).completed
                       ? 'bg-green-500'
-                      : 'bg-[#4B0082]'
+                      : 'bg-magic-accent'
                 "
               />
 

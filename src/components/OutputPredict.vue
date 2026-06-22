@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Codemirror } from 'vue-codemirror'
-import { python } from '@codemirror/lang-python'
-import { oneDark } from '@codemirror/theme-one-dark'
+import { pythonExtensions } from '@/composables/useCodeMirror'
 import { runPython } from '@/services/pyodide'
 import type { Question } from '@/types'
 
@@ -18,8 +17,6 @@ const emit = defineEmits<{
 const actualOutput = ref<string | null>(null)
 const verifying = ref(false)
 const verified = ref(false)
-
-const extensions = computed(() => [python(), oneDark])
 
 async function verify() {
   verifying.value = true
@@ -42,7 +39,7 @@ function select(index: number) {
     <div class="border border-gray-600 rounded-lg overflow-hidden mb-4">
       <Codemirror
         :model-value="question.initialCode ?? ''"
-        :extensions="extensions"
+        :extensions="pythonExtensions"
         :disabled="true"
         :style="{ height: 'auto', minHeight: '80px' }"
       />
@@ -56,7 +53,7 @@ function select(index: number) {
       class="w-full text-left px-4 py-2 rounded border transition-colors"
       :class="
         modelValue === i
-          ? 'border-[#4B0082] bg-[#4B0082]/20 text-white'
+          ? 'border-magic-accent bg-magic-accent/20 text-white'
           : 'border-gray-600 text-gray-300 hover:border-gray-500'
       "
       @click="select(i)"

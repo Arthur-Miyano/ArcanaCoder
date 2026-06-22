@@ -11,6 +11,7 @@ export default {
           bg: '#1e1e32',
           card: '#16213e',
           accent: '#4B0082',
+          'accent-light': '#5a0099',
           gold: '#c9a227',
           text: '#e0e0e0',
         },

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, nextTick } from 'vue'
+import { computed } from 'vue'
 import { Codemirror } from 'vue-codemirror'
-import { python } from '@codemirror/lang-python'
-import { oneDark } from '@codemirror/theme-one-dark'
+import { pythonExtensions } from '@/composables/useCodeMirror'
 import type { Question } from '@/types'
 
 const props = defineProps<{
@@ -14,8 +13,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:model-value': [value: string]
 }>()
-
-const extensions = computed(() => [python(), oneDark])
 
 const lineCount = computed(() => {
   if (!props.modelValue) return 3
@@ -32,7 +29,7 @@ const lineCount = computed(() => {
     >
       <Codemirror
         :model-value="modelValue"
-        :extensions="extensions"
+        :extensions="pythonExtensions"
         :disabled="readonly"
         :style="{ minHeight: `${Math.min(lineCount, 16) * 1.4 + 1}em` }"
         @update:model-value="emit('update:model-value', $event)"

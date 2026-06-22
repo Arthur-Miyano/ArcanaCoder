@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Codemirror } from 'vue-codemirror'
-import { python } from '@codemirror/lang-python'
-import { oneDark } from '@codemirror/theme-one-dark'
+import { pythonExtensions as extensions } from '@/composables/useCodeMirror'
 import type { Question } from '@/types'
-import {
-  parsePythonError,
-  findErrorLines,
-  getNoxExplanation,
-} from '@/utils/errorParser'
+import { parsePythonError, findErrorLines, getNoxExplanation } from '@/utils/errorParser'
 import type { DiffResult } from '@/utils/diff'
 import type { CodeHint } from '@/utils/codeValidator'
 
@@ -25,7 +20,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{ next: [] }>()
 
-const extensions = [python(), oneDark]
 const showTraceback = ref(false)
 
 const parsedError = computed(() => {
@@ -207,7 +201,7 @@ const noxMessage = computed(() => {
       </div>
 
       <button
-        class="w-full py-2.5 rounded font-medium transition-colors bg-[#4B0082] hover:bg-[#5a0099] text-white"
+        class="w-full py-2.5 rounded font-medium transition-colors bg-magic-accent hover:bg-magic-accent-light text-white"
         @click="emit('next')"
       >
         下一道试炼

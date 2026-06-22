@@ -62,7 +62,7 @@ onMounted(load)
 <template>
   <div class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-magic-bg">
     <div
-      class="w-16 h-16 rounded-full bg-[#4B0082] border-2 border-[#c9a227] mb-6"
+      class="w-16 h-16 rounded-full bg-magic-accent border-2 border-magic-gold mb-6"
     />
 
     <template v-if="!error">
@@ -70,7 +70,7 @@ onMounted(load)
       <p class="text-sm text-gray-400 mb-6">{{ progress }}%</p>
       <div class="w-64 h-3 bg-gray-700 rounded-full overflow-hidden">
         <div
-          class="h-full bg-gradient-to-r from-[#4B0082] to-[#c9a227] transition-all duration-300 rounded-full"
+          class="h-full bg-gradient-to-r from-magic-accent to-magic-gold transition-all duration-300 rounded-full"
           :style="{ width: `${progress}%` }"
         />
       </div>
@@ -80,7 +80,7 @@ onMounted(load)
       <p class="text-red-400 text-lg mb-2">⚠️ {{ error }}</p>
       <p class="text-sm text-gray-400 mb-6">请检查网络连接后重试</p>
       <button
-        class="px-6 py-2 rounded font-medium bg-[#4B0082] hover:bg-[#5a0099] text-white transition-colors"
+        class="px-6 py-2 rounded font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
         @click="load"
       >
         重新加载
