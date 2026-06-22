@@ -4,6 +4,7 @@ import { useGameStore } from '@/stores/gameStore'
 import { getQuestionsByChapter } from '@/data/questions'
 import { runPython } from '@/services/pyodide'
 import type { Question, TestCase } from '@/types'
+import { compareOutput, type DiffResult } from '@/utils/diff'
 import ChoiceQuestion from './ChoiceQuestion.vue'
 import CodeQuestion from './CodeQuestion.vue'
 import OutputPredict from './OutputPredict.vue'
@@ -35,6 +36,7 @@ const lastResult = ref<{
   explanation: string
   correctAnswer?: string
   errorDetail?: string
+  diff?: DiffResult
 } | null>(null)
 const submitting = ref(false)
 const showResults = ref(false)
@@ -68,16 +70,16 @@ watch(currentQuestion, (q) => {
 async function validateCode(
   q: Question,
   code: string,
-): Promise<{ correct: boolean; errorDetail?: string }> {
+): Promise<{ correct: boolean; errorDetail?: string; userOutput?: string }> {
   if (q.type === 'code_fill' || q.type === 'code_fix') {
     const { output, error } = await runPython(code)
     if (error) return { correct: false, errorDetail: error }
     if (q.expectedOutput !== undefined) {
-      return { correct: output.trim() === q.expectedOutput }
+      return { correct: output.trim() === q.expectedOutput, userOutput: output.trim() }
     }
     if (q.correctCode) {
       const { output: expectedOut } = await runPython(q.correctCode)
-      return { correct: output.trim() === expectedOut.trim() }
+      return { correct: output.trim() === expectedOut.trim(), userOutput: output.trim() }
     }
     return { correct: !error }
   }
@@ -90,7 +92,7 @@ async function validateCode(
 async function validateFreeCoding(
   code: string,
   testCases: TestCase[],
-): Promise<{ correct: boolean; errorDetail?: string }> {
+): Promise<{ correct: boolean; errorDetail?: string; userOutput?: string }> {
   for (const test of testCases) {
     const fullCode = `${code}\nprint(${test.input})`
     const { output, error } = await runPython(fullCode)
@@ -119,6 +121,8 @@ async function submit() {
   submitting.value = true
   let correct = false
   let errorDetail: string | undefined
+  let userOutput: string | undefined
+  let diff: DiffResult | undefined
 
   if (q.type === 'choice' || q.type === 'output_predict') {
     correct = userAnswer.value === q.correctOption
@@ -127,6 +131,10 @@ async function submit() {
     const result = await validateCode(q, code)
     correct = result.correct
     errorDetail = result.errorDetail
+    if (!correct && q.expectedOutput) {
+      userOutput = result.userOutput
+      diff = compareOutput(userOutput ?? '', q.expectedOutput)
+    }
   }
 
   store.submitAnswer(q.id, correct)
@@ -135,6 +143,7 @@ async function submit() {
     explanation: q.explanation,
     correctAnswer: correct ? undefined : getCorrectAnswer(q),
     errorDetail,
+    diff,
   }
   if (!correct) {
     noxHint.value = getHintForQuestion(q)
@@ -317,6 +326,7 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
         :explanation="lastResult.explanation"
         :correct-answer="lastResult.correctAnswer"
         :error-detail="lastResult.errorDetail"
+        :diff="lastResult.diff"
         :question="currentQuestion"
         :user-code="typeof userAnswer === 'string' ? userAnswer : undefined"
         @next="nextQuestion"

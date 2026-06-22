@@ -42,9 +42,14 @@ export interface Question {
 
 export interface WisdomPoint {
   title: string
-  metaphor: string
+  definition: string
+  syntaxRules: string[]
   code: string
   expectedOutput: string
+  designPhilosophy?: string
+  commonErrors?: { code: string; error: string; explanation: string }[]
+  interactiveCode?: string
+  interactiveExpected?: string
   tip: string
 }
 

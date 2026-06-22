@@ -9,12 +9,14 @@ import {
   findErrorLines,
   getNoxExplanation,
 } from '@/utils/errorParser'
+import type { DiffResult } from '@/utils/diff'
 
 const props = defineProps<{
   correct: boolean
   explanation: string
   correctAnswer: string | undefined
   errorDetail: string | undefined
+  diff: DiffResult | undefined
   question: Question
   userCode: string | undefined
 }>()
@@ -102,6 +104,24 @@ const noxMessage = computed(() => {
           >
             <span class="text-red-300 font-bold">{{ parsedError.chineseType }}</span>
             <p class="text-red-200 text-xs mt-0.5">{{ parsedError.message }}</p>
+          </div>
+
+          <div
+            v-if="diff && diff.matchType !== 'exact'"
+            class="mt-2 px-3 py-2 bg-yellow-900/30 border border-yellow-600/50 rounded"
+          >
+            <p class="text-xs text-yellow-300 font-medium mb-1">
+              <template v-if="diff.matchType === 'case'">大小写不匹配</template>
+              <template v-else-if="diff.matchType === 'whitespace'">空白字符不匹配</template>
+              <template v-else>输出不匹配</template>
+            </p>
+            <div class="space-y-0.5 text-xs font-mono">
+              <div class="text-red-300">你的输出：{{ diff.userOutput }}</div>
+              <div class="text-green-300">期望输出：{{ diff.expectedOutput }}</div>
+              <div v-if="diff.diffIndex !== null" class="text-gray-400">
+                差异位置：第 {{ diff.diffIndex + 1 }} 个字符（你的"{{ diff.diffChar }}"→ 期望"{{ diff.expectedChar }}"）
+              </div>
+            </div>
           </div>
         </div>
 
