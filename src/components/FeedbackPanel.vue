@@ -66,6 +66,13 @@ const noxMessage = computed(() => {
 
       <p class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">{{ explanation }}</p>
 
+      <div
+        class="mt-3 px-3 py-2 bg-magic-card border border-gray-600 rounded text-xs text-gray-400 leading-relaxed"
+      >
+        <span class="text-gray-500 block mb-0.5">诺克斯的笔记：</span>
+        <p class="text-sm text-gray-300 whitespace-pre-wrap">{{ question.narrativeExplanation || explanation }}</p>
+      </div>
+
       <button
         class="mt-3 px-4 py-1.5 rounded text-sm font-medium bg-gray-600 hover:bg-gray-500 text-white transition-colors"
         @click="emit('next')"
@@ -150,6 +157,14 @@ const noxMessage = computed(() => {
       </div>
 
       <p class="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{{ explanation }}</p>
+
+      <div
+        v-if="question.narrativeExplanation"
+        class="px-3 py-2 bg-magic-card border border-gray-600 rounded text-xs text-gray-400 leading-relaxed"
+      >
+        <span class="text-gray-500 block mb-0.5">诺克斯的笔记：</span>
+        <p class="text-sm text-gray-300 whitespace-pre-wrap">{{ question.narrativeExplanation }}</p>
+      </div>
 
       <div v-if="errorDetail">
         <button

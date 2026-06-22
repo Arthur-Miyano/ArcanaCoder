@@ -21,6 +21,10 @@ export interface Question {
   difficulty: 1 | 2 | 3
   knowledgeTags: string[]
 
+  narrativeTitle?: string
+  narrativeDesc?: string
+  narrativeExplanation?: string
+
   options?: string[]
   correctOption?: number
 
@@ -32,6 +36,8 @@ export interface Question {
 
   explanation: string
   hint?: string
+  hintRoleplay?: string
+  hintDirect?: string
 }
 
 export interface WisdomPoint {

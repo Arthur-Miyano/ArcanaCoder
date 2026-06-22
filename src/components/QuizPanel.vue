@@ -49,12 +49,20 @@ function isChoiceType(q: Question): boolean {
   return q.type === 'choice' || q.type === 'output_predict'
 }
 
+function getHintForQuestion(q: Question): string {
+  const result = store.getQuestionResult(props.chapterId, q.id)
+  const attempts = result?.attempts ?? 0
+  if (attempts >= 2 && q.hintDirect) return q.hintDirect
+  if (attempts >= 1 && q.hintRoleplay) return q.hintRoleplay
+  return q.hint ?? '加油，你可以的！'
+}
+
 watch(currentQuestion, (q) => {
   if (!q) return
   userAnswer.value = isChoiceType(q) ? null : q.initialCode ?? ''
   showFeedback.value = false
   lastResult.value = null
-  noxHint.value = q.hint ?? '加油，你可以的！'
+  noxHint.value = getHintForQuestion(q)
 })
 
 async function validateCode(
@@ -127,6 +135,9 @@ async function submit() {
     explanation: q.explanation,
     correctAnswer: correct ? undefined : getCorrectAnswer(q),
     errorDetail,
+  }
+  if (!correct) {
+    noxHint.value = getHintForQuestion(q)
   }
   showFeedback.value = true
   submitting.value = false
@@ -268,7 +279,16 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
       </div>
 
       <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        <h2 class="text-base font-bold text-white">{{ currentQuestion.title }}</h2>
+        <h2 class="text-base font-bold text-white">
+          {{ currentQuestion.narrativeTitle || currentQuestion.title }}
+        </h2>
+
+        <p
+          v-if="currentQuestion.narrativeDesc"
+          class="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap"
+        >
+          {{ currentQuestion.narrativeDesc }}
+        </p>
 
         <ChoiceQuestion
           v-if="currentQuestion.type === 'choice'"
