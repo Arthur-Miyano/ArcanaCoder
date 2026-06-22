@@ -6,6 +6,7 @@ import type { Question } from '@/types'
 import { parsePythonError, findErrorLines, getNoxExplanation } from '@/utils/errorParser'
 import type { DiffResult } from '@/utils/diff'
 import type { CodeHint } from '@/utils/codeValidator'
+import NoxDialog from './NoxDialog.vue'
 
 const props = defineProps<{
   correct: boolean
@@ -160,20 +161,7 @@ const noxMessage = computed(() => {
             </div>
           </div>
 
-          <div
-            class="rounded-lg border border-gray-600 bg-magic-card px-3 py-2.5"
-          >
-            <div class="flex items-start gap-2">
-              <div
-                class="w-4 h-4 rounded-full bg-[#FFFAFA] border border-blue-300 shrink-0 mt-0.5"
-                title="诺克斯"
-              />
-              <div>
-                <p class="text-xs text-gray-400 mb-0.5">诺克斯说：</p>
-                <p class="text-sm text-gray-200 leading-relaxed">{{ noxMessage }}</p>
-              </div>
-            </div>
-          </div>
+          <NoxDialog :message="noxMessage" />
         </div>
       </div>
 
