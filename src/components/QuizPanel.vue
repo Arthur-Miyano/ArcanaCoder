@@ -181,7 +181,6 @@ function nextQuestion() {
 
       <FeedbackToast
         v-if="showFeedback"
-        :visible="showFeedback"
         :correct="lastResult?.correct ?? false"
         :explanation="lastResult?.explanation ?? ''"
         :correct-answer="lastResult?.correctAnswer"
