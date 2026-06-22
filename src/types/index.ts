@@ -5,7 +5,7 @@ export type QuestionType =
   | 'output_predict'
   | 'free_coding'
 
-export type ViewState = 'loading' | 'chapterSelect' | 'knowledgeBook' | 'quiz' | 'chapterComplete'
+export type ViewState = 'loading' | 'chapterSelect' | 'wisdom' | 'quiz' | 'chapterComplete'
 
 export interface TestCase {
   input: string
@@ -34,12 +34,19 @@ export interface Question {
   hint?: string
 }
 
+export interface WisdomPoint {
+  title: string
+  metaphor: string
+  code: string
+  expectedOutput: string
+  tip: string
+}
+
 export interface Chapter {
   id: string
   name: string
   description: string
   questionIds: string[]
-  knowledge: string[]
 }
 
 export interface AnswerRecord {

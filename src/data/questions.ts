@@ -6,13 +6,7 @@ export const chapters: Chapter[] = [
     name: '第 1 关：变量与类型',
     description: 'Python 的基础——变量赋值与数据类型',
     questionIds: ['q1_choice', 'q2_fill', 'q3_fix', 'q4_predict', 'q5_free'],
-    knowledge: [
-      '变量就像魔法容器，可以存放各种数据。用 = 给变量赋值。',
-      '字符串（str）是用引号包裹的文字，比如 "Hello" 或 "世界"。',
-      'f-string 可以在字符串中插入变量值：f"你好，{name}" 会输出 你好，世界。',
-      'import 语句导入模块（代码库）。比如 import math 之后就可以使用 math.pi。',
-      '函数用 def 定义，return 返回值。缩进 4 个空格表示代码块。',
-    ],
+
   },
 ]
 

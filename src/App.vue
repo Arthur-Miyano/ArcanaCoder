@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import type { ViewState } from '@/types'
+import { chapters } from '@/data/questions'
+import { getWisdomPoints } from '@/data/wisdom'
 import LoadingOverlay from './components/LoadingOverlay.vue'
 import ChapterSelect from './components/ChapterSelect.vue'
-import KnowledgeBook from './components/KnowledgeBook.vue'
+import WisdomBook from './components/WisdomBook.vue'
 import QuizPanel from './components/QuizPanel.vue'
 import ChapterComplete from './components/ChapterComplete.vue'
 
@@ -12,6 +14,14 @@ const store = useGameStore()
 
 const viewState = ref<ViewState>('loading')
 const activeChapterId = ref<string | null>(null)
+
+const currentChapter = computed(() =>
+  chapters.find((c) => c.id === activeChapterId.value),
+)
+
+const chapterPoints = computed(() =>
+  activeChapterId.value ? getWisdomPoints(activeChapterId.value) : [],
+)
 
 onMounted(async () => {
   await store.load()
@@ -23,7 +33,7 @@ function onPyodideReady() {
 
 function onSelectChapter(chapterId: string) {
   activeChapterId.value = chapterId
-  viewState.value = 'knowledgeBook'
+  viewState.value = 'wisdom'
 }
 
 function onStartQuiz() {
@@ -39,7 +49,7 @@ function onBackToChapters() {
   viewState.value = 'chapterSelect'
 }
 
-function onBackFromKnowledge() {
+function onBackFromWisdom() {
   viewState.value = 'chapterSelect'
 }
 
@@ -60,11 +70,14 @@ function onBackFromQuiz() {
       @select-chapter="onSelectChapter"
     />
 
-    <KnowledgeBook
-      v-else-if="viewState === 'knowledgeBook' && activeChapterId"
+    <WisdomBook
+      v-else-if="viewState === 'wisdom' && activeChapterId && currentChapter"
       :chapter-id="activeChapterId"
+      :chapter-name="currentChapter.name"
+      :chapter-number="1"
+      :points="chapterPoints"
       @start="onStartQuiz"
-      @back="onBackFromKnowledge"
+      @back="onBackFromWisdom"
     />
 
     <QuizPanel
