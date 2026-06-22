@@ -23,7 +23,8 @@ function getDb(): Promise<IDBPDatabase> {
 
 export async function saveGameState(state: GameState): Promise<void> {
   const db = await getDb()
-  await db.put(STORE_NAME, { id: STATE_KEY, state, updatedAt: Date.now() }, STATE_KEY)
+  const plain = JSON.parse(JSON.stringify(state))
+  await db.put(STORE_NAME, { id: STATE_KEY, state: plain, updatedAt: Date.now() }, STATE_KEY)
 }
 
 export async function loadGameState(): Promise<GameState | null> {

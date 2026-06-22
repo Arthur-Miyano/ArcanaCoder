@@ -32,6 +32,7 @@ const currentSection = computed(() => {
   return ch.sections.find((s) => s.id === secId) ?? null
 })
 const questions = ref<Question[]>([])
+const currentIndex = ref(0)
 
 watch(currentSection, (sec) => {
   if (!sec) return
@@ -46,7 +47,6 @@ watch(currentSection, (sec) => {
   fatigueConsecutiveWrong.value = 0
 }, { immediate: true })
 
-const currentIndex = ref(0)
 const currentQuestion = computed<Question | undefined>(
   () => questions.value[currentIndex.value],
 )
