@@ -9,11 +9,13 @@ import ChapterSelect from './components/ChapterSelect.vue'
 import WisdomBook from './components/WisdomBook.vue'
 import QuizPanel from './components/QuizPanel.vue'
 import ChapterComplete from './components/ChapterComplete.vue'
+import DailyPlanDialog from './components/DailyPlanDialog.vue'
 
 const store = useGameStore()
 
 const viewState = ref<ViewState>('loading')
 const activeChapterId = ref<string | null>(null)
+const showDailyPlan = ref(false)
 
 const currentChapter = computed(() =>
   chapters.find((c) => c.id === activeChapterId.value),
@@ -29,6 +31,11 @@ onMounted(async () => {
 
 function onPyodideReady() {
   viewState.value = 'chapterSelect'
+  showDailyPlan.value = true
+}
+
+function onDismissPlan() {
+  showDailyPlan.value = false
 }
 
 function onSelectChapter(chapterId: string) {
@@ -77,6 +84,11 @@ function onBackFromQuiz() {
     <ChapterSelect
       v-else-if="viewState === 'chapterSelect'"
       @select-chapter="onSelectChapter"
+    />
+
+    <DailyPlanDialog
+      v-if="viewState === 'chapterSelect' && showDailyPlan"
+      @start="onDismissPlan"
     />
 
     <WisdomBook
