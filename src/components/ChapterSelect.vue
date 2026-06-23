@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { chapters } from '@/data/questions'
+import { chapters, questions } from '@/data/questions'
 import GameHeader from './GameHeader.vue'
 
 const emit = defineEmits<{
@@ -10,6 +10,35 @@ const emit = defineEmits<{
 
 const store = useGameStore()
 const expandedChapter = ref<string | null>(null)
+
+function getChapterKnowledge(chapterId: string): { tag: string; mastery: number }[] {
+  const ch = chapters.find((c) => c.id === chapterId)
+  if (!ch) return []
+  const tags = new Map<string, number>()
+  for (const sec of ch.sections) {
+    for (const qId of sec.questionIds) {
+      const q = questions.find((x) => x.id === qId)
+      q?.knowledgeTags?.forEach((t) => {
+        const m = store.getMastery(t)
+        if (m > 0) tags.set(t, Math.max(tags.get(t) ?? 0, m))
+        else if (!tags.has(t)) tags.set(t, 0)
+      })
+    }
+  }
+  return Array.from(tags.entries()).map(([tag, mastery]) => ({ tag, mastery }))
+}
+
+function masteryClass(m: number): string {
+  if (m >= 1.0) return 'text-magic-gold'
+  if (m >= 0.7) return 'text-cyan-400'
+  return 'text-red-400'
+}
+
+function masteryBarClass(m: number): string {
+  if (m >= 1.0) return 'bg-magic-gold'
+  if (m >= 0.7) return 'bg-cyan-400'
+  return 'bg-red-400'
+}
 
 function toggleChapter(chapterId: string) {
   if (!isUnlocked(chapterId)) return
@@ -152,6 +181,28 @@ function startSection(chapterId: string, sectionId: string) {
                 ✓
               </span>
             </button>
+          </div>
+
+          <!-- 掌握度 (knowledge mastery) -->
+          <div v-if="expandedChapter === ch.id" class="ml-6 mt-3 space-y-1.5">
+            <div class="text-xs text-gray-500 mb-1">知识掌握度</div>
+            <div
+              v-for="k in getChapterKnowledge(ch.id)"
+              :key="k.tag"
+              class="flex items-center gap-2 text-xs"
+            >
+              <span class="text-gray-400 w-16 truncate shrink-0">{{ k.tag }}</span>
+              <div class="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all"
+                  :class="masteryBarClass(k.mastery)"
+                  :style="{ width: `${k.mastery * 100}%` }"
+                />
+              </div>
+              <span class="w-8 text-right shrink-0" :class="masteryClass(k.mastery)">
+                {{ Math.round(k.mastery * 100) }}%
+              </span>
+            </div>
           </div>
         </div>
       </div>
