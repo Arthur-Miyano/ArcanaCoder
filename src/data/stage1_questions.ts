@@ -598,7 +598,6 @@ export const stage1Questions: Question[] = [
     options: ['15', '"510"', '报错', '5'],
     correctOption: 2,
     expectedOutput: '',
-    validationMode: 'contains',
     explanation: 'input() 返回字符串 "5"，"5" + 10 报错——Python 不允许 str + int。',
     commonErrors: [
       { pattern: '认为输出 15', message: '字符串和数字不能直接相加', noxHint: 'input() 永远返回字符串——即使你输入的是数字。用 int(input()) 把输入转成整数。' },

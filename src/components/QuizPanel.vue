@@ -1,392 +1,126 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useGameStore } from '@/stores/gameStore'
-import { chapters, backupQuestions, getQuestionsBySection } from '@/data/questions'
-import { runPython } from '@/services/pyodide'
-import type { Question, TestCase } from '@/types'
-import { compareOutput, type DiffResult } from '@/utils/diff'
-import { validateCode as validateCodeStyle, type CodeHint } from '@/utils/codeValidator'
+import { computed } from 'vue'
+import { useQuiz } from '@/composables/useQuiz'
 import ChoiceQuestion from './ChoiceQuestion.vue'
 import CodeQuestion from './CodeQuestion.vue'
 import OutputPredict from './OutputPredict.vue'
 import NoxDialog from './NoxDialog.vue'
 import FeedbackPanel from './FeedbackPanel.vue'
 
-const props = defineProps<{
-  chapterId: string
-}>()
+const props = defineProps<{ chapterId: string }>()
+const emit = defineEmits<{ back: []; reviewKnowledge: []; chapterComplete: [] }>()
 
-const emit = defineEmits<{
-  'back': []
-  'reviewKnowledge': []
-  'chapterComplete': []
-}>()
-
-const store = useGameStore()
-const currentSection = computed(() => {
-  const ch = chapters.find((c) => c.id === props.chapterId)
-  if (!ch || !ch.sections.length) return null
-  const secId = store.currentSectionId
-  if (!secId) return null
-  return ch.sections.find((s) => s.id === secId) ?? null
-})
-const questions = ref<Question[]>([])
-const currentIndex = ref(0)
-const fatigueQuestionCount = ref(0)
-const fatigueConsecutiveWrong = ref(0)
-const showRestPrompt = ref(false)
-const restTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-const backupLimit = ref(0)
-const usedBackupIds = ref<Set<string>>(new Set())
-const showSectionComplete = ref(false)
-const sectionResults = ref<{ correct: number; total: number; wrongIds: string[] } | null>(null)
-
-watch(currentSection, (sec) => {
-  if (!sec) return
-  questions.value = getQuestionsBySection(sec.id)
-  currentIndex.value = 0
-  backupLimit.value = 0
-  usedBackupIds.value = new Set()
-  fatigueQuestionCount.value = 0
-  fatigueConsecutiveWrong.value = 0
-}, { immediate: true })
-
-const currentQuestion = computed<Question | undefined>(
-  () => questions.value[currentIndex.value],
-)
-
-const userAnswer = ref<any>(null)
-const showFeedback = ref(false)
-const lastResult = ref<{
-  correct: boolean
-  explanation: string
-  correctAnswer?: string
-  errorDetail?: string
-  diff?: DiffResult
-  codeHints?: CodeHint[]
-} | null>(null)
-const submitting = ref(false)
-const showResults = ref(false)
-const retryIds = ref<string[]>([])
-const isRetryMode = ref(false)
-
-const isLastQuestion = computed(
-  () => currentIndex.value >= questions.value.length - 1,
-)
-
-const noxHint = ref('让我们开始这一层的试炼吧，贤者。')
-
-function isChoiceType(q: Question): boolean {
-  return q.type === 'choice' || q.type === 'output_predict'
-}
-
-function getHintForQuestion(q: Question): string {
-  const result = store.getQuestionResult(q.id)
-  const attempts = result?.attempts ?? 0
-  if (attempts >= 2 && q.hintDirect) return q.hintDirect
-  if (attempts >= 1 && q.hintRoleplay) return q.hintRoleplay
-  return q.hint ?? '加油，你可以的！'
-}
-
-watch(currentQuestion, (q) => {
-  if (!q) return
-  userAnswer.value = isChoiceType(q) ? null : q.initialCode ?? ''
-  showFeedback.value = false
-  lastResult.value = null
-  noxHint.value = getHintForQuestion(q)
+const {
+  questions, currentIndex, currentQuestion, isLastQuestion,
+  userAnswer, showFeedback, lastResult, submitting,
+  showResults, showSectionComplete, sectionResults,
+  noxHint, accuracyInfo,
+  submit, nextQuestion, goBack,
+  retryAll, retrySingle, retrySectionWrong,
+} = useQuiz(props.chapterId, {
+  back: () => emit('back'),
+  reviewKnowledge: () => emit('reviewKnowledge'),
+  chapterComplete: () => emit('chapterComplete'),
 })
 
-async function validateCode(
-  q: Question,
-  code: string,
-): Promise<{ correct: boolean; errorDetail?: string; userOutput?: string }> {
-  if (q.type === 'code_fill' || q.type === 'code_fix') {
-    const { output, error } = await runPython(code)
-    if (error) return { correct: false, errorDetail: error }
-    if (q.expectedOutput !== undefined) {
-      return { correct: output.trim() === q.expectedOutput, userOutput: output.trim() }
-    }
-    if (q.correctCode) {
-      const { output: expectedOut } = await runPython(q.correctCode)
-      return { correct: output.trim() === expectedOut.trim(), userOutput: output.trim() }
-    }
-    return { correct: !error }
-  }
-  if (q.type === 'free_coding' && q.testCases) {
-    return validateFreeCoding(code, q.testCases)
-  }
-  return { correct: false }
-}
-
-async function validateFreeCoding(
-  code: string,
-  testCases: TestCase[],
-): Promise<{ correct: boolean; errorDetail?: string; userOutput?: string }> {
-  for (const test of testCases) {
-    const fullCode = `${code}\nprint(${test.input})`
-    const { output, error } = await runPython(fullCode)
-    if (error) return { correct: false, errorDetail: `测试输入 ${test.input} 失败：${error}` }
-    if (output.trim() !== test.expected) {
-      return {
-        correct: false,
-        errorDetail: `输入 ${test.input}：期望 ${test.expected}，实际 ${output.trim()}`,
-      }
-    }
-  }
-  return { correct: true }
-}
-
-function getCorrectAnswer(q: Question): string | undefined {
-  if (q.type === 'choice' || q.type === 'output_predict') {
-    return q.options?.[q.correctOption!]
-  }
-  return q.correctCode ?? q.expectedOutput
-}
-
-async function submit() {
-  const q = currentQuestion.value
-  if (!q || submitting.value) return
-
-  submitting.value = true
-  let correct = false
-  let errorDetail: string | undefined
-  let userOutput: string | undefined
-  let diff: DiffResult | undefined
-
-  if (q.type === 'choice' || q.type === 'output_predict') {
-    correct = userAnswer.value === q.correctOption
-  } else {
-    const code = userAnswer.value ?? ''
-    const result = await validateCode(q, code)
-    correct = result.correct
-    errorDetail = result.errorDetail
-    if (!correct && q.expectedOutput) {
-      userOutput = result.userOutput
-      diff = compareOutput(userOutput ?? '', q.expectedOutput)
-    }
-  }
-
-  store.submitAnswer(q.id, correct)
-  const hints: CodeHint[] = !correct && typeof userAnswer.value === 'string'
-    ? validateCodeStyle(userAnswer.value, { knowledgeTags: q.knowledgeTags, correctCode: q.correctCode })
-    : []
-  lastResult.value = {
-    correct,
-    explanation: q.explanation,
-    correctAnswer: correct ? undefined : getCorrectAnswer(q),
-    errorDetail,
-    diff,
-    codeHints: hints,
-  }
-  if (!correct) {
-    noxHint.value = getHintForQuestion(q)
-    fatigueConsecutiveWrong.value++
-    if (fatigueConsecutiveWrong.value >= 3) {
-      noxHint.value = '别急别急，这个法则确实有点绕。我们先深呼吸一下...要不要回智慧之书翻翻看？'
-    }
-    if (backupLimit.value < 3 && q.knowledgeTags.length > 0) {
-      const bk = backupQuestions.find(
-        (b) => b.id !== q.id &&
-          b.knowledgeTags.some((t) => q.knowledgeTags.includes(t)) &&
-          !usedBackupIds.value.has(b.id) &&
-          !questions.value.some((x) => x.id === b.id),
-      )
-      if (bk) {
-        usedBackupIds.value.add(bk.id)
-        backupLimit.value++
-        const insertAt = currentIndex.value + 1
-        questions.value.splice(insertAt, 0, bk)
-      }
-    }
-  } else {
-    fatigueConsecutiveWrong.value = 0
-  }
-
-  fatigueQuestionCount.value++
-  checkFatigue()
-
-  showFeedback.value = true
-  submitting.value = false
-}
-
-function dismissRest() {
-  showRestPrompt.value = false
-  if (restTimer.value) clearTimeout(restTimer.value)
-}
-
-function checkFatigue() {
-  if (fatigueQuestionCount.value >= 7 && !showRestPrompt.value) {
-    showRestPrompt.value = true
-    restTimer.value = setTimeout(() => {
-      showRestPrompt.value = false
-    }, 5000)
-  }
-}
-
-function finishSection(correct: number, total: number, wrongIds: string[]) {
-  sectionResults.value = { correct, total, wrongIds }
-  if (wrongIds.length === 0 && currentSection.value) {
-    store.completeSection(currentSection.value.id)
-  }
-  showSectionComplete.value = true
-}
-
-function nextQuestion() {
-  showFeedback.value = false
-  if (isRetryMode.value && currentQuestion.value) {
-    const qId = currentQuestion.value.id
-    if (lastResult.value?.correct) {
-      retryIds.value = retryIds.value.filter((id) => id !== qId)
-      if (retryIds.value.length > 0) {
-        const nextId = retryIds.value[0]
-        const idx = questions.value.findIndex((q) => q.id === nextId)
-        if (idx >= 0) { currentIndex.value = idx; return }
-      }
-      isRetryMode.value = false
-      const qWrong = questions.value.filter(
-        (q) => !store.getQuestionResult(q.id)?.correct,
-      )
-      if (qWrong.length === 0 && currentSection.value) {
-        store.completeSection(currentSection.value.id)
-        const chAcc = store.getChapterAccuracy(props.chapterId)
-        if (chAcc.wrongIds.length === 0) { emit('chapterComplete'); return }
-        finishSection(questions.value.length, questions.value.length, [])
-      } else {
-        showResults.value = true
-      }
-      return
-    }
-    return
-  }
-  if (isLastQuestion.value) {
-    const allCorrect = questions.value.every(
-      (q) => store.getQuestionResult(q.id)?.correct,
-    )
-    const correct = questions.value.filter((q) => store.getQuestionResult(q.id)?.correct).length
-    const wrongIds = questions.value
-      .filter((q) => !store.getQuestionResult(q.id)?.correct)
-      .map((q) => q.id)
-    finishSection(correct, questions.value.length, wrongIds)
-  } else {
-    currentIndex.value++
-  }
-}
-
-function retryAll() {
-  showResults.value = false
-  const accuracy = store.getChapterAccuracy(props.chapterId)
-  retryIds.value = [...accuracy.wrongIds]
-  isRetryMode.value = true
-  if (retryIds.value.length > 0) {
-    const idx = questions.value.findIndex((q) => q.id === retryIds.value[0])
-    if (idx >= 0) currentIndex.value = idx
-  }
-}
-
-function retrySingle(questionId: string) {
-  showResults.value = false
-  retryIds.value = [questionId]
-  isRetryMode.value = true
-  const idx = questions.value.findIndex((q) => q.id === questionId)
-  if (idx >= 0) currentIndex.value = idx
-}
-
-function retrySectionWrong() {
-  if (!sectionResults.value || sectionResults.value.wrongIds.length === 0) return
-  showSectionComplete.value = false
-  retryIds.value = [...sectionResults.value.wrongIds]
-  isRetryMode.value = true
-  const idx = questions.value.findIndex((q) => q.id === retryIds.value[0])
-  if (idx >= 0) currentIndex.value = idx
-}
-
-function goBack() {
-  if (isRetryMode.value && retryIds.value.length > 0) {
-    const msg = `还有 ${retryIds.value.length} 道错题未重试，确定退出吗？`
-    if (!confirm(msg)) return
-    isRetryMode.value = false
-    retryIds.value = []
-  }
-  showResults.value = false
-  emit('back')
-}
-
-const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
+// 类型适配：子组件 v-model 预期 number|string 而非联合类型
+const choiceAnswer = computed({
+  get: () => typeof userAnswer.value === 'number' ? userAnswer.value : null,
+  set: (v: number | null) => { userAnswer.value = v },
+})
+const codeAnswer = computed({
+  get: () => typeof userAnswer.value === 'string' ? userAnswer.value : '',
+  set: (v: string) => { userAnswer.value = v },
+})
 </script>
 
 <template>
   <div class="flex flex-col flex-1">
     <!-- 结果总览 -->
     <div v-if="showResults" class="flex-1 flex flex-col">
-      <div class="flex items-center justify-between px-4 py-2 border-b border-gray-700">
-        <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="goBack">
+      <div class="flex items-center justify-between px-4 py-2 border-b border-arcane-500/15">
+        <button class="text-xs text-mist-400 hover:text-mist-100 transition-colors" @click="goBack">
           ← 返回
         </button>
-        <span class="text-xs text-gray-500">试炼结果</span>
+        <span class="text-xs text-mist-400 tracking-widest">试炼结果</span>
       </div>
 
       <div class="flex-1 overflow-y-auto px-4 py-6">
-        <div class="max-w-md mx-auto space-y-4">
-          <div class="text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-magic-accent border-2 border-magic-gold mb-3" />
-            <h2 class="text-lg font-bold text-magic-gold">试炼完成</h2>
-            <p class="text-sm text-gray-400 mt-1">
-              {{ accuracyInfo.correct }}/{{ accuracyInfo.total }} 魔力共鸣
-            </p>
-            <div class="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div class="max-w-md mx-auto">
+          <div class="arc-card px-5 py-6 sm:px-8 space-y-4 animate-fade-up">
+            <div class="text-center">
               <div
-                class="h-full rounded-full transition-all duration-500"
-                :class="accuracyInfo.wrongIds.length === 0 ? 'bg-green-500' : 'bg-yellow-500'"
-                :style="{ width: `${(accuracyInfo.correct / accuracyInfo.total) * 100}%` }"
-              />
-            </div>
-          </div>
-
-          <div v-if="accuracyInfo.wrongIds.length > 0" class="space-y-2">
-            <p class="text-xs text-gray-400">需要重新施展的试炼：</p>
-            <button
-              v-for="qId in accuracyInfo.wrongIds"
-              :key="qId"
-              class="w-full text-left px-3 py-2 rounded border border-red-800/50 bg-red-900/20 text-sm text-red-200"
-              @click="retrySingle(qId)"
-            >
-              ✗ 第{{ questions.findIndex((q) => q.id === qId) + 1 }}题
-            </button>
-
-            <div v-if="accuracyInfo.knowledgeTags.length > 0" class="mt-4">
-              <p class="text-xs text-gray-400 mb-1">建议复习的知识点：</p>
-              <div class="flex flex-wrap gap-1.5">
-                <span
-                  v-for="tag in accuracyInfo.knowledgeTags"
-                  :key="tag"
-                  class="px-2 py-0.5 rounded bg-magic-card border border-gray-600 text-xs text-gray-300"
-                >
-                  {{ tag }}
-                </span>
-              </div>
-              <button
-                class="mt-3 text-xs text-magic-gold hover:text-yellow-300 transition-colors"
-                @click="emit('reviewKnowledge')"
+                class="w-14 h-14 mx-auto rounded-full mb-3 flex items-center justify-center
+                  bg-gradient-to-br from-arcane-500 to-arcane-700 border-2 border-gold-500/70
+                  shadow-glow-gold text-gold-200 text-xl animate-float-slow"
               >
-                ← 打开智慧之书复习
+                ⚜
+              </div>
+              <h2 class="title-display text-xl text-gold-300 text-glow-gold">试炼完成</h2>
+              <p class="text-sm text-mist-300 mt-1">
+                {{ accuracyInfo.correct }}/{{ accuracyInfo.total }} 魔力共鸣
+              </p>
+              <div class="mt-4 rune-bar">
+                <div
+                  class="rune-bar-fill"
+                  :class="accuracyInfo.wrongIds.length === 0 ? 'rune-bar-fill-gold' : ''"
+                  :style="{ width: `${accuracyInfo.total ? (accuracyInfo.correct / accuracyInfo.total) * 100 : 0}%` }"
+                />
+              </div>
+            </div>
+
+            <template v-if="accuracyInfo.wrongIds.length > 0">
+              <div class="arc-divider" />
+              <div class="space-y-2">
+                <p class="text-xs text-mist-400">需要重新施展的试炼：</p>
+                <button
+                  v-for="qId in accuracyInfo.wrongIds"
+                  :key="qId"
+                  class="w-full text-left px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10
+                    text-sm text-red-200 transition-all duration-300
+                    hover:border-red-400/50 hover:bg-red-500/15"
+                  @click="retrySingle(qId)"
+                >
+                  ✗ 第{{ questions.findIndex((q) => q.id === qId) + 1 }}题
+                </button>
+
+                <div v-if="accuracyInfo.knowledgeTags.length > 0" class="pt-3">
+                  <p class="text-xs text-mist-400 mb-1.5">建议复习的知识点：</p>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span
+                      v-for="tag in accuracyInfo.knowledgeTags"
+                      :key="tag"
+                      class="px-2 py-0.5 rounded-full bg-abyss-700/60 border border-arcane-500/20
+                        text-xs text-mist-200"
+                    >
+                      {{ tag }}
+                    </span>
+                  </div>
+                  <button
+                    class="mt-3 text-xs text-gold-300 hover:text-gold-200 transition-colors"
+                    @click="emit('reviewKnowledge')"
+                  >
+                    ← 打开智慧之书复习
+                  </button>
+                </div>
+              </div>
+            </template>
+
+            <div class="pt-3 flex gap-3">
+              <button
+                v-if="accuracyInfo.wrongIds.length > 0"
+                class="btn-gold flex-1"
+                @click="retryAll"
+              >
+                重试错题
+              </button>
+              <button
+                class="btn-arc flex-1"
+                @click="goBack"
+              >
+                返回关卡
               </button>
             </div>
-          </div>
-
-          <div class="pt-4 flex gap-3">
-            <button
-              v-if="accuracyInfo.wrongIds.length > 0"
-              class="flex-1 py-2.5 rounded font-medium bg-yellow-700 hover:bg-yellow-600 text-white transition-colors"
-              @click="retryAll"
-            >
-              重试错题
-            </button>
-            <button
-              class="flex-1 py-2.5 rounded font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
-              @click="goBack"
-            >
-              返回关卡
-            </button>
           </div>
         </div>
       </div>
@@ -395,88 +129,115 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
     <!-- 节完成 -->
     <div v-else-if="showSectionComplete && sectionResults" class="flex-1 flex flex-col">
       <div class="flex-1 overflow-y-auto px-4 py-6">
-        <div class="max-w-md mx-auto text-center space-y-4">
-          <div class="w-12 h-12 mx-auto rounded-full bg-magic-accent border-2 border-magic-gold" />
-          <h2 class="text-lg font-bold text-magic-gold">节完成</h2>
-          <p class="text-sm text-gray-400">
-            {{ sectionResults.correct }}/{{ sectionResults.total }} 魔力共鸣
-          </p>
-          <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div class="max-w-md mx-auto">
+          <div class="arc-card px-5 py-6 sm:px-8 text-center space-y-4 animate-fade-up">
             <div
-              class="h-full rounded-full transition-all duration-500 bg-green-500"
-              :style="{ width: `${(sectionResults.correct / sectionResults.total) * 100}%` }"
-            />
-          </div>
-          <div v-if="sectionResults.wrongIds.length > 0" class="bg-magic-card border border-gray-600 rounded-lg px-4 py-3 text-left">
-            <p class="text-xs text-red-400 mb-1">需要重新施展的试炼：{{ sectionResults.wrongIds.length }} 道</p>
-            <button
-              class="mt-2 px-4 py-1.5 rounded text-sm font-medium bg-yellow-700 hover:bg-yellow-600 text-white transition-colors"
-              @click="retrySectionWrong"
+              class="w-14 h-14 mx-auto rounded-full flex items-center justify-center
+                bg-gradient-to-br from-arcane-500 to-arcane-700 border-2 border-gold-500/70
+                shadow-glow-gold text-gold-200 text-xl animate-float-slow"
             >
-              重试错题
+              ✦
+            </div>
+            <h2 class="title-display text-xl text-gold-300 text-glow-gold">节完成</h2>
+            <p class="text-sm text-mist-300">
+              {{ sectionResults.correct }}/{{ sectionResults.total }} 魔力共鸣
+            </p>
+            <div class="rune-bar">
+              <div
+                class="rune-bar-fill rune-bar-fill-gold"
+                :style="{ width: `${(sectionResults.correct / sectionResults.total) * 100}%` }"
+              />
+            </div>
+            <div
+              v-if="sectionResults.wrongIds.length > 0"
+              class="rounded-xl border border-red-500/25 bg-red-500/5 px-4 py-3 text-left"
+            >
+              <p class="text-xs text-red-300 mb-1">需要重新施展的试炼：{{ sectionResults.wrongIds.length }} 道</p>
+              <button
+                class="btn-gold mt-2 px-4 py-1.5 text-sm"
+                @click="retrySectionWrong"
+              >
+                重试错题
+              </button>
+            </div>
+            <div
+              v-else
+              class="rounded-xl border border-gold-500/25 bg-gold-500/5 px-4 py-3"
+            >
+              <p class="text-xs text-gold-300">全部魔力共鸣，继续前进吧，贤者。</p>
+            </div>
+            <button
+              class="btn-arc px-8"
+              @click="emit('back')"
+            >
+              返回
             </button>
           </div>
-          <div v-else class="bg-magic-card border border-green-600/30 rounded-lg px-4 py-3">
-            <p class="text-xs text-green-400">全部魔力共鸣，继续前进吧，贤者。</p>
-          </div>
-          <button
-            class="px-6 py-2.5 rounded font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
-            @click="emit('back')"
-          >
-            返回
-          </button>
         </div>
       </div>
     </div>
 
     <!-- 答题面板 -->
     <div v-else-if="currentQuestion" class="flex-1 flex flex-col">
-      <div class="flex items-center justify-between px-4 py-2 border-b border-gray-700">
-        <button class="text-xs text-gray-400 hover:text-white transition-colors" @click="goBack">
-          ← 返回
-        </button>
-        <span class="text-xs text-gray-500">
-          第 {{ currentIndex + 1 }}/{{ questions.length }} 题
-        </span>
-        <button
-          class="text-xs text-magic-gold hover:text-yellow-300 transition-colors"
-          @click="emit('reviewKnowledge')"
-        >
-          知识
-        </button>
+      <div class="border-b border-arcane-500/15 bg-abyss-900/50 backdrop-blur-sm">
+        <div class="flex items-center justify-between px-4 py-2">
+          <button class="text-xs text-mist-400 hover:text-mist-100 transition-colors" @click="goBack">
+            ← 返回
+          </button>
+          <span class="text-xs text-mist-300 font-mono tracking-wider">
+            第 {{ currentIndex + 1 }}/{{ questions.length }} 题
+          </span>
+          <button
+            class="text-xs text-gold-300 hover:text-gold-200 transition-colors"
+            @click="emit('reviewKnowledge')"
+          >
+            知识
+          </button>
+        </div>
+        <div class="rune-bar rounded-none h-1">
+          <div
+            class="rune-bar-fill"
+            :style="{ width: `${questions.length ? ((currentIndex + 1) / questions.length) * 100 : 0}%` }"
+          />
+        </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-2xl mx-auto w-full">
-        <h2 class="text-base font-bold text-white">
-          {{ currentQuestion.narrativeTitle || currentQuestion.title }}
-        </h2>
+      <div class="flex-1 overflow-y-auto px-4 py-6">
+        <div class="max-w-2xl mx-auto w-full arc-card px-5 py-6 sm:px-8 space-y-6 animate-fade-up">
+          <h2 class="title-display text-lg sm:text-xl text-mist-100 text-glow-arcane">
+            {{ currentQuestion.narrativeTitle || currentQuestion.title }}
+          </h2>
 
-        <p
-          v-if="currentQuestion.narrativeDesc"
-          class="text-gray-300 leading-relaxed whitespace-pre-wrap"
-        >
-          {{ currentQuestion.narrativeDesc }}
-        </p>
+          <p
+            v-if="currentQuestion.narrativeDesc"
+            class="text-mist-200 leading-relaxed whitespace-pre-wrap"
+          >
+            {{ currentQuestion.narrativeDesc }}
+          </p>
 
-        <ChoiceQuestion
-          v-if="currentQuestion.type === 'choice'"
-          :question="currentQuestion"
-          v-model="userAnswer"
-        />
+          <ChoiceQuestion
+            :key="currentQuestion.id"
+            v-if="currentQuestion.type === 'choice'"
+            :question="currentQuestion"
+            v-model="choiceAnswer"
+          />
 
-        <CodeQuestion
-          v-else-if="currentQuestion.type === 'code_fill' || currentQuestion.type === 'code_fix' || currentQuestion.type === 'free_coding'"
-          :question="currentQuestion"
-          v-model="userAnswer"
-        />
+          <CodeQuestion
+            :key="currentQuestion.id"
+            v-else-if="currentQuestion.type === 'code_fill' || currentQuestion.type === 'code_fix' || currentQuestion.type === 'free_coding'"
+            :question="currentQuestion"
+            v-model="codeAnswer"
+          />
 
-        <OutputPredict
-          v-else-if="currentQuestion.type === 'output_predict'"
-          :question="currentQuestion"
-          v-model="userAnswer"
-        />
+          <OutputPredict
+            :key="currentQuestion.id"
+            v-else-if="currentQuestion.type === 'output_predict'"
+            :question="currentQuestion"
+            v-model="choiceAnswer"
+          />
 
-        <NoxDialog :message="noxHint" />
+          <NoxDialog :message="noxHint" />
+        </div>
       </div>
 
       <FeedbackPanel
@@ -492,14 +253,11 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
         @next="nextQuestion"
       />
 
-      <div v-else class="px-4 py-3 border-t border-gray-700">
+      <div v-else class="px-4 py-3 border-t border-arcane-500/15 bg-abyss-900/50 backdrop-blur-sm">
         <button
-          class="w-full py-2.5 rounded font-medium transition-colors"
-          :class="[
-            userAnswer === null || userAnswer === '' || submitting
-              ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              : 'bg-magic-accent hover:bg-magic-accent-light text-white',
-          ]"
+          data-testid="btn-submit"
+          :data-executing="submitting ? 'true' : 'false'"
+          class="btn-arc w-full shine-sweep"
           :disabled="userAnswer === null || userAnswer === '' || submitting"
           @click="submit"
         >
@@ -508,40 +266,9 @@ const accuracyInfo = computed(() => store.getChapterAccuracy(props.chapterId))
       </div>
     </div>
 
-    <div v-else class="flex-1 flex items-center justify-center text-gray-400 text-sm">
+    <div v-else class="flex-1 flex items-center justify-center text-mist-400 text-sm">
       试炼尚未就绪
     </div>
 
-    <!-- 休息提示 -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition-all duration-300"
-        enter-from-class="opacity-0"
-        leave-active-class="transition-all duration-200"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="showRestPrompt"
-          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-          @click="dismissRest"
-        >
-          <div
-            class="bg-magic-card border border-gray-600 rounded-lg px-6 py-5 max-w-sm text-center space-y-3"
-            @click.stop
-          >
-            <div class="w-6 h-6 mx-auto rounded-full bg-magic-accent border border-magic-gold" />
-            <p class="text-gray-200 leading-relaxed">
-              你已经连续吟唱 {{ fatigueQuestionCount }} 次了，贤者。休息一下，让魔力回流。
-            </p>
-            <button
-              class="px-4 py-1.5 rounded text-sm font-medium bg-magic-accent hover:bg-magic-accent-light text-white transition-colors"
-              @click="dismissRest"
-            >
-              继续试炼
-            </button>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
   </div>
 </template>

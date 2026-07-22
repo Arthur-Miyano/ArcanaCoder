@@ -8,25 +8,33 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex items-center gap-3 px-4 py-2 border-b border-gray-700 bg-magic-card/50">
-    <div
-      class="w-7 h-7 rounded-full bg-magic-accent border-2 border-magic-gold shrink-0"
-      title="贤者"
-    />
+  <div
+    class="flex items-center gap-3 px-4 py-2 border-b border-arcane-500/15 bg-abyss-900/60 backdrop-blur-md"
+  >
+    <div class="relative shrink-0">
+      <img
+        src="/assets/characters/mage/mage-portrait.png"
+        class="w-9 h-9 rounded-full border border-gold-500/60 object-cover shadow-glow-gold"
+        title="贤者"
+      />
+      <span
+        class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-gold-500/50 bg-abyss-850 text-[9px] leading-none text-gold-400"
+        >✦</span
+      >
+    </div>
 
     <div class="flex-1 min-w-0">
       <div class="flex items-baseline gap-2">
-        <span class="text-magic-gold font-bold text-xs">贤者</span>
-        <span class="text-gray-300 text-xs">位阶 {{ level }}</span>
+        <span class="font-display text-sm font-semibold text-gold-400 text-glow-gold">贤者</span>
+        <span class="text-xs text-mist-300">位阶 {{ level }}</span>
       </div>
-      <div class="flex items-center gap-2 mt-0.5">
-        <div class="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-          <div
-            class="h-full bg-gradient-to-r from-magic-accent to-magic-gold transition-all duration-500 rounded-full"
-            :style="{ width: `${expPercent}%` }"
-          />
+      <div class="flex items-center gap-2 mt-1">
+        <div class="rune-bar h-1.5 flex-1">
+          <div class="rune-bar-fill" :style="{ width: `${expPercent}%` }" />
         </div>
-        <span class="text-xs text-gray-400 shrink-0 leading-none">{{ exp }}/{{ expToNext }}</span>
+        <span class="shrink-0 font-mono text-[11px] leading-none text-mist-400"
+          >{{ exp }}/{{ expToNext }}</span
+        >
       </div>
     </div>
   </div>

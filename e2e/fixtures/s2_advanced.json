@@ -1,0 +1,62 @@
+[
+  {
+    "id": "s2_01",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  },
+  {
+    "id": "s2_02",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  },
+  {
+    "id": "s2_03",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "s = \"Hello\"\nprint(s[1:3])",
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  },
+  {
+    "id": "s2_04",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  },
+  {
+    "id": "s2_05",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "a = \"Hello\"\nb = \" \"\nc = \"World\"\nprint(a + b + c)",
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  },
+  {
+    "id": "s2_06",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  },
+  {
+    "id": "s2_07",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"hello\"\nprint(text.upper())",
+    "validationMode": "exact",
+    "sectionId": "s2_advanced"
+  }
+]

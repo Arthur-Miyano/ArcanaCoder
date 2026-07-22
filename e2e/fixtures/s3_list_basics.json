@@ -1,0 +1,61 @@
+[
+  {
+    "id": "s3_01",
+    "type": "choice",
+    "chapterId": "ch3_lists",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  },
+  {
+    "id": "s3_02",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "books = [\"历史\", \"地理\", \"星象\", \"草药\"]\nprint(books[2])",
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  },
+  {
+    "id": "s3_03",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "dungeons = [\"地窖\", \"塔楼\", \"密室\", \"圣殿\"]\nprint(dungeons[-1])",
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  },
+  {
+    "id": "s3_04",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "notes = [\"卷之一\", \"卷之二\", \"卷之三\"]\nnotes.append(\"新注疏\")\nprint(notes)",
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  },
+  {
+    "id": "s3_05",
+    "type": "code_fix",
+    "chapterId": "ch3_lists",
+    "correctCode": "scrolls = [\"卷之一\", \"卷之二\", \"卷之三\"]\nscrolls.insert(0, \"序言\")\nscrolls.pop()\nprint(scrolls)",
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  },
+  {
+    "id": "s3_06",
+    "type": "output_predict",
+    "chapterId": "ch3_lists",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  },
+  {
+    "id": "s3_07",
+    "type": "choice",
+    "chapterId": "ch3_lists",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_list_basics"
+  }
+]

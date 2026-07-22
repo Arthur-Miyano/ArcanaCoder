@@ -1,0 +1,43 @@
+[
+  {
+    "id": "s5_01",
+    "type": "choice",
+    "chapterId": "ch5_functions",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_basics"
+  },
+  {
+    "id": "s5_02",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "def greet():\n    print(\"你好\")\ngreet()",
+    "validationMode": "exact",
+    "sectionId": "s5_basics"
+  },
+  {
+    "id": "s5_03",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "def greet(name):\n    print(f\"你好，{name}！\")\ngreet(\"贤者\")",
+    "validationMode": "exact",
+    "sectionId": "s5_basics"
+  },
+  {
+    "id": "s5_04",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "def add(a, b):\n    return a + b\nprint(add(3, 4))",
+    "validationMode": "exact",
+    "sectionId": "s5_basics"
+  },
+  {
+    "id": "s5_05",
+    "type": "code_fix",
+    "chapterId": "ch5_functions",
+    "correctCode": "def square(x):\n    return x * x\nprint(square(5))",
+    "validationMode": "exact",
+    "sectionId": "s5_basics"
+  }
+]

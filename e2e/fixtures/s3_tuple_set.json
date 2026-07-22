@@ -1,0 +1,52 @@
+[
+  {
+    "id": "s3_13",
+    "type": "choice",
+    "chapterId": "ch3_lists",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_tuple_set"
+  },
+  {
+    "id": "s3_14",
+    "type": "code_fix",
+    "chapterId": "ch3_lists",
+    "correctCode": "t = (1, 2, 3)\nt = (1, 5, 3)\nprint(t)",
+    "validationMode": "exact",
+    "sectionId": "s3_tuple_set"
+  },
+  {
+    "id": "s3_15",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "a, b = (1, 2)\nprint(a, b)",
+    "validationMode": "exact",
+    "sectionId": "s3_tuple_set"
+  },
+  {
+    "id": "s3_16",
+    "type": "choice",
+    "chapterId": "ch3_lists",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_tuple_set"
+  },
+  {
+    "id": "s3_17",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "samples = [1, 1, 2, 2, 3]\nprint(set(samples))",
+    "validationMode": "exact",
+    "sectionId": "s3_tuple_set"
+  },
+  {
+    "id": "s3_18",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "set1 = {\"火\", \"土\", \"风\"}\nset2 = {\"风\", \"水\", \"雷\"}\nprint(set1 & set2)",
+    "validationMode": "exact",
+    "sectionId": "s3_tuple_set"
+  }
+]

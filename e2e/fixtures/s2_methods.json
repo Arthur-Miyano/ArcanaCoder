@@ -1,0 +1,62 @@
+[
+  {
+    "id": "s2_08",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  },
+  {
+    "id": "s2_09",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "words = [\"Hello\", \"World\"]\nprint(\" \".join(words))",
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  },
+  {
+    "id": "s2_10",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  },
+  {
+    "id": "s2_11",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"  Hello  \"\nprint(text.strip())",
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  },
+  {
+    "id": "s2_12",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  },
+  {
+    "id": "s2_13",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"Hello\"\nprint(text.count(\"l\"))",
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  },
+  {
+    "id": "s2_14",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_methods"
+  }
+]

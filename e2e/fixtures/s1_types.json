@@ -1,0 +1,37 @@
+[
+  {
+    "id": "s1_06",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_types"
+  },
+  {
+    "id": "s1_07",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_types"
+  },
+  {
+    "id": "s1_08",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_types"
+  },
+  {
+    "id": "s1_09",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "name = \"世界\"\nprint(f\"你好，{name}！\")",
+    "validationMode": "exact",
+    "sectionId": "s1_types"
+  }
+]

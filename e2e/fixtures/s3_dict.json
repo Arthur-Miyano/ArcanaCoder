@@ -1,0 +1,51 @@
+[
+  {
+    "id": "s3_19",
+    "type": "choice",
+    "chapterId": "ch3_lists",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_dict"
+  },
+  {
+    "id": "s3_20",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "catalog = {\"火元素\": 50, \"水元素\": 30, \"风元素\": 20}\nprint(catalog[\"火元素\"])",
+    "validationMode": "exact",
+    "sectionId": "s3_dict"
+  },
+  {
+    "id": "s3_21",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "catalog = {\"火元素\": 50, \"水元素\": 30}\nprint(catalog.get(\"未知元素\", 0))",
+    "validationMode": "exact",
+    "sectionId": "s3_dict"
+  },
+  {
+    "id": "s3_22",
+    "type": "code_fix",
+    "chapterId": "ch3_lists",
+    "correctCode": "catalog = {\"火元素\": 50, \"水元素\": 30}\ncatalog[\"火元素\"] = 80\nprint(catalog[\"火元素\"])",
+    "validationMode": "exact",
+    "sectionId": "s3_dict"
+  },
+  {
+    "id": "s3_23",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "catalog = {\"火\": 50, \"水\": 30, \"风\": 20}\nfor k in catalog.keys():\n    print(k)",
+    "validationMode": "contains",
+    "sectionId": "s3_dict"
+  },
+  {
+    "id": "s3_24",
+    "type": "free_coding",
+    "chapterId": "ch3_lists",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_dict"
+  }
+]

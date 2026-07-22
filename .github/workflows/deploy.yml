@@ -29,7 +29,11 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run typecheck
+
       - run: npm run test
+
+      - run: node scripts/verify_questions.cjs
 
       - run: npm run build
 

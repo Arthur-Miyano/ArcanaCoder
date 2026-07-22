@@ -1,0 +1,52 @@
+[
+  {
+    "id": "s4_01",
+    "type": "choice",
+    "chapterId": "ch4_control",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_condition"
+  },
+  {
+    "id": "s4_02",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "scrolls = 5\nif scrolls > 0:\n    print(\"有卷宗\")",
+    "validationMode": "exact",
+    "sectionId": "s4_condition"
+  },
+  {
+    "id": "s4_03",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "is_raining = True\nif is_raining:\n    print(\"带伞出门\")",
+    "validationMode": "exact",
+    "sectionId": "s4_condition"
+  },
+  {
+    "id": "s4_04",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "score = 75\nif score >= 60:\n    print(\"通过\")\nelse:\n    print(\"未通过\")",
+    "validationMode": "exact",
+    "sectionId": "s4_condition"
+  },
+  {
+    "id": "s4_05",
+    "type": "code_fix",
+    "chapterId": "ch4_control",
+    "correctCode": "x = 10\nif x > 5:\n    print(\"大\")\nelse:\n    print(\"小\")",
+    "validationMode": "exact",
+    "sectionId": "s4_condition"
+  },
+  {
+    "id": "s4_06",
+    "type": "output_predict",
+    "chapterId": "ch4_control",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_condition"
+  }
+]

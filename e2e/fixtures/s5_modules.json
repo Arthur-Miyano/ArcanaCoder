@@ -1,0 +1,43 @@
+[
+  {
+    "id": "s5_16",
+    "type": "choice",
+    "chapterId": "ch5_functions",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_modules"
+  },
+  {
+    "id": "s5_17",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "import math\nprint(math.sqrt(16))",
+    "validationMode": "exact",
+    "sectionId": "s5_modules"
+  },
+  {
+    "id": "s5_18",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": null,
+    "validationMode": "contains",
+    "sectionId": "s5_modules"
+  },
+  {
+    "id": "s5_19",
+    "type": "code_fix",
+    "chapterId": "ch5_functions",
+    "correctCode": "import math\nprint(math.sqrt(25))",
+    "validationMode": "exact",
+    "sectionId": "s5_modules"
+  },
+  {
+    "id": "s5_20",
+    "type": "free_coding",
+    "chapterId": "ch5_functions",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_modules"
+  }
+]

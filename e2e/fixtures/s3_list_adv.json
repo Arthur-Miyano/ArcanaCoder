@@ -1,0 +1,43 @@
+[
+  {
+    "id": "s3_08",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "spells = \"火球,冰箭,雷电\"\nprint(spells.split(\",\"))",
+    "validationMode": "exact",
+    "sectionId": "s3_list_adv"
+  },
+  {
+    "id": "s3_09",
+    "type": "choice",
+    "chapterId": "ch3_lists",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s3_list_adv"
+  },
+  {
+    "id": "s3_10",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "nums = [1, 2, 3, 4, 5]\nprint([x * 2 for x in nums])",
+    "validationMode": "exact",
+    "sectionId": "s3_list_adv"
+  },
+  {
+    "id": "s3_11",
+    "type": "code_fill",
+    "chapterId": "ch3_lists",
+    "correctCode": "nums = [-2, -1, 0, 1, 2, 3]\nprint([x for x in nums if x > 0])",
+    "validationMode": "exact",
+    "sectionId": "s3_list_adv"
+  },
+  {
+    "id": "s3_12",
+    "type": "code_fix",
+    "chapterId": "ch3_lists",
+    "correctCode": "shelves = [[\"卷甲\", \"卷乙\"], [\"卷丙\", \"卷丁\"], [\"卷戊\", \"卷己\"]]\nprint(shelves[1][0])",
+    "validationMode": "exact",
+    "sectionId": "s3_list_adv"
+  }
+]

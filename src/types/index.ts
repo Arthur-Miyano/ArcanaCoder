@@ -67,6 +67,7 @@ export interface WisdomPoint {
 export interface ChapterSection {
   id: string
   name: string
+  displayName: string
   questionIds: string[]
   unlockAfter?: string
 }
@@ -74,8 +75,11 @@ export interface ChapterSection {
 export interface Chapter {
   id: string
   name: string
+  displayName: string
   description: string
   sections: ChapterSection[]
+  regionName: string          // 所属区域（如"语法圣殿"）
+  regionOrder: number         // 区域在地图上的顺序
 }
 
 export interface SectionProgress {
@@ -86,6 +90,7 @@ export interface SectionProgress {
     attempts: number
   }>
   consecutiveWrong: number
+  fatigueQuestionCount: number
 }
 
 export interface KnowledgeState {

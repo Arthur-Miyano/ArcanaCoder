@@ -1,0 +1,44 @@
+[
+  {
+    "id": "s6_11",
+    "type": "choice",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_raise"
+  },
+  {
+    "id": "s6_12",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "def set_age(n):\n    if n < 0:\n        raise ValueError(\"年龄不能为负\")\n    print(f\"年龄: {n}\")\n\nset_age(5)",
+    "validationMode": "exact",
+    "sectionId": "s6_raise"
+  },
+  {
+    "id": "s6_13",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "def div(a, b):\n    try:\n        return a / b\n    except:\n        raise\n\nprint(div(10, 0))",
+    "validationMode": "exact",
+    "sectionId": "s6_raise"
+  },
+  {
+    "id": "s6_14",
+    "type": "output_predict",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_raise"
+  },
+  {
+    "id": "s6_15",
+    "type": "code_fix",
+    "chapterId": "ch6_errors",
+    "correctCode": "x = -1\nassert x > 0, \"x 必须大于 0\"\nprint(\"正确\")",
+    "validationMode": "exact",
+    "sectionId": "s6_raise"
+  }
+]

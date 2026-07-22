@@ -1,0 +1,44 @@
+[
+  {
+    "id": "s6_01",
+    "type": "choice",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_basics"
+  },
+  {
+    "id": "s6_02",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "x = 10\ny = 0\ntry:\n    print(x / y)\nexcept ZeroDivisionError:\n    print(\"不能除零\")",
+    "validationMode": "exact",
+    "sectionId": "s6_basics"
+  },
+  {
+    "id": "s6_03",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "try:\n    x = int(\"abc\")\nexcept:\n    print(\"出错了\")",
+    "validationMode": "exact",
+    "sectionId": "s6_basics"
+  },
+  {
+    "id": "s6_04",
+    "type": "output_predict",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_basics"
+  },
+  {
+    "id": "s6_05",
+    "type": "code_fix",
+    "chapterId": "ch6_errors",
+    "correctCode": "try:\n    print(1/0)\nexcept:\n    print(\"err\")",
+    "validationMode": "exact",
+    "sectionId": "s6_basics"
+  }
+]

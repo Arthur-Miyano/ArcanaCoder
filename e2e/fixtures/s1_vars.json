@@ -1,0 +1,45 @@
+[
+  {
+    "id": "s1_01",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_vars"
+  },
+  {
+    "id": "s1_02",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "message = \"Hello, World!\"\nprint(message)",
+    "validationMode": "exact",
+    "sectionId": "s1_vars"
+  },
+  {
+    "id": "s1_03",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_vars"
+  },
+  {
+    "id": "s1_04",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_vars"
+  },
+  {
+    "id": "s1_05",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "a = \"Hello\"\nb = \"World!\"\nprint(a + \" \" + b)",
+    "validationMode": "exact",
+    "sectionId": "s1_vars"
+  }
+]

@@ -21,11 +21,14 @@ const lineCount = computed(() => {
 </script>
 
 <template>
-  <div>
-    <p class="text-gray-300 mb-3 whitespace-pre-wrap">{{ question.description }}</p>
+  <div class="animate-fade-up">
+    <div class="flex items-start gap-2 mb-4">
+      <span class="mt-1 text-arcane-400 text-sm leading-none select-none animate-twinkle" aria-hidden="true">✦</span>
+      <p class="font-body text-mist-200 leading-relaxed whitespace-pre-wrap">{{ question.description }}</p>
+    </div>
     <div
-      class="border border-gray-600 rounded-lg overflow-hidden"
-      :class="readonly ? 'opacity-80' : ''"
+      class="code-frame rounded-xl overflow-hidden transition-all duration-300"
+      :class="readonly ? 'opacity-80 saturate-75' : 'hover:shadow-glow-arcane'"
     >
       <Codemirror
         :model-value="modelValue"
@@ -37,3 +40,11 @@ const lineCount = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.code-frame {
+  /* 编辑器本体的描边/圆角/聚焦发光由 main.css 的 .cm-editor 全局样式负责，
+     这里只叠加一层星紫微光氛围 */
+  box-shadow: 0 0 0 1px rgba(124, 106, 255, 0.08), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
+}
+</style>

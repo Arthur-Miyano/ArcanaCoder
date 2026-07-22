@@ -1,0 +1,43 @@
+[
+  {
+    "id": "s4_18",
+    "type": "choice",
+    "chapterId": "ch4_control",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_while"
+  },
+  {
+    "id": "s4_19",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "count = 3\nwhile count > 0:\n    print(count)\n    count = count - 1",
+    "validationMode": "exact",
+    "sectionId": "s4_while"
+  },
+  {
+    "id": "s4_20",
+    "type": "code_fix",
+    "chapterId": "ch4_control",
+    "correctCode": "i = 0\nwhile i < 5:\n    if i == 3:\n        break\n    print(i)\n    i = i + 1",
+    "validationMode": "exact",
+    "sectionId": "s4_while"
+  },
+  {
+    "id": "s4_21",
+    "type": "code_fix",
+    "chapterId": "ch4_control",
+    "correctCode": "i = 0\nwhile i < 5:\n    print(i)\n    i = i + 1",
+    "validationMode": "exact",
+    "sectionId": "s4_while"
+  },
+  {
+    "id": "s4_22",
+    "type": "free_coding",
+    "chapterId": "ch4_control",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_while"
+  }
+]

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "s1_20",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_21",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"A\", \"B\", \"C\", sep=\"---\")",
+    "validationMode": "exact",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_22",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_23",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "name = input()\nprint(f\"你好，{name}！\")",
+    "validationMode": "contains",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_24",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "contains",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_25",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "a = int(input())\nb = int(input())\nprint(a + b)",
+    "validationMode": "contains",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_26",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_27",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"第一行\")\nprint(\"第二行\")\nprint(\"第三行\")",
+    "validationMode": "exact",
+    "sectionId": "s1_strings"
+  },
+  {
+    "id": "s1_28",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "name = \"贤者\"\nage = 18\nprint(f\"我叫{name}，今年{age}岁。\")",
+    "validationMode": "exact",
+    "sectionId": "s1_strings"
+  }
+]

@@ -2,13 +2,13 @@ import type { PyodideInterface } from 'pyodide'
 
 const PYODIDE_CDN = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/'
 
+const PYODIDE_BASE = import.meta.env.DEV ? '/ArcanaCoder/pyodide/' : PYODIDE_CDN
+
 let pyodideInstance: PyodideInterface | null = null
 let ready = false
-let stdoutBuffer: string[] = []
-let timeoutId: ReturnType<typeof setTimeout> | null = null
 
 type ProgressCallback = (progress: number) => void
-type LoadPyodideFn = (options?: any) => Promise<PyodideInterface>
+type LoadPyodideFn = (options?: Record<string, unknown>) => Promise<PyodideInterface>
 
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -27,7 +27,7 @@ export async function initPyodide(
 
   onProgress?.(5)
 
-  await loadScript(`${PYODIDE_CDN}pyodide.js`)
+  await loadScript(`${PYODIDE_BASE}pyodide.js`)
 
   onProgress?.(30)
 
@@ -37,16 +37,12 @@ export async function initPyodide(
   }
 
   pyodideInstance = await loadPyodideFn({
-    indexURL: PYODIDE_CDN,
+    indexURL: PYODIDE_BASE,
   })
 
   onProgress?.(60)
 
-  pyodideInstance.setStdout({
-    batched: (text: string) => {
-      stdoutBuffer.push(text)
-    },
-  })
+  pyodideInstance.setStdout({ batched: () => {} })
 
   onProgress?.(80)
 
@@ -63,10 +59,6 @@ export function isReady(): boolean {
   return ready
 }
 
-export function getPyodide(): PyodideInterface | null {
-  return pyodideInstance
-}
-
 export async function runPython(
   code: string,
   timeoutMs = 10_000,
@@ -75,11 +67,15 @@ export async function runPython(
     return { output: '', error: 'Pyodide 尚未加载完成' }
   }
 
-  stdoutBuffer = []
+  const localBuffer: string[] = []
+  pyodideInstance.setStdout({
+    batched: (text: string) => { localBuffer.push(text) },
+  })
 
+  let localTimeoutId: ReturnType<typeof setTimeout> | null = null
   const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(
-      () => reject(new Error('代码执行超时（超过 10 秒）')),
+    localTimeoutId = setTimeout(
+      () => reject(new Error(`代码执行超时（超过 ${timeoutMs / 1000} 秒）`)),
       timeoutMs,
     )
   })
@@ -90,17 +86,19 @@ export async function runPython(
       timeoutPromise,
     ])
 
-    const output = stdoutBuffer.join('\n')
+    const output = localBuffer.join('\n')
     return { output, error: null }
-  } catch (err: any) {
+  } catch (err: unknown) {
     let errorMsg: string
     if (err instanceof pyodideInstance.ffi.PythonError) {
       errorMsg = err.message
+    } else if (err instanceof Error) {
+      errorMsg = err.message
     } else {
-      errorMsg = String(err.message ?? err)
+      errorMsg = String(err)
     }
     return { output: '', error: errorMsg }
   } finally {
-    if (timeoutId) clearTimeout(timeoutId)
+    if (localTimeoutId) clearTimeout(localTimeoutId)
   }
 }

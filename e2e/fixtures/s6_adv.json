@@ -1,0 +1,44 @@
+[
+  {
+    "id": "s6_06",
+    "type": "choice",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_adv"
+  },
+  {
+    "id": "s6_07",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "a, b = 10, 2\ntry:\n    r = a / b\nexcept ZeroDivisionError:\n    print(\"不能除零\")\nelse:\n    print(\"计算成功\")",
+    "validationMode": "exact",
+    "sectionId": "s6_adv"
+  },
+  {
+    "id": "s6_08",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "try:\n    print(\"操作\")\nfinally:\n    print(\"清理完成\")",
+    "validationMode": "exact",
+    "sectionId": "s6_adv"
+  },
+  {
+    "id": "s6_09",
+    "type": "output_predict",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_adv"
+  },
+  {
+    "id": "s6_10",
+    "type": "code_fix",
+    "chapterId": "ch6_errors",
+    "correctCode": "try:\n    x = 1 / 1\nexcept:\n    print(\"错误\")\nelse:\n    print(\"成功\")\nfinally:\n    print(\"结束\")",
+    "validationMode": "exact",
+    "sectionId": "s6_adv"
+  }
+]

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "s8_16",
+    "type": "choice",
+    "chapterId": "ch8_annotations",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s8_context"
+  },
+  {
+    "id": "s8_17",
+    "type": "code_fill",
+    "chapterId": "ch8_annotations",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s8_context"
+  },
+  {
+    "id": "s8_18",
+    "type": "code_fill",
+    "chapterId": "ch8_annotations",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s8_context"
+  },
+  {
+    "id": "s8_19",
+    "type": "code_fix",
+    "chapterId": "ch8_annotations",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s8_context"
+  },
+  {
+    "id": "s8_20",
+    "type": "free_coding",
+    "chapterId": "ch8_annotations",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s8_context"
+  }
+]

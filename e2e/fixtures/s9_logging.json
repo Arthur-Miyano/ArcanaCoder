@@ -1,0 +1,47 @@
+[
+  {
+    "id": "s9_06",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_logging"
+  },
+  {
+    "id": "s9_07",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_logging"
+  },
+  {
+    "id": "s9_08",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_logging"
+  },
+  {
+    "id": "s9_09",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_logging"
+  },
+  {
+    "id": "s9_10",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_logging"
+  }
+]

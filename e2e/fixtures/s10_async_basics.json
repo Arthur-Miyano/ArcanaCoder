@@ -1,0 +1,47 @@
+[
+  {
+    "id": "s10_01",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_basics"
+  },
+  {
+    "id": "s10_02",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_basics"
+  },
+  {
+    "id": "s10_03",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_basics"
+  },
+  {
+    "id": "s10_04",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_basics"
+  },
+  {
+    "id": "s10_05",
+    "type": "output_predict",
+    "chapterId": "ch10_async",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_basics"
+  }
+]

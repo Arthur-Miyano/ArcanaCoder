@@ -1,0 +1,628 @@
+[
+  {
+    "id": "s1_01",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_02",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "message = \"Hello, World!\"\nprint(message)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_03",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_04",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_05",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "a = \"Hello\"\nb = \"World!\"\nprint(a + \" \" + b)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_06",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_07",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_08",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_09",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "name = \"世界\"\nprint(f\"你好，{name}！\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_10",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_11",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_12",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "length = 10\nwidth = 5\narea = length * width\nprint(area)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_13",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_14",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "remainder = 17 % 5\nprint(remainder)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_15",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_16",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_17",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "result = (5 + 3) * 2\nprint(result)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_18",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_19",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "result = int(\"5\") + 3\nprint(result)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_20",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_21",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"A\", \"B\", \"C\", sep=\"---\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_22",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_23",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "name = input()\nprint(f\"你好，{name}！\")",
+    "validationMode": "contains"
+  },
+  {
+    "id": "s1_24",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "contains"
+  },
+  {
+    "id": "s1_25",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "a = int(input())\nb = int(input())\nprint(a + b)",
+    "validationMode": "contains"
+  },
+  {
+    "id": "s1_26",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_27",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"第一行\")\nprint(\"第二行\")\nprint(\"第三行\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s1_28",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "name = \"贤者\"\nage = 18\nprint(f\"我叫{name}，今年{age}岁。\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_01",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_02",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_03",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "s = \"Hello\"\nprint(s[1:3])",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_04",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_05",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "a = \"Hello\"\nb = \" \"\nc = \"World\"\nprint(a + b + c)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_06",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_07",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"hello\"\nprint(text.upper())",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_08",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_09",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "words = [\"Hello\", \"World\"]\nprint(\" \".join(words))",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_10",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_11",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"  Hello  \"\nprint(text.strip())",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_12",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_13",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"Hello\"\nprint(text.count(\"l\"))",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_14",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_15",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_16",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"Python3\"\nprint(text.isalpha())",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_17",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 3,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_18",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "pi = 3.14159\nprint(f\"{pi:.2f}\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_19",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "name = \"贤者\"\nage = 18\nprint(\"我叫{}，今年{}岁。\".format(name, age))",
+    "validationMode": "exact"
+  },
+  {
+    "id": "s2_20",
+    "type": "free_coding",
+    "chapterId": "ch2_strings",
+    "correctCode": "def clean_text(text):\n    return text.strip().upper().replace(\",\", \" \")\n",
+    "validationMode": null
+  },
+  {
+    "id": "bk_print_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(42)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_print_2",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"Python\", 3)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_var_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "score = 100\nprint(score)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_var_2",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "x = 10\nx = 20\nprint(x)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_fs_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "v = 42\nprint(f\"值是 {v}\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_fs_2",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_cast_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(int(\"99\") + 1)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_cast_2",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(int(\"3\") + 4)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_op_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "price = 200 * 0.8\nprint(price)",
+    "validationMode": "contains"
+  },
+  {
+    "id": "bk_op_2",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_in_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "w = input()\nprint(f\"你输入的是：{w}\")",
+    "validationMode": "contains"
+  },
+  {
+    "id": "bk_in_2",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "a = int(input())\nb = int(input())\nprint(a + b)",
+    "validationMode": "contains"
+  },
+  {
+    "id": "bk_div_1",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_div_2",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(20 % 6)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_type_1",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_type_2",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_name_1",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_name_2",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "first_place = \"gold\"",
+    "validationMode": "contains"
+  },
+  {
+    "id": "bk_esc_1",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_esc_2",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"他说\\\"好\\\"\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_sep_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"X\", \"Y\", \"Z\", sep=\"->\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_sep_2",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"A\", end=\"\")\nprint(\"B\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_str_1",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(\"Hi\" * 3)",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_str_2",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "print(len(\"Python\"))",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_slice_1",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "s = \"Python\"\nprint(s[0:3])",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_slice_2",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_raw_1",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "path = r\"C:\\Users\\Admin\"",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_split_1",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_join_1",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "words = [\"apple\", \"banana\", \"cherry\"]\nprint(\", \".join(words))",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_replace_1",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"I hate bugs\"\nprint(text.replace(\"hate\", \"love\"))",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_strip_1",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"  hi  \"\nprint(text.strip())",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_find_1",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_in_1",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_isdigit_1",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_fstring_1",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "pi = 3.14159\nprint(f\"{pi:.3f}\")",
+    "validationMode": "exact"
+  },
+  {
+    "id": "bk_fstring_2",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "name = \"世界\"\nprint(f\"你好，{name}！\")",
+    "validationMode": "exact"
+  }
+]

@@ -1,0 +1,88 @@
+[
+  {
+    "id": "s1_10",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_11",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_12",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "length = 10\nwidth = 5\narea = length * width\nprint(area)",
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_13",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_14",
+    "type": "code_fill",
+    "chapterId": "ch1_variables",
+    "correctCode": "remainder = 17 % 5\nprint(remainder)",
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_15",
+    "type": "output_predict",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_16",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_17",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "result = (5 + 3) * 2\nprint(result)",
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_18",
+    "type": "choice",
+    "chapterId": "ch1_variables",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  },
+  {
+    "id": "s1_19",
+    "type": "code_fix",
+    "chapterId": "ch1_variables",
+    "correctCode": "result = int(\"5\") + 3\nprint(result)",
+    "validationMode": "exact",
+    "sectionId": "s1_ops"
+  }
+]

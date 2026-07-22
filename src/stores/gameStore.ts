@@ -1,18 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { QuestionType, SectionProgress, KnowledgeState } from '@/types'
+import type { SectionProgress, KnowledgeState } from '@/types'
 import { saveGameState, loadGameState } from '@/services/storage'
 import { questions, chapters } from '@/data/questions'
-
-const EXP_TABLE: Record<QuestionType, number> = {
-  choice: 10,
-  output_predict: 15,
-  code_fill: 20,
-  code_fix: 20,
-  free_coding: 30,
-}
+import { calcExpToNext, calcExpGained, calcScore } from '@/constants/progression'
+import { calcMastery } from '@/utils/mastery'
 
 export interface GameState {
+  version: number
   level: number
   exp: number
   expToNext: number
@@ -25,14 +20,13 @@ export interface GameState {
   lastPlayedAt: number | null
   totalQuestionsAnswered: number
   totalCorrect: number
-}
-
-function calcExpToNext(level: number): number {
-  return 100 * level
+  accumulatedLearningMs: number
+  lastLearningEntryTime: number | null
 }
 
 function createInitialState(): GameState {
   return {
+    version: 1,
     level: 1,
     exp: 0,
     expToNext: calcExpToNext(1),
@@ -45,6 +39,8 @@ function createInitialState(): GameState {
     lastPlayedAt: null,
     totalQuestionsAnswered: 0,
     totalCorrect: 0,
+    accumulatedLearningMs: 0,
+    lastLearningEntryTime: null,
   }
 }
 
@@ -59,16 +55,22 @@ export const useGameStore = defineStore('game', () => {
   )
   const wisdomViewed = computed(() => state.value.wisdomViewed)
   const currentSectionId = computed(() => state.value.currentSectionId)
+  const unlockedChapters = computed(() => state.value.unlockedChapters)
+  const knowledgeStates = computed(() => state.value.knowledgeStates)
 
   function isWisdomViewed(chapterId: string): boolean {
     return state.value.wisdomViewed.includes(chapterId)
   }
 
-  function markWisdomViewed(chapterId: string) {
+  function isChapterUnlocked(chapterId: string): boolean {
+    return state.value.unlockedChapters.includes(chapterId)
+  }
+
+  async function markWisdomViewed(chapterId: string): Promise<void> {
     if (!state.value.wisdomViewed.includes(chapterId)) {
       state.value.wisdomViewed.push(chapterId)
     }
-    save()
+    await save()
   }
 
   function selectChapter(chapterId: string) {
@@ -97,15 +99,14 @@ export const useGameStore = defineStore('game', () => {
     return prev?.completed ?? false
   }
 
-  function submitAnswer(
+  async function submitAnswer(
     questionId: string,
     correct: boolean,
-  ): { leveledUp: boolean; expGained: number } {
+  ): Promise<{ leveledUp: boolean; expGained: number }> {
     const question = questions.find((q) => q.id === questionId)
     if (!question) return { leveledUp: false, expGained: 0 }
 
-    const baseExp = EXP_TABLE[question.type] || 10
-    const expGained = correct ? baseExp : Math.max(1, Math.floor(baseExp / 3))
+    const expGained = calcExpGained(question.type, correct)
 
     const sectionId = state.value.currentSectionId
     if (sectionId) {
@@ -113,11 +114,12 @@ export const useGameStore = defineStore('game', () => {
         completed: false,
         questionResults: {},
         consecutiveWrong: 0,
+        fatigueQuestionCount: 0,
       }
       const prev = sp.questionResults[questionId]
       sp.questionResults[questionId] = {
         correct: prev ? prev.correct || correct : correct,
-        score: Math.max(prev?.score ?? 0, correct ? 100 : Math.floor(100 / 3)),
+        score: Math.max(prev?.score ?? 0, calcScore(correct)),
         attempts: (prev?.attempts ?? 0) + 1,
       }
       if (correct) sp.consecutiveWrong = 0
@@ -157,11 +159,11 @@ export const useGameStore = defineStore('game', () => {
       leveledUp = true
     }
 
-    save()
+    await save()
     return { leveledUp, expGained }
   }
 
-  function completeSection(sectionId: string) {
+  async function completeSection(sectionId: string): Promise<void> {
     if (!state.value.sectionProgress[sectionId]) return
     state.value.sectionProgress[sectionId].completed = true
     const parent = chapters.find((ch) => ch.sections.some((s) => s.id === sectionId))
@@ -177,7 +179,7 @@ export const useGameStore = defineStore('game', () => {
         }
       }
     }
-    save()
+    await save()
   }
 
   function getSectionProgress(sectionId: string): SectionProgress {
@@ -186,9 +188,10 @@ export const useGameStore = defineStore('game', () => {
         completed: false,
         questionResults: {},
         consecutiveWrong: 0,
+        fatigueQuestionCount: 0,
       }
     }
-    return state.value.sectionProgress[sectionId]!
+    return state.value.sectionProgress[sectionId] as SectionProgress
   }
 
   function getChapterProgress(chapterId: string): { completed: boolean; total: number; done: number } {
@@ -217,12 +220,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function getMastery(tag: string): number {
-    const ks = state.value.knowledgeStates[tag]
-    if (!ks || ks.totalAttempts === 0) return 0
-    if (ks.consecutiveCorrect >= 3) return 1.0
-    const baseRate = ks.correctAttempts / ks.totalAttempts
-    const volumeBonus = Math.min(ks.totalAttempts / 5, 1)
-    return baseRate * (0.5 + 0.5 * volumeBonus)
+    return calcMastery(state.value.knowledgeStates[tag])
   }
 
   function getKnowledgeState(tag: string): KnowledgeState | null {
@@ -254,23 +252,108 @@ export const useGameStore = defineStore('game', () => {
     return { total, correct, wrongIds, knowledgeTags: Array.from(tags) }
   }
 
-  async function load() {
+  function migrate(raw: unknown): GameState {
+    const defaults = createInitialState()
+    if (typeof raw !== 'object' || raw === null) return defaults
+
+    const saved = raw as Record<string, unknown>
+    const version = typeof saved.version === 'number' ? saved.version : 0
+
+    if (version >= 1) {
+      return {
+        ...defaults,
+        ...saved,
+        version: 1,
+        accumulatedLearningMs: typeof saved.accumulatedLearningMs === 'number' ? saved.accumulatedLearningMs : 0,
+        lastLearningEntryTime: typeof saved.lastLearningEntryTime === 'number' ? saved.lastLearningEntryTime : null,
+        knowledgeStates: saved.knowledgeStates ?? {},
+        sectionProgress: saved.sectionProgress ?? {},
+        unlockedChapters: Array.isArray(saved.unlockedChapters) ? saved.unlockedChapters : defaults.unlockedChapters,
+        wisdomViewed: Array.isArray(saved.wisdomViewed) ? saved.wisdomViewed : [],
+      } as GameState
+    }
+
+    return {
+      ...defaults,
+      ...saved,
+      version: 1,
+      knowledgeStates: saved.knowledgeStates ?? {},
+      sectionProgress: saved.sectionProgress ?? {},
+      unlockedChapters: Array.isArray(saved.unlockedChapters) ? saved.unlockedChapters : defaults.unlockedChapters,
+      wisdomViewed: Array.isArray(saved.wisdomViewed) ? saved.wisdomViewed : [],
+    } as GameState
+  }
+
+  async function load(): Promise<void> {
     const saved = await loadGameState()
     if (saved) {
-      state.value = saved
+      state.value = migrate(saved)
     }
   }
 
-  async function save() {
-    await saveGameState(state.value)
+  async function save(): Promise<void> {
+    try {
+      await saveGameState(state.value)
+    } catch (err) {
+      console.error('[gameStore] 保存失败:', err)
+    }
   }
 
-  function resetProgress() {
+  async function resetProgress(): Promise<void> {
     state.value = createInitialState()
-    save()
+    await save()
+  }
+
+  function getFatigueQuestionCount(sectionId: string): number {
+    const sp = state.value.sectionProgress[sectionId]
+    return sp?.fatigueQuestionCount ?? 0
+  }
+
+  function incrementFatigueQuestionCount(sectionId: string): number {
+    const sp = getSectionProgress(sectionId)
+    sp.fatigueQuestionCount = (sp.fatigueQuestionCount || 0) + 1
+    return sp.fatigueQuestionCount
+  }
+
+  function getFatigueConsecutiveWrong(sectionId: string): number {
+    const sp = state.value.sectionProgress[sectionId]
+    return sp?.consecutiveWrong ?? 0
+  }
+
+  const ACCUMULATED_THRESHOLD_MS = 45 * 60 * 1000
+
+  function getAccumulatedLearningMs(): number {
+    let total = state.value.accumulatedLearningMs
+    if (state.value.lastLearningEntryTime) {
+      total += Date.now() - state.value.lastLearningEntryTime
+    }
+    return total
+  }
+
+  function onEnterQuiz() {
+    state.value.lastLearningEntryTime = Date.now()
+  }
+
+  async function onLeaveQuiz(): Promise<void> {
+    if (state.value.lastLearningEntryTime) {
+      state.value.accumulatedLearningMs += Date.now() - state.value.lastLearningEntryTime
+      state.value.lastLearningEntryTime = null
+    }
+    await save()
+  }
+
+  function shouldShowRestPrompt(): boolean {
+    return getAccumulatedLearningMs() >= ACCUMULATED_THRESHOLD_MS
+  }
+
+  async function dismissRestPrompt(): Promise<void> {
+    state.value.accumulatedLearningMs = 0
+    state.value.lastLearningEntryTime = null
+    await save()
   }
 
   return {
+    // ⚠️ E2E 测试注入专用，组件请勿直接访问（用 getter / action 替代）
     state,
     level,
     exp,
@@ -278,7 +361,10 @@ export const useGameStore = defineStore('game', () => {
     expPercent,
     wisdomViewed,
     currentSectionId,
+    unlockedChapters,
+    knowledgeStates,
     isWisdomViewed,
+    isChapterUnlocked,
     markWisdomViewed,
     selectChapter,
     selectSection,
@@ -290,7 +376,11 @@ export const useGameStore = defineStore('game', () => {
     getQuestionResult,
     getChapterAccuracy,
     getMastery,
-    getKnowledgeState,
+    getFatigueConsecutiveWrong,
+    onEnterQuiz,
+    onLeaveQuiz,
+    shouldShowRestPrompt,
+    dismissRestPrompt,
     load,
     save,
     resetProgress,

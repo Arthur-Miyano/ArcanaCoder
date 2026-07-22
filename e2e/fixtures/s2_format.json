@@ -1,0 +1,52 @@
+[
+  {
+    "id": "s2_15",
+    "type": "output_predict",
+    "chapterId": "ch2_strings",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_format"
+  },
+  {
+    "id": "s2_16",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "text = \"Python3\"\nprint(text.isalpha())",
+    "validationMode": "exact",
+    "sectionId": "s2_format"
+  },
+  {
+    "id": "s2_17",
+    "type": "choice",
+    "chapterId": "ch2_strings",
+    "correctIndex": 3,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s2_format"
+  },
+  {
+    "id": "s2_18",
+    "type": "code_fill",
+    "chapterId": "ch2_strings",
+    "correctCode": "pi = 3.14159\nprint(f\"{pi:.2f}\")",
+    "validationMode": "exact",
+    "sectionId": "s2_format"
+  },
+  {
+    "id": "s2_19",
+    "type": "code_fix",
+    "chapterId": "ch2_strings",
+    "correctCode": "name = \"贤者\"\nage = 18\nprint(\"我叫{}，今年{}岁。\".format(name, age))",
+    "validationMode": "exact",
+    "sectionId": "s2_format"
+  },
+  {
+    "id": "s2_20",
+    "type": "free_coding",
+    "chapterId": "ch2_strings",
+    "correctCode": "def clean_text(text):\n    return text.strip().upper().replace(\",\", \" \")\n",
+    "validationMode": null,
+    "sectionId": "s2_format"
+  }
+]

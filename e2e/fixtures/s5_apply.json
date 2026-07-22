@@ -1,0 +1,44 @@
+[
+  {
+    "id": "s5_11",
+    "type": "choice",
+    "chapterId": "ch5_functions",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_apply"
+  },
+  {
+    "id": "s5_12",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "nums = [1, 2, 3, 4]\nprint(list(map(lambda x: x * x, nums)))",
+    "validationMode": "exact",
+    "sectionId": "s5_apply"
+  },
+  {
+    "id": "s5_13",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "nums = [1, 2, 3, 4, 5, 6]\nprint(list(filter(lambda x: x % 2 == 0, nums)))",
+    "validationMode": "exact",
+    "sectionId": "s5_apply"
+  },
+  {
+    "id": "s5_14",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "books = [{\"title\": \"A\", \"shelves\": 5}, {\"title\": \"B\", \"shelves\": 2}, {\"title\": \"C\", \"shelves\": 8}]\nprint([b[\"title\"] for b in sorted(books, key=lambda b: b[\"shelves\"])])",
+    "validationMode": "exact",
+    "sectionId": "s5_apply"
+  },
+  {
+    "id": "s5_15",
+    "type": "output_predict",
+    "chapterId": "ch5_functions",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_apply"
+  }
+]

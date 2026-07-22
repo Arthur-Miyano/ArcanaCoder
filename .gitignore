@@ -21,3 +21,8 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Test/coverage output
+coverage/
+test-results/
+e2e/results/

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import type { ViewState } from '@/types'
 import { chapters } from '@/data/questions'
@@ -29,6 +29,11 @@ onMounted(async () => {
   await store.load()
 })
 
+watch(viewState, async (newVal, oldVal) => {
+  if (oldVal === 'quiz' && newVal !== 'quiz') await store.onLeaveQuiz()
+  if (newVal === 'quiz' && oldVal !== 'quiz') store.onEnterQuiz()
+})
+
 function onPyodideReady() {
   viewState.value = 'chapterSelect'
   showDailyPlan.value = true
@@ -47,8 +52,8 @@ function onSelectChapter(chapterId: string) {
   }
 }
 
-function onWisdomStart() {
-  if (activeChapterId.value) store.markWisdomViewed(activeChapterId.value)
+async function onWisdomStart(): Promise<void> {
+  if (activeChapterId.value) await store.markWisdomViewed(activeChapterId.value)
   viewState.value = 'quiz'
 }
 
@@ -75,44 +80,68 @@ function onBackFromQuiz() {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col bg-magic-bg">
-    <LoadingOverlay
-      v-if="viewState === 'loading'"
-      @ready="onPyodideReady"
-    />
+  <div class="min-h-screen flex flex-col text-mist-200">
+    <div class="abyss-sky"></div>
+    <div class="abyss-stars"></div>
 
-    <ChapterSelect
-      v-else-if="viewState === 'chapterSelect'"
-      @select-chapter="onSelectChapter"
-    />
+    <Transition name="page" mode="out-in">
+      <LoadingOverlay
+        v-if="viewState === 'loading'"
+        @ready="onPyodideReady"
+      />
+
+      <ChapterSelect
+        v-else-if="viewState === 'chapterSelect'"
+        @select-chapter="onSelectChapter"
+      />
+
+      <WisdomBook
+        v-else-if="viewState === 'wisdom' && activeChapterId && currentChapter"
+        :chapter-id="activeChapterId"
+        :chapter-name="currentChapter.name"
+        :chapter-number="chapters.findIndex((c) => c.id === activeChapterId) + 1"
+        :points="chapterPoints"
+        @start="onWisdomStart"
+        @back="onBackFromWisdom"
+      />
+
+      <QuizPanel
+        v-else-if="viewState === 'quiz' && activeChapterId"
+        :chapter-id="activeChapterId"
+        @back="onBackFromQuiz"
+        @review-knowledge="onReviewKnowledge"
+        @chapter-complete="onChapterComplete"
+      />
+
+      <ChapterComplete
+        v-else-if="viewState === 'chapterComplete' && activeChapterId"
+        :chapter-id="activeChapterId"
+        @back-to-chapters="onBackToChapters"
+      />
+    </Transition>
 
     <DailyPlanDialog
       v-if="viewState === 'chapterSelect' && showDailyPlan"
       @start="onDismissPlan"
     />
-
-    <WisdomBook
-      v-else-if="viewState === 'wisdom' && activeChapterId && currentChapter"
-      :chapter-id="activeChapterId"
-      :chapter-name="currentChapter.name"
-      :chapter-number="chapters.findIndex((c) => c.id === activeChapterId) + 1"
-      :points="chapterPoints"
-      @start="onWisdomStart"
-      @back="onBackFromWisdom"
-    />
-
-    <QuizPanel
-      v-else-if="viewState === 'quiz' && activeChapterId"
-      :chapter-id="activeChapterId"
-      @back="onBackFromQuiz"
-      @review-knowledge="onReviewKnowledge"
-      @chapter-complete="onChapterComplete"
-    />
-
-    <ChapterComplete
-      v-else-if="viewState === 'chapterComplete' && activeChapterId"
-      :chapter-id="activeChapterId"
-      @back-to-chapters="onBackToChapters"
-    />
   </div>
 </template>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+</style>

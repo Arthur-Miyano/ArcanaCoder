@@ -1,0 +1,44 @@
+[
+  {
+    "id": "s5_06",
+    "type": "choice",
+    "chapterId": "ch5_functions",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_params"
+  },
+  {
+    "id": "s5_07",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "def split(n):\n    return n // 2, n % 2\na, b = split(5)\nprint(a, b)",
+    "validationMode": "exact",
+    "sectionId": "s5_params"
+  },
+  {
+    "id": "s5_08",
+    "type": "code_fill",
+    "chapterId": "ch5_functions",
+    "correctCode": "x = 10\ndef show():\n    x = 5\n    print(\"内部:\", x)\n\nshow()\nprint(\"外部:\", x)",
+    "validationMode": "exact",
+    "sectionId": "s5_params"
+  },
+  {
+    "id": "s5_09",
+    "type": "output_predict",
+    "chapterId": "ch5_functions",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s5_params"
+  },
+  {
+    "id": "s5_10",
+    "type": "code_fix",
+    "chapterId": "ch5_functions",
+    "correctCode": "count = 0\ndef increment():\n    global count\n    count = count + 1\n\nincrement()\nprint(count)",
+    "validationMode": "exact",
+    "sectionId": "s5_params"
+  }
+]

@@ -44,16 +44,21 @@ const noxMessage = computed(() => {
 </script>
 
 <template>
-  <div class="px-4 pb-3 border-t border-gray-700 pt-3">
+  <div data-testid="feedback-panel" class="px-4 pb-3 pt-3 border-t border-arcane-500/15">
     <!-- 魔力共鸣 -->
-    <div v-if="correct" class="rounded-lg border px-4 py-3 bg-green-900 border-green-500">
+    <div
+      v-if="correct"
+      class="animate-scale-in rounded-2xl border border-gold-500/30 bg-gradient-to-br from-gold-500/10 via-abyss-850/80 to-abyss-900/70 px-4 py-4 shadow-glow-gold"
+    >
       <div class="flex items-center gap-2 mb-2">
-        <span class="text-base font-bold text-green-300">魔力共鸣!</span>
+        <span class="text-gold-400 text-sm">✦</span>
+        <span class="text-base font-bold font-display text-gold-300 text-glow-gold">魔力共鸣!</span>
+        <span class="text-gold-400 text-sm">✦</span>
       </div>
 
       <div
         v-if="question.correctCode"
-        class="border border-gray-600 rounded-lg overflow-hidden mb-2"
+        class="border border-gold-500/25 rounded-xl overflow-hidden mb-2 shadow-card"
       >
         <Codemirror
           :model-value="question.correctCode"
@@ -63,17 +68,16 @@ const noxMessage = computed(() => {
         />
       </div>
 
-      <p class="text-gray-200 leading-relaxed whitespace-pre-wrap">{{ explanation }}</p>
+      <p class="text-mist-200 leading-relaxed whitespace-pre-wrap">{{ explanation }}</p>
 
-      <div
-        class="mt-3 px-3 py-2 bg-magic-card border border-gray-600 rounded text-xs text-gray-400 leading-relaxed"
-      >
-        <span class="text-gray-500 block mb-0.5">诺克斯的笔记：</span>
-        <p class="text-gray-300 whitespace-pre-wrap">{{ question.narrativeExplanation || explanation }}</p>
+      <div class="mt-3 arc-card px-3 py-2 text-xs text-mist-400 leading-relaxed">
+        <span class="text-gold-400/90 block mb-0.5">✧ 诺克斯的笔记：</span>
+        <p class="text-mist-300 whitespace-pre-wrap">{{ question.narrativeExplanation || explanation }}</p>
       </div>
 
       <button
-        class="mt-3 px-4 py-1.5 rounded text-sm font-medium bg-gray-600 hover:bg-gray-500 text-white transition-colors"
+        data-testid="btn-next"
+        class="btn-gold shine-sweep mt-4 text-sm"
         @click="emit('next')"
       >
         下一道试炼
@@ -81,12 +85,12 @@ const noxMessage = computed(() => {
     </div>
 
     <!-- 咒语波动不稳 -->
-    <div v-else class="space-y-3">
+    <div v-else class="space-y-3 animate-fade-up">
       <div class="flex flex-col md:flex-row gap-3">
         <!-- 左侧：用户的源语 -->
         <div class="flex-1 min-w-0">
-          <p class="text-xs text-gray-400 mb-1">你的源语</p>
-          <div class="border border-gray-600 rounded-lg overflow-hidden">
+          <p class="text-xs text-mist-400 mb-1">你的源语</p>
+          <div class="border border-red-500/25 rounded-xl overflow-hidden">
             <Codemirror
               :model-value="userCode ?? ''"
               :extensions="extensions"
@@ -97,31 +101,31 @@ const noxMessage = computed(() => {
 
           <div
             v-if="parsedError"
-            class="mt-2 px-3 py-2 bg-red-900/50 border border-red-500/50 rounded text-sm font-mono"
+            class="mt-2 px-3 py-2 rounded-xl bg-red-950/40 border border-red-500/30 backdrop-blur-sm text-sm font-mono"
           >
             <span class="text-red-300 font-bold">{{ parsedError.chineseType }}</span>
-            <p class="text-red-200 text-xs mt-0.5">{{ parsedError.message }}</p>
+            <p class="text-red-200/80 text-xs mt-0.5">{{ parsedError.message }}</p>
           </div>
 
           <div
             v-if="diff && diff.matchType !== 'exact'"
-            class="mt-2 px-3 py-2 rounded text-sm"
-            :class="diff.matchType === 'format' ? 'bg-yellow-900/30 border border-yellow-600/50' : 'bg-red-900/50 border border-red-500/50'"
+            class="mt-2 px-3 py-2 rounded-xl text-sm border"
+            :class="diff.matchType === 'format' ? 'bg-gold-500/10 border-gold-500/30' : 'bg-red-950/40 border-red-500/30'"
           >
-            <p class="font-medium mb-1" :class="diff.matchType === 'format' ? 'text-yellow-300' : 'text-red-300'">
+            <p class="font-medium mb-1" :class="diff.matchType === 'format' ? 'text-gold-300' : 'text-red-300'">
               {{ diff.detail }}
             </p>
             <div class="space-y-0.5 text-xs font-mono">
               <div class="text-red-300">你的输出：{{ diff.userOutput }}</div>
               <div class="text-green-300">期望输出：{{ diff.expectedOutput }}</div>
-              <div v-for="p in diff.points" :key="p.index" class="text-gray-400">
+              <div v-for="p in diff.points" :key="p.index" class="text-mist-400">
                 第{{ p.index + 1 }}个字符："{{ p.userChar || '(空)' }}" → 应为"{{ p.expectedChar || '(空)' }}"
               </div>
             </div>
           </div>
 
           <div v-if="codeHints && codeHints.length > 0" class="mt-2 space-y-1">
-            <p v-for="(h, i) in codeHints" :key="i" class="text-xs text-yellow-400">
+            <p v-for="(h, i) in codeHints" :key="i" class="text-xs text-gold-300/90">
               {{ h.message }}
             </p>
           </div>
@@ -130,8 +134,8 @@ const noxMessage = computed(() => {
         <!-- 右侧：法阵参考 + 解析 -->
         <div class="flex-1 min-w-0 space-y-3">
           <div v-if="question.correctCode">
-            <p class="text-xs text-gray-400 mb-1">法阵参考</p>
-            <div class="border border-green-600/50 rounded-lg overflow-hidden">
+            <p class="text-xs text-mist-400 mb-1">法阵参考</p>
+            <div class="border border-arcane-400/30 rounded-xl overflow-hidden shadow-card">
               <Codemirror
                 :model-value="question.correctCode"
                 :extensions="extensions"
@@ -142,19 +146,19 @@ const noxMessage = computed(() => {
           </div>
 
           <div v-if="errorLines.length > 0">
-            <p class="text-xs text-gray-400 mb-1">波动溯源</p>
+            <p class="text-xs text-mist-400 mb-1">波动溯源</p>
             <div class="space-y-1">
               <div
                 v-for="line in errorLines"
                 :key="line.lineNumber"
-                class="rounded px-3 py-1.5 text-xs font-mono"
+                class="rounded-lg bg-abyss-800/60 border border-red-500/15 px-3 py-1.5 text-xs font-mono"
               >
                 <div class="text-red-300 line-through mb-0.5">
-                  <span class="text-gray-500">第{{ line.lineNumber }}行 </span>
+                  <span class="text-mist-500">第{{ line.lineNumber }}行 </span>
                   {{ line.userLine || '(空)' }}
                 </div>
                 <div class="text-green-300">
-                  <span class="text-gray-500">应为 </span>
+                  <span class="text-mist-500">应为 </span>
                   {{ line.correctLine || '(空)' }}
                 </div>
               </div>
@@ -165,31 +169,32 @@ const noxMessage = computed(() => {
         </div>
       </div>
 
-      <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ explanation }}</p>
+      <p class="text-mist-300 leading-relaxed whitespace-pre-wrap">{{ explanation }}</p>
 
       <div
         v-if="question.narrativeExplanation"
-        class="px-3 py-2 bg-magic-card border border-gray-600 rounded text-xs text-gray-400 leading-relaxed"
+        class="arc-card px-3 py-2 text-xs text-mist-400 leading-relaxed"
       >
-        <span class="text-gray-500 block mb-0.5">诺克斯的笔记：</span>
-        <p class="text-gray-300 whitespace-pre-wrap">{{ question.narrativeExplanation }}</p>
+        <span class="text-gold-400/90 block mb-0.5">✧ 诺克斯的笔记：</span>
+        <p class="text-mist-300 whitespace-pre-wrap">{{ question.narrativeExplanation }}</p>
       </div>
 
       <div v-if="errorDetail">
         <button
-          class="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+          class="text-xs text-mist-500 hover:text-arcane-300 transition-colors"
           @click="showTraceback = !showTraceback"
         >
           {{ showTraceback ? '收起' : '查看' }}技术详情
         </button>
         <pre
           v-if="showTraceback"
-          class="mt-1 px-3 py-2 bg-gray-900 rounded text-xs text-gray-400 overflow-x-auto font-mono leading-relaxed"
+          class="mt-1 px-3 py-2 bg-abyss-900/80 border border-arcane-500/15 rounded-lg text-xs text-mist-400 overflow-x-auto font-mono leading-relaxed"
         >{{ errorDetail }}</pre>
       </div>
 
       <button
-        class="w-full py-2.5 rounded font-medium transition-colors bg-magic-accent hover:bg-magic-accent-light text-white"
+        data-testid="btn-next"
+        class="btn-arc shine-sweep w-full"
         @click="emit('next')"
       >
         下一道试炼

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "s4_07",
+    "type": "choice",
+    "chapterId": "ch4_control",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_logic"
+  },
+  {
+    "id": "s4_08",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "shelves, floor = 5, 2\nif shelves >= 3 and floor <= 2:\n    print(\"上架\")",
+    "validationMode": "exact",
+    "sectionId": "s4_logic"
+  },
+  {
+    "id": "s4_09",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "is_raining, has_meeting = False, True\nif is_raining or has_meeting:\n    print(\"带伞\")",
+    "validationMode": "exact",
+    "sectionId": "s4_logic"
+  },
+  {
+    "id": "s4_10",
+    "type": "code_fix",
+    "chapterId": "ch4_control",
+    "correctCode": "x = 15\nif x > 0:\n    if x < 20:\n        print(\"中间值\")",
+    "validationMode": "exact",
+    "sectionId": "s4_logic"
+  },
+  {
+    "id": "s4_11",
+    "type": "output_predict",
+    "chapterId": "ch4_control",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_logic"
+  }
+]

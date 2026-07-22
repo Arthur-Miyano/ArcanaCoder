@@ -1,0 +1,47 @@
+[
+  {
+    "id": "s9_01",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_pytest"
+  },
+  {
+    "id": "s9_02",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_pytest"
+  },
+  {
+    "id": "s9_03",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_pytest"
+  },
+  {
+    "id": "s9_04",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_pytest"
+  },
+  {
+    "id": "s9_05",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_pytest"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "s4_12",
+    "type": "choice",
+    "chapterId": "ch4_control",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_for"
+  },
+  {
+    "id": "s4_13",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "books = [\"历史\", \"地理\", \"星象\"]\nfor b in books:\n    print(b)",
+    "validationMode": "exact",
+    "sectionId": "s4_for"
+  },
+  {
+    "id": "s4_14",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "for i in range(5):\n    print(i)",
+    "validationMode": "exact",
+    "sectionId": "s4_for"
+  },
+  {
+    "id": "s4_15",
+    "type": "code_fill",
+    "chapterId": "ch4_control",
+    "correctCode": "for i in range(2, 6):\n    print(i)",
+    "validationMode": "exact",
+    "sectionId": "s4_for"
+  },
+  {
+    "id": "s4_16",
+    "type": "output_predict",
+    "chapterId": "ch4_control",
+    "correctIndex": 2,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s4_for"
+  },
+  {
+    "id": "s4_17",
+    "type": "code_fix",
+    "chapterId": "ch4_control",
+    "correctCode": "total = 0\nfor i in range(1, 6):\n    total = total + i * i\nprint(total)",
+    "validationMode": "exact",
+    "sectionId": "s4_for"
+  }
+]

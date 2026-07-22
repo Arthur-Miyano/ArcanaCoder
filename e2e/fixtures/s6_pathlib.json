@@ -1,0 +1,43 @@
+[
+  {
+    "id": "s6_16",
+    "type": "choice",
+    "chapterId": "ch6_errors",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_pathlib"
+  },
+  {
+    "id": "s6_17",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "from pathlib import Path\nbase = Path(\"data\")\np = base / \"sub\" / \"file.txt\"\nprint(p)",
+    "validationMode": "exact",
+    "sectionId": "s6_pathlib"
+  },
+  {
+    "id": "s6_18",
+    "type": "code_fill",
+    "chapterId": "ch6_errors",
+    "correctCode": "from pathlib import Path\np = Path(\"data/report.txt\")\nprint(p.name, p.suffix)",
+    "validationMode": "exact",
+    "sectionId": "s6_pathlib"
+  },
+  {
+    "id": "s6_19",
+    "type": "code_fix",
+    "chapterId": "ch6_errors",
+    "correctCode": "from pathlib import Path\nfolder = \"data\"\nfile = \"report.txt\"\npath = Path(folder) / file\nprint(path)",
+    "validationMode": "exact",
+    "sectionId": "s6_pathlib"
+  },
+  {
+    "id": "s6_20",
+    "type": "free_coding",
+    "chapterId": "ch6_errors",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s6_pathlib"
+  }
+]

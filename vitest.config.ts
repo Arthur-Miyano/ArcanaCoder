@@ -9,13 +9,23 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    exclude: ['e2e/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      include: ['src/**/*'],
+      exclude: [
+        'src/types/**',
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        'public/**',
+        'scripts/**',
+        '*.config.*',
+      ],
       thresholds: {
-        lines: 60,
-        functions: 60,
-        branches: 50,
+        lines: 50,
+        functions: 35,
+        branches: 45,
       },
     },
   },

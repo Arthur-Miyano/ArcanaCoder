@@ -1,0 +1,38 @@
+[
+  {
+    "id": "s9_15",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_ruff"
+  },
+  {
+    "id": "s9_16",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_ruff"
+  },
+  {
+    "id": "s9_17",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_ruff"
+  },
+  {
+    "id": "s9_18",
+    "type": "choice",
+    "chapterId": "ch9_testing",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s9_ruff"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "s7_11",
+    "type": "choice",
+    "chapterId": "ch7_oop",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s7_inherit"
+  },
+  {
+    "id": "s7_12",
+    "type": "code_fill",
+    "chapterId": "ch7_oop",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s7_inherit"
+  },
+  {
+    "id": "s7_13",
+    "type": "code_fill",
+    "chapterId": "ch7_oop",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s7_inherit"
+  },
+  {
+    "id": "s7_14",
+    "type": "code_fill",
+    "chapterId": "ch7_oop",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s7_inherit"
+  },
+  {
+    "id": "s7_15",
+    "type": "code_fix",
+    "chapterId": "ch7_oop",
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s7_inherit"
+  },
+  {
+    "id": "s7_16",
+    "type": "output_predict",
+    "chapterId": "ch7_oop",
+    "correctIndex": 1,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s7_inherit"
+  }
+]

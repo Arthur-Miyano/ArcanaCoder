@@ -1,0 +1,38 @@
+[
+  {
+    "id": "s10_06",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_adv"
+  },
+  {
+    "id": "s10_07",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_adv"
+  },
+  {
+    "id": "s10_08",
+    "type": "choice",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_adv"
+  },
+  {
+    "id": "s10_09",
+    "type": "output_predict",
+    "chapterId": "ch10_async",
+    "correctIndex": 0,
+    "correctCode": null,
+    "validationMode": "exact",
+    "sectionId": "s10_async_adv"
+  }
+]
