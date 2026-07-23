@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NoxAvatar from './NoxAvatar.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { chapters } from '@/data/questions'
@@ -55,9 +56,7 @@ function dismiss() {
     <!-- 时长选择 -->
     <div v-if="step === 'time'" class="arc-card animate-scale-in px-6 py-6 max-w-sm w-full space-y-5">
       <div class="flex items-center gap-3 pb-4">
-        <div class="relative w-9 h-9 rounded-full bg-gradient-to-br from-arcane-400 to-arcane-700 shadow-glow-arcane shrink-0 flex items-center justify-center animate-glow-pulse" title="诺克斯">
-          <span class="text-sm text-mist-100">✧</span>
-        </div>
+        <NoxAvatar :size="36" class="shrink-0" />
         <div>
           <p class="text-sm font-display font-bold text-arcane-200 text-glow-arcane">诺克斯</p>
           <p class="text-xs text-mist-400">源码之灵</p>
@@ -106,9 +105,7 @@ function dismiss() {
     <!-- 每日计划 -->
     <div v-else class="arc-card animate-scale-in px-6 py-6 max-w-sm w-full space-y-4">
       <div class="flex items-center gap-3 pb-4">
-        <div class="relative w-9 h-9 rounded-full bg-gradient-to-br from-arcane-400 to-arcane-700 shadow-glow-arcane shrink-0 flex items-center justify-center animate-glow-pulse" title="诺克斯">
-          <span class="text-sm text-mist-100">✧</span>
-        </div>
+        <NoxAvatar :size="36" class="shrink-0" />
         <div>
           <p class="text-sm font-display font-bold text-arcane-200 text-glow-arcane">诺克斯</p>
           <p class="text-xs text-mist-400">源码之灵</p>

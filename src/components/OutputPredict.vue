@@ -32,7 +32,7 @@ function select(index: number) {
 
 <template>
   <div>
-    <p class="mb-3 text-mist-100 whitespace-pre-wrap">{{ question.description }}</p>
+    <p class="mb-3 text-mist-100 font-medium whitespace-pre-wrap">{{ question.description }}</p>
 
     <!-- 符文代码面板：等宽字体深色面板 -->
     <div class="mb-4 overflow-hidden rounded-xl border border-arcane-500/20 bg-abyss-900/80 shadow-card">
@@ -62,14 +62,14 @@ function select(index: number) {
         :class="
           modelValue === i
             ? 'border-arcane-400/70 bg-arcane-500/15 text-mist-100 shadow-glow-arcane'
-            : 'border-arcane-500/30 bg-abyss-700/50 text-mist-100 hover:border-arcane-400/60 hover:bg-arcane-500/10 hover:text-white'
+            : 'border-arcane-500/30 bg-abyss-700/50 text-mist-200 hover:border-arcane-400/60 hover:bg-arcane-500/10 hover:text-mist-100'
         "
         @click="select(i)"
       >
         <span
-          class="mr-2 shrink-0"
-          :class="modelValue === i ? 'text-glow-arcane text-arcane-300' : 'text-mist-500'"
-        >{{ modelValue === i ? '●' : '○' }}</span>
+          class="mr-2 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border font-mono text-[11px] align-middle"
+          :class="modelValue === i ? 'border-arcane-300 bg-gradient-to-br from-arcane-400 to-arcane-600 text-white' : 'border-mist-500/40 text-mist-400'"
+        >{{ 'ABCD'[i] ?? i + 1 }}</span>
         <span class="whitespace-pre-wrap">{{ opt }}</span>
       </button>
     </div>

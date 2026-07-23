@@ -44,14 +44,14 @@ const noxMessage = computed(() => {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-[65] flex items-end justify-center">
+  <div class="fixed inset-0 z-[65] flex items-center justify-center px-4">
     <!-- 遮罩：聚焦反馈，不遮挡关闭（必须点下一题） -->
     <div class="absolute inset-0 bg-abyss-950/60 backdrop-blur-[2px] animate-fade-in"></div>
 
     <div
       data-testid="feedback-panel"
-      class="fx-sheet relative w-full sm:max-w-3xl max-h-[62vh] overflow-y-auto
-        rounded-t-2xl border border-b-0 border-arcane-500/25 bg-abyss-900/95 backdrop-blur-md
+      class="animate-scale-in relative w-full sm:max-w-2xl max-h-[70vh] overflow-y-auto
+        rounded-2xl border border-arcane-500/25 bg-abyss-900/95 backdrop-blur-md
         shadow-card-hover px-4 pb-4 pt-4 sm:px-5"
     >
     <!-- 魔力共鸣 -->

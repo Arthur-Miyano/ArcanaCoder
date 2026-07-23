@@ -265,20 +265,23 @@ function wrongQuestionLabel(qId: string): string {
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-        <div class="max-w-6xl mx-auto w-full lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 lg:items-start">
+      <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-6 flex flex-col">
+        <div class="max-w-6xl mx-auto w-full my-auto lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 lg:items-center">
           <!-- 左栏：题干 + 答题区 -->
           <div
             class="arc-card quiz-card px-5 py-6 sm:px-8 space-y-6 animate-fade-up"
             :class="shaking ? 'fx-shake' : ''"
           >
-            <h2 class="title-display text-xl sm:text-2xl text-mist-100 text-glow-arcane">
-              {{ currentQuestion.narrativeTitle || currentQuestion.title }}
-            </h2>
+            <div class="space-y-3">
+              <h2 class="title-display text-2xl sm:text-3xl text-mist-100 text-glow-arcane leading-snug">
+                {{ currentQuestion.narrativeTitle || currentQuestion.title }}
+              </h2>
+              <div class="arc-divider w-16" />
+            </div>
 
             <p
               v-if="currentQuestion.narrativeDesc"
-              class="text-[17px] text-mist-100/90 leading-relaxed whitespace-pre-wrap"
+              class="font-display text-[15px] text-mist-300 leading-relaxed whitespace-pre-wrap"
             >
               {{ currentQuestion.narrativeDesc }}
             </p>
@@ -306,7 +309,7 @@ function wrongQuestionLabel(qId: string): string {
           </div>
 
           <!-- 右栏 HUD：进度 / 诺克斯 / 提交 -->
-          <aside class="mt-6 lg:mt-0 lg:sticky lg:top-6 space-y-4 self-start">
+          <aside class="mt-6 lg:mt-0 space-y-4 self-start lg:self-center w-full">
             <div class="arc-card px-4 py-3.5 space-y-2.5">
               <div class="flex items-center justify-between text-xs">
                 <span class="text-mist-400 tracking-widest">试炼进度</span>

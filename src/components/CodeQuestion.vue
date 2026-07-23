@@ -22,10 +22,7 @@ const lineCount = computed(() => {
 
 <template>
   <div class="animate-fade-up">
-    <div class="flex items-start gap-2 mb-4">
-      <span class="mt-1 text-arcane-400 text-sm leading-none select-none animate-twinkle" aria-hidden="true">✦</span>
-      <p class="font-body text-mist-200 leading-relaxed whitespace-pre-wrap">{{ question.description }}</p>
-    </div>
+    <p class="font-body text-mist-100 font-medium leading-relaxed whitespace-pre-wrap mb-4">{{ question.description }}</p>
     <div
       class="code-frame rounded-xl overflow-hidden transition-all duration-300"
       :class="readonly ? 'opacity-80 saturate-75' : 'hover:shadow-glow-arcane'"

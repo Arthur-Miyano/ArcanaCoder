@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import MageAvatar from './MageAvatar.vue'
+
 defineProps<{
   level: number
   exp: number
@@ -12,11 +14,7 @@ defineProps<{
     class="flex items-center gap-3 px-4 py-2 border-b border-arcane-500/15 bg-abyss-900/60 backdrop-blur-md"
   >
     <div class="relative shrink-0">
-      <img
-        src="/assets/characters/mage/mage-portrait.png"
-        class="w-9 h-9 rounded-full border border-gold-500/60 object-cover shadow-glow-gold"
-        title="贤者"
-      />
+      <MageAvatar :size="36" />
       <span
         class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-gold-500/50 bg-abyss-850 text-[9px] leading-none text-gold-400"
         >✦</span

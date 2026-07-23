@@ -255,7 +255,7 @@ async function runInteractive(): Promise<void> {
 }
 
 .page-header {
-  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -326,7 +326,7 @@ async function runInteractive(): Promise<void> {
 }
 
 .section-title {
-  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
   font-size: 0.85rem;
   font-weight: 700;
   color: #d4af37;

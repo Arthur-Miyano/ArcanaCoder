@@ -43,7 +43,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', '"Noto Serif SC"', 'serif'],
+        display: ['"Cormorant Garamond"', '"Noto Sans SC"', 'serif'],
         body: ['Inter', '"Noto Sans SC"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],
       },

@@ -17,7 +17,7 @@ function select(index: number) {
 
 <template>
   <div class="space-y-2.5">
-    <p class="text-mist-100 mb-3 leading-relaxed">{{ question.description }}</p>
+    <p class="text-mist-100 font-medium mb-3 leading-relaxed">{{ question.description }}</p>
     <button
       v-for="(opt, i) in question.options"
       :key="i"
@@ -27,19 +27,19 @@ function select(index: number) {
       :class="
         modelValue === i
           ? 'border-arcane-400/80 bg-gradient-to-r from-arcane-600/30 via-arcane-500/15 to-transparent text-mist-100 shadow-glow-arcane'
-          : 'border-arcane-500/30 bg-abyss-700/50 text-mist-100 backdrop-blur-sm hover:-translate-y-0.5 hover:border-arcane-400/60 hover:bg-abyss-700/70 hover:shadow-glow-arcane'
+          : 'border-arcane-500/30 bg-abyss-700/50 text-mist-200 backdrop-blur-sm hover:-translate-y-0.5 hover:border-arcane-400/60 hover:bg-abyss-700/70 hover:text-mist-100 hover:shadow-glow-arcane'
       "
       @click="select(i)"
     >
       <span
-        class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] leading-none transition-all duration-300"
+        class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border font-mono text-[11px] leading-none transition-all duration-300"
         :class="
           modelValue === i
             ? 'border-arcane-300 bg-gradient-to-br from-arcane-400 to-arcane-600 text-white shadow-glow-arcane'
             : 'border-mist-500/40 text-mist-400 group-hover:border-arcane-400/60 group-hover:text-arcane-300'
         "
       >
-        {{ modelValue === i ? '✦' : '✧' }}
+        {{ 'ABCD'[i] ?? i + 1 }}
       </span>
       <span class="whitespace-pre-wrap leading-relaxed">{{ opt }}</span>
     </button>

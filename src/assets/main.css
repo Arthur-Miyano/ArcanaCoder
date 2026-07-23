@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap');
+@import './fonts/fonts.css';
 
 @tailwind base;
 @tailwind components;
@@ -162,7 +162,7 @@ body {
   transform: translateX(-50%);
   z-index: 80;
   pointer-events: none;
-  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
   font-weight: 700;
   font-size: clamp(2rem, 5vw, 3.2rem);
   letter-spacing: 0.08em;

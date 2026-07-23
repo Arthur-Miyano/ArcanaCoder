@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { burst, rain } from '@/composables/useParticles'
 import GameHeader from './GameHeader.vue'
+import MageAvatar from './MageAvatar.vue'
 
 const props = defineProps<{
   chapterId: string
@@ -58,9 +59,10 @@ onMounted(() => {
         enter-from-class="opacity-0"
       >
         <div v-if="visible" class="relative space-y-6 w-full max-w-md animate-scale-in">
-          <img
-            src="/assets/characters/mage/mage-fullbody.png"
-            class="w-20 md:w-24 h-auto mx-auto animate-float-slow drop-shadow-[0_0_24px_rgba(212,175,55,0.35)]"
+          <MageAvatar
+            :size="88"
+            :full="true"
+            class="mx-auto animate-float-slow drop-shadow-[0_0_24px_rgba(212,175,55,0.35)]"
             :class="passed ? '' : 'opacity-70'"
           />
 
