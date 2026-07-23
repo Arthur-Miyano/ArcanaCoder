@@ -36,10 +36,10 @@ export const stage10Questions: Question[] = [
     narrativeDesc:'await 会暂停当前协程直到操作完成——但其他协程可以运行。预测输出：',
     narrativeExplanation:'await 暂停当前协程但不阻塞整个程序。事件循环可以调度其他协程。',
     description:'预测以下代码的输出顺序。', difficulty:3, knowledgeTags:['async'],
-    initialCode:'import asyncio\n\nasync def task(n):\n    print(f"开始 {n}")\n    await asyncio.sleep(0.1)\n    print(f"结束 {n}")\n\nasync def main():\n    await asyncio.gather(task(1), task(2))\n\nasyncio.run(main())',
+    initialCode:'import asyncio\n\nasync def task(n):\n    print(f"开始{n}")\n    await asyncio.sleep(0.1)\n    print(f"结束{n}")\n\nasync def main():\n    await asyncio.gather(task(1), task(2))\n\n# 浏览器（pyodide）环境已有事件循环，用顶层 await 代替 asyncio.run(main())\nawait main()',
     options:['开始1 结束1 开始2 结束2','开始1 开始2 结束1 结束2','开始1 开始2 结束2 结束1','开始1 结束2 开始2 结束1'], correctOption:1,
     expectedOutput:'开始1\\n开始2\\n结束1\\n结束2',
-    explanation:'gather 同时启动两个协程。先打印"开始"，然后 await sleep 时切换到另一个协程。',
+    explanation:'gather 同时启动两个协程。先打印"开始"，然后 await sleep 时切换到另一个协程。本地 Python 用 asyncio.run(main()) 启动；本环境已有事件循环，用顶层 await。',
     hint:'gather 并发执行。', hintRoleplay:'gather 就像"同时做多件事"——sleep 时让出控制权，切换执行另一个协程。', hintDirect:'开始1 开始2 结束1 结束2' },
 
   // 第 2 节：async 进阶（4 题，3 choice + 1 output_predict）
@@ -67,10 +67,10 @@ export const stage10Questions: Question[] = [
   { id:'s10_09', type:'output_predict', chapterId:'ch10_async', title:'gather 顺序', narrativeTitle:'并发顺序',
     narrativeDesc:'gather 的结果顺序和任务传入顺序一致。预测输出：', narrativeExplanation:'gather 保持顺序——即使任务 2 先完成，结果也在第二个位置。',
     description:'预测以下代码的输出。', difficulty:3, knowledgeTags:['async'],
-    initialCode:'import asyncio\n\nasync def double(n):\n    await asyncio.sleep(0.1 * n)\n    return n * 2\n\nasync def main():\n    r = await asyncio.gather(double(2), double(1))\n    print(r)\n\nasyncio.run(main())',
+    initialCode:'import asyncio\n\nasync def double(n):\n    await asyncio.sleep(0.1 * n)\n    return n * 2\n\nasync def main():\n    r = await asyncio.gather(double(2), double(1))\n    print(r)\n\n# 浏览器（pyodide）环境已有事件循环，用顶层 await 代替 asyncio.run(main())\nawait main()',
     options:['[4, 2]','[2, 4]','[2, 1]','[4, 1]'], correctOption:0,
     expectedOutput:'[4, 2]',
-    explanation:'double(2) 返回 4 在第一个，double(1) 返回 2 在第二个——gather 保持传入顺序。',
+    explanation:'double(2) 返回 4 在第一个，double(1) 返回 2 在第二个——gather 保持传入顺序。本地 Python 用 asyncio.run(main()) 启动；本环境已有事件循环，用顶层 await。',
     hint:'gather 结果顺序和任务顺序一致。', hintRoleplay:'gather 结果按传入顺序排列——不管哪个先完成。', hintDirect:'[4, 2]' },
 
   // 第 3 节：uv 与包管理（5 题，全部 choice）

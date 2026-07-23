@@ -37,11 +37,6 @@ body {
     linear-gradient(180deg, #05070f 0%, #0a0e1a 55%, #04060d 100%);
 }
 
-.abyss-stars {
-  /* 已由 StarfieldCanvas（Canvas 粒子星野）取代，保留类名占位避免旧引用报错 */
-  display: none;
-}
-
 /* ---------- 3D 倾斜高光 ---------- */
 .tilt-glare {
   position: relative;
@@ -97,6 +92,22 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .fx-ring {
     display: none;
+  }
+}
+
+/* 反馈 Sheet 滑入 */
+@keyframes fx-sheet-up {
+  0% { opacity: 0; transform: translateY(56px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fx-sheet {
+  animation: fx-sheet-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-sheet {
+    animation: none;
   }
 }
 
@@ -219,7 +230,7 @@ body {
 @layer components {
   /* ---------- 玻璃拟态卡片 ---------- */
   .arc-card {
-    @apply rounded-2xl border border-arcane-500/15 bg-abyss-800/60 shadow-card backdrop-blur-md;
+    @apply rounded-2xl border border-arcane-500/15 bg-abyss-800/75 shadow-card backdrop-blur-md;
   }
 
   .arc-card-hover {

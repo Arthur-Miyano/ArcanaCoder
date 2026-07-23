@@ -50,7 +50,6 @@ export function useQuiz(chapterId: string, emit: {
 
   // 联合类型 + 组件适配方案：userAnswer 跨 choice(number)/code(string) 两种类型。
   // 类型安全在 composable 层维持，组件层通过 computed{get/set} 做适配。
-  // 详见 已知缺口.md C3。
   type UserAnswer = string | number | null
   const userAnswer = ref<UserAnswer>(null)
   const showFeedback = ref(false)
@@ -74,10 +73,6 @@ export function useQuiz(chapterId: string, emit: {
   const noxHint = ref('让我们开始这一层的试炼吧，贤者。')
 
   const accuracyInfo = computed(() => store.getChapterAccuracy(chapterId))
-
-  function isChoiceType(q: Question): boolean {
-    return q.type === 'choice' || q.type === 'output_predict'
-  }
 
   function getHintForQuestion(q: Question): string {
     const result = store.getQuestionResult(q.id)

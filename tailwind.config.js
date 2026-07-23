@@ -41,15 +41,6 @@ export default {
           400: '#7e8499',
           500: '#5a6076',
         },
-        // 兼容旧类名（过渡期，逐步替换）
-        magic: {
-          bg: '#0a0e1a',
-          card: '#111730',
-          accent: '#5442c4',
-          'accent-light': '#7c6aff',
-          gold: '#d4af37',
-          text: '#c9cede',
-        },
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', '"Noto Serif SC"', 'serif'],

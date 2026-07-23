@@ -35,7 +35,7 @@ watch(currentPoint, () => {
   interactiveCode.value = props.points[currentIndex.value]?.interactiveCode ?? props.points[currentIndex.value]?.code ?? ''
   demoRunner.reset()
   interactiveRunner.reset()
-})
+}, { immediate: true })
 
 function prev() {
   if (isFlipping.value || isFirst.value) return

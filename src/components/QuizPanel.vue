@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import { useQuiz } from '@/composables/useQuiz'
 import { burst } from '@/composables/useParticles'
 import { calcExpGained } from '@/constants/progression'
@@ -44,6 +44,7 @@ const goldFlash = ref(0)
 const redFlash = ref(0)
 const floaters = ref<{ id: number; text: string; x: number; y: number }[]>([])
 let floaterId = 0
+let shakeTimer: ReturnType<typeof setTimeout> | undefined
 
 watch(showFeedback, (visible) => {
   if (!visible || !lastResult.value || !currentQuestion.value) return
@@ -64,12 +65,22 @@ watch(showFeedback, (visible) => {
     combo.value = 0
     shaking.value = true
     redFlash.value++
-    setTimeout(() => { shaking.value = false }, 500)
+    clearTimeout(shakeTimer)
+    shakeTimer = setTimeout(() => { shaking.value = false }, 500)
   }
 })
 
+onBeforeUnmount(() => clearTimeout(shakeTimer))
+
 function removeFloater(id: number) {
   floaters.value = floaters.value.filter((f) => f.id !== id)
+}
+
+// accuracyInfo 为章节级聚合，跨节错题不在当前 questions 列表中（findIndex = -1），
+// 此时不能显示"第 0 题"
+function wrongQuestionLabel(qId: string): string {
+  const idx = questions.value.findIndex((q) => q.id === qId)
+  return idx >= 0 ? `第${idx + 1}题` : '其他节的错题'
 }
 </script>
 
@@ -133,7 +144,7 @@ function removeFloater(id: number) {
                     hover:border-red-400/50 hover:bg-red-500/15"
                   @click="retrySingle(qId)"
                 >
-                  ✗ 第{{ questions.findIndex((q) => q.id === qId) + 1 }}题
+                  ✗ {{ wrongQuestionLabel(qId) }}
                 </button>
 
                 <div v-if="accuracyInfo.knowledgeTags.length > 0" class="pt-3">
@@ -254,44 +265,85 @@ function removeFloater(id: number) {
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto px-4 py-6">
-        <div
-          class="max-w-2xl mx-auto w-full arc-card px-5 py-6 sm:px-8 space-y-6 animate-fade-up"
-          :class="shaking ? 'fx-shake' : ''"
-        >
-          <h2 class="title-display text-lg sm:text-xl text-mist-100 text-glow-arcane">
-            {{ currentQuestion.narrativeTitle || currentQuestion.title }}
-          </h2>
-
-          <p
-            v-if="currentQuestion.narrativeDesc"
-            class="text-mist-200 leading-relaxed whitespace-pre-wrap"
+      <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
+        <div class="max-w-6xl mx-auto w-full lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 lg:items-start">
+          <!-- 左栏：题干 + 答题区 -->
+          <div
+            class="arc-card quiz-card px-5 py-6 sm:px-8 space-y-6 animate-fade-up"
+            :class="shaking ? 'fx-shake' : ''"
           >
-            {{ currentQuestion.narrativeDesc }}
-          </p>
+            <h2 class="title-display text-xl sm:text-2xl text-mist-100 text-glow-arcane">
+              {{ currentQuestion.narrativeTitle || currentQuestion.title }}
+            </h2>
 
-          <ChoiceQuestion
-            :key="currentQuestion.id"
-            v-if="currentQuestion.type === 'choice'"
-            :question="currentQuestion"
-            v-model="choiceAnswer"
-          />
+            <p
+              v-if="currentQuestion.narrativeDesc"
+              class="text-[17px] text-mist-100/90 leading-relaxed whitespace-pre-wrap"
+            >
+              {{ currentQuestion.narrativeDesc }}
+            </p>
 
-          <CodeQuestion
-            :key="currentQuestion.id"
-            v-else-if="currentQuestion.type === 'code_fill' || currentQuestion.type === 'code_fix' || currentQuestion.type === 'free_coding'"
-            :question="currentQuestion"
-            v-model="codeAnswer"
-          />
+            <ChoiceQuestion
+              :key="currentQuestion.id"
+              v-if="currentQuestion.type === 'choice'"
+              :question="currentQuestion"
+              v-model="choiceAnswer"
+            />
 
-          <OutputPredict
-            :key="currentQuestion.id"
-            v-else-if="currentQuestion.type === 'output_predict'"
-            :question="currentQuestion"
-            v-model="choiceAnswer"
-          />
+            <CodeQuestion
+              :key="currentQuestion.id"
+              v-else-if="currentQuestion.type === 'code_fill' || currentQuestion.type === 'code_fix' || currentQuestion.type === 'free_coding'"
+              :question="currentQuestion"
+              v-model="codeAnswer"
+            />
 
-          <NoxDialog :message="noxHint" />
+            <OutputPredict
+              :key="currentQuestion.id"
+              v-else-if="currentQuestion.type === 'output_predict'"
+              :question="currentQuestion"
+              v-model="choiceAnswer"
+            />
+          </div>
+
+          <!-- 右栏 HUD：进度 / 诺克斯 / 提交 -->
+          <aside class="mt-6 lg:mt-0 lg:sticky lg:top-6 space-y-4 self-start">
+            <div class="arc-card px-4 py-3.5 space-y-2.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-mist-400 tracking-widest">试炼进度</span>
+                <span class="font-mono text-mist-200">
+                  {{ currentIndex + 1 }}<span class="text-mist-500">/{{ questions.length }}</span>
+                </span>
+              </div>
+              <div class="rune-bar">
+                <div
+                  class="rune-bar-fill"
+                  :style="{ width: `${questions.length ? ((currentIndex + 1) / questions.length) * 100 : 0}%` }"
+                />
+              </div>
+              <div v-if="currentQuestion.knowledgeTags?.length" class="flex flex-wrap gap-1.5 pt-1">
+                <span
+                  v-for="tag in currentQuestion.knowledgeTags"
+                  :key="tag"
+                  class="px-2 py-0.5 rounded-full bg-abyss-700/60 border border-arcane-500/20 text-[11px] text-mist-300"
+                >
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+
+            <NoxDialog :message="noxHint" />
+
+            <button
+              v-if="!(showFeedback && lastResult)"
+              data-testid="btn-submit"
+              :data-executing="submitting ? 'true' : 'false'"
+              class="btn-arc btn-charge w-full shine-sweep py-3 text-base"
+              :disabled="userAnswer === null || userAnswer === '' || submitting"
+              @click="submit"
+            >
+              {{ submitting ? '魔力解析中...' : '注入魔力' }}
+            </button>
+          </aside>
         </div>
       </div>
 
@@ -307,18 +359,6 @@ function removeFloater(id: number) {
         :user-code="typeof userAnswer === 'string' ? userAnswer : undefined"
         @next="nextQuestion"
       />
-
-      <div v-else class="px-4 py-3 border-t border-arcane-500/15 bg-abyss-900/50 backdrop-blur-sm">
-        <button
-          data-testid="btn-submit"
-          :data-executing="submitting ? 'true' : 'false'"
-          class="btn-arc btn-charge w-full shine-sweep"
-          :disabled="userAnswer === null || userAnswer === '' || submitting"
-          @click="submit"
-        >
-          {{ submitting ? '魔力解析中...' : '注入魔力' }}
-        </button>
-      </div>
     </div>
 
     <div v-else class="flex-1 flex items-center justify-center text-mist-400 text-sm">

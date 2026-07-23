@@ -223,10 +223,6 @@ export const useGameStore = defineStore('game', () => {
     return calcMastery(state.value.knowledgeStates[tag])
   }
 
-  function getKnowledgeState(tag: string): KnowledgeState | null {
-    return state.value.knowledgeStates[tag] ?? null
-  }
-
   function getChapterAccuracy(chapterId: string): {
     total: number; correct: number; wrongIds: string[]; knowledgeTags: string[]
   } {
@@ -302,17 +298,6 @@ export const useGameStore = defineStore('game', () => {
   async function resetProgress(): Promise<void> {
     state.value = createInitialState()
     await save()
-  }
-
-  function getFatigueQuestionCount(sectionId: string): number {
-    const sp = state.value.sectionProgress[sectionId]
-    return sp?.fatigueQuestionCount ?? 0
-  }
-
-  function incrementFatigueQuestionCount(sectionId: string): number {
-    const sp = getSectionProgress(sectionId)
-    sp.fatigueQuestionCount = (sp.fatigueQuestionCount || 0) + 1
-    return sp.fatigueQuestionCount
   }
 
   function getFatigueConsecutiveWrong(sectionId: string): number {

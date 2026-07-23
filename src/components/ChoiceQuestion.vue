@@ -17,7 +17,7 @@ function select(index: number) {
 
 <template>
   <div class="space-y-2.5">
-    <p class="text-mist-300 mb-3 leading-relaxed">{{ question.description }}</p>
+    <p class="text-mist-100 mb-3 leading-relaxed">{{ question.description }}</p>
     <button
       v-for="(opt, i) in question.options"
       :key="i"
@@ -27,7 +27,7 @@ function select(index: number) {
       :class="
         modelValue === i
           ? 'border-arcane-400/80 bg-gradient-to-r from-arcane-600/30 via-arcane-500/15 to-transparent text-mist-100 shadow-glow-arcane'
-          : 'border-arcane-500/15 bg-abyss-800/60 text-mist-200 backdrop-blur-sm hover:-translate-y-0.5 hover:border-arcane-400/50 hover:bg-abyss-700/60 hover:shadow-glow-arcane'
+          : 'border-arcane-500/30 bg-abyss-700/50 text-mist-100 backdrop-blur-sm hover:-translate-y-0.5 hover:border-arcane-400/60 hover:bg-abyss-700/70 hover:shadow-glow-arcane'
       "
       @click="select(i)"
     >

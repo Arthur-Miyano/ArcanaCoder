@@ -152,16 +152,6 @@ export const questions: Question[] = [
   ...stage10Questions,
 ]
 
-export function getQuestionsByChapter(chapterId: string): Question[] {
-  const ch = chapters.find((c) => c.id === chapterId)
-  if (!ch) return []
-  return ch.sections.flatMap((sec) =>
-    sec.questionIds
-      .map((id) => questions.find((q) => q.id === id))
-      .filter((q): q is Question => q !== undefined),
-  )
-}
-
 export function getQuestionsBySection(sectionId: string): Question[] {
   for (const ch of chapters) {
     const sec = ch.sections.find((s) => s.id === sectionId)
@@ -172,8 +162,4 @@ export function getQuestionsBySection(sectionId: string): Question[] {
     }
   }
   return []
-}
-
-export function getQuestionById(id: string): Question | undefined {
-  return questions.find((q) => q.id === id)
 }

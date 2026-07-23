@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { getQuestionsByChapter } from '@/data/questions'
 import { burst, rain } from '@/composables/useParticles'
 import GameHeader from './GameHeader.vue'
 
@@ -14,7 +13,6 @@ const emit = defineEmits<{ backToChapters: [] }>()
 const store = useGameStore()
 const visible = ref(false)
 
-const questions = computed(() => getQuestionsByChapter(props.chapterId))
 const accuracy = computed(() => store.getChapterAccuracy(props.chapterId))
 
 const passed = computed(() => accuracy.value.wrongIds.length === 0)
