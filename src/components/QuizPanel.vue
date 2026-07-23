@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useQuiz } from '@/composables/useQuiz'
+import { burst } from '@/composables/useParticles'
+import { calcExpGained } from '@/constants/progression'
 import ChoiceQuestion from './ChoiceQuestion.vue'
 import CodeQuestion from './CodeQuestion.vue'
 import OutputPredict from './OutputPredict.vue'
 import NoxDialog from './NoxDialog.vue'
 import FeedbackPanel from './FeedbackPanel.vue'
+import FloatingText from './FloatingText.vue'
 
 const props = defineProps<{ chapterId: string }>()
 const emit = defineEmits<{ back: []; reviewKnowledge: []; chapterComplete: [] }>()
@@ -32,10 +35,59 @@ const codeAnswer = computed({
   get: () => typeof userAnswer.value === 'string' ? userAnswer.value : '',
   set: (v: string) => { userAnswer.value = v },
 })
+
+// ---------- 游戏反馈特效 ----------
+const combo = ref(0)
+const comboKey = ref(0) // 触发 fx-combo 重新播放
+const shaking = ref(false)
+const goldFlash = ref(0)
+const redFlash = ref(0)
+const floaters = ref<{ id: number; text: string; x: number; y: number }[]>([])
+let floaterId = 0
+
+watch(showFeedback, (visible) => {
+  if (!visible || !lastResult.value || !currentQuestion.value) return
+
+  if (lastResult.value.correct) {
+    combo.value++
+    const exp = calcExpGained(currentQuestion.value.type, true)
+    floaters.value.push({
+      id: ++floaterId,
+      text: `+${exp} EXP`,
+      x: window.innerWidth / 2,
+      y: window.innerHeight * 0.72,
+    })
+    burst(window.innerWidth / 2, window.innerHeight * 0.6)
+    goldFlash.value++
+    if (combo.value >= 2) comboKey.value++
+  } else {
+    combo.value = 0
+    shaking.value = true
+    redFlash.value++
+    setTimeout(() => { shaking.value = false }, 500)
+  }
+})
+
+function removeFloater(id: number) {
+  floaters.value = floaters.value.filter((f) => f.id !== id)
+}
 </script>
 
 <template>
   <div class="flex flex-col flex-1">
+    <!-- 游戏反馈特效层 -->
+    <div v-if="goldFlash" :key="`g${goldFlash}`" class="fx-edge fx-edge-gold"></div>
+    <div v-if="redFlash" :key="`r${redFlash}`" class="fx-edge fx-edge-red"></div>
+    <div v-if="comboKey" :key="`c${comboKey}`" class="fx-combo">魔力连击 ×{{ combo }}</div>
+    <FloatingText
+      v-for="f in floaters"
+      :key="f.id"
+      :text="f.text"
+      :x="f.x"
+      :y="f.y"
+      @done="removeFloater(f.id)"
+    />
+
     <!-- 结果总览 -->
     <div v-if="showResults" class="flex-1 flex flex-col">
       <div class="flex items-center justify-between px-4 py-2 border-b border-arcane-500/15">
@@ -203,7 +255,10 @@ const codeAnswer = computed({
       </div>
 
       <div class="flex-1 overflow-y-auto px-4 py-6">
-        <div class="max-w-2xl mx-auto w-full arc-card px-5 py-6 sm:px-8 space-y-6 animate-fade-up">
+        <div
+          class="max-w-2xl mx-auto w-full arc-card px-5 py-6 sm:px-8 space-y-6 animate-fade-up"
+          :class="shaking ? 'fx-shake' : ''"
+        >
           <h2 class="title-display text-lg sm:text-xl text-mist-100 text-glow-arcane">
             {{ currentQuestion.narrativeTitle || currentQuestion.title }}
           </h2>
@@ -257,7 +312,7 @@ const codeAnswer = computed({
         <button
           data-testid="btn-submit"
           :data-executing="submitting ? 'true' : 'false'"
-          class="btn-arc w-full shine-sweep"
+          class="btn-arc btn-charge w-full shine-sweep"
           :disabled="userAnswer === null || userAnswer === '' || submitting"
           @click="submit"
         >

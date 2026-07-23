@@ -6,6 +6,8 @@ import { chapters } from '@/data/questions'
 import { getWisdomPoints } from '@/data/wisdom'
 import LoadingOverlay from './components/LoadingOverlay.vue'
 import ChapterSelect from './components/ChapterSelect.vue'
+import StarfieldCanvas from './components/StarfieldCanvas.vue'
+import LevelUpRitual from './components/LevelUpRitual.vue'
 import WisdomBook from './components/WisdomBook.vue'
 import QuizPanel from './components/QuizPanel.vue'
 import ChapterComplete from './components/ChapterComplete.vue'
@@ -16,6 +18,7 @@ const store = useGameStore()
 const viewState = ref<ViewState>('loading')
 const activeChapterId = ref<string | null>(null)
 const showDailyPlan = ref(false)
+const ritualLevel = ref<number | null>(null)
 
 const currentChapter = computed(() =>
   chapters.find((c) => c.id === activeChapterId.value),
@@ -32,6 +35,11 @@ onMounted(async () => {
 watch(viewState, async (newVal, oldVal) => {
   if (oldVal === 'quiz' && newVal !== 'quiz') await store.onLeaveQuiz()
   if (newVal === 'quiz' && oldVal !== 'quiz') store.onEnterQuiz()
+})
+
+// 位阶提升时播放全屏仪式动画
+watch(() => store.level, (newLevel, oldLevel) => {
+  if (newLevel > oldLevel) ritualLevel.value = newLevel
 })
 
 function onPyodideReady() {
@@ -82,7 +90,7 @@ function onBackFromQuiz() {
 <template>
   <div class="min-h-screen flex flex-col text-mist-200">
     <div class="abyss-sky"></div>
-    <div class="abyss-stars"></div>
+    <StarfieldCanvas />
 
     <Transition name="page" mode="out-in">
       <LoadingOverlay
@@ -123,6 +131,12 @@ function onBackFromQuiz() {
     <DailyPlanDialog
       v-if="viewState === 'chapterSelect' && showDailyPlan"
       @start="onDismissPlan"
+    />
+
+    <LevelUpRitual
+      v-if="ritualLevel !== null"
+      :level="ritualLevel"
+      @done="ritualLevel = null"
     />
   </div>
 </template>

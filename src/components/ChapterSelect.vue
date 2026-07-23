@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { chapters, questions } from '@/data/questions'
+import { vTilt } from '@/directives/tilt'
 import GameHeader from './GameHeader.vue'
 
 const emit = defineEmits<{
@@ -117,7 +118,8 @@ async function dismissRest(): Promise<void> {
       >
         <!-- 章节卡片 -->
         <div
-          class="arc-card shine-sweep px-4 py-4 sm:px-5 select-none"
+          v-tilt="isUnlocked(ch.id)"
+          class="arc-card shine-sweep tilt-glare px-4 py-4 sm:px-5 select-none"
           :class="[
             !isUnlocked(ch.id)
               ? 'opacity-60 saturate-50 cursor-not-allowed'

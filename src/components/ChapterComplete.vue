@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { getQuestionsByChapter } from '@/data/questions'
+import { burst, rain } from '@/composables/useParticles'
 import GameHeader from './GameHeader.vue'
 
 const props = defineProps<{
@@ -20,6 +21,11 @@ const passed = computed(() => accuracy.value.wrongIds.length === 0)
 
 onMounted(() => {
   setTimeout(() => { visible.value = true }, 100)
+  if (passed.value) {
+    // 通关仪式：粒子雨 + 中心迸发
+    rain(140)
+    burst(window.innerWidth / 2, window.innerHeight * 0.35, { count: 60, speed: 320 })
+  }
 })
 </script>
 
@@ -38,6 +44,12 @@ onMounted(() => {
         class="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 w-[26rem] h-[26rem] rounded-full halo-gold"
         :class="passed ? 'animate-glow-pulse' : 'opacity-40'"
       />
+      <!-- 通关仪式：扩散光环 -->
+      <template v-if="passed">
+        <div class="fx-ring" style="top: 33%"></div>
+        <div class="fx-ring" style="top: 33%; animation-delay: 0.4s"></div>
+        <div class="fx-ring" style="top: 33%; animation-delay: 0.8s"></div>
+      </template>
       <span class="pointer-events-none absolute left-[18%] top-[22%] text-gold-500/50 text-sm animate-twinkle">✦</span>
       <span class="pointer-events-none absolute right-[16%] top-[30%] text-arcane-400/50 text-xs animate-twinkle" style="animation-delay: 1.2s">✧</span>
       <span class="pointer-events-none absolute left-[24%] bottom-[24%] text-arcane-300/40 text-xs animate-twinkle" style="animation-delay: 2s">✧</span>
